@@ -8,6 +8,7 @@ import customFetch from "@/utils/customFetch";
 export default async function SingleBlog({ params }) {
   const { id } = await params;
   const mblogs = [];
+  const blog = []
   try{
   // Directly fetching data on the server.
   const res = await customFetch(`blog/api/${id}`, {
