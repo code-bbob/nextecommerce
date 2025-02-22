@@ -17,8 +17,8 @@ const Signup = () => {
   const [authUrl, setAuthUrl] = useState(null);
   const router = useRouter();
 
-  const googleAuthEndpoint = "/api/auth/google/";
-  const signupEndpoint = "/api/auth/signup/";
+  const googleAuthEndpoint = "api/auth/google/";
+  const signupEndpoint = "api/auth/signup/";
 
   useEffect(() => {
     const fetchAuthUrl = async () => {

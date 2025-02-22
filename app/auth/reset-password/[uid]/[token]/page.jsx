@@ -45,7 +45,7 @@ const ResetPassword = () => {
       const data = await response.json();
       toast.success(data.msg || "Password reset successfully");
       }
-      setTimeout(() => router.replace("/auth/login"), 3000); // Redirect after 3 seconds
+      setTimeout(() => router.replace("auth/login"), 3000); // Redirect after 3 seconds
     } catch (error) {
       toast.error(error.response?.data?.msg || "Error resetting password. Please try again.");
       setTimeout(() => router.replace("/auth/login"), 3000); // Redirect after 3 seconds
