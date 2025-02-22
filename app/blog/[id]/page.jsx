@@ -8,19 +8,22 @@ import customFetch from "@/utils/customFetch";
 export default async function SingleBlog({ params }) {
   const { id } = await params;
   
+  try{
   // Directly fetching data on the server.
   const res = await customFetch(`blog/api/${id}`, {
     // next: { revalidate: 60 } // Revalidate this page every 60 seconds.
   });
   const blog = await res.json();
   
-  console.log(blog);
 
   const allres = await customFetch('blog/api/', {
     next: { revalidate: 60 } // Revalidate every 60 seconds
   });
   const allblogs = await allres.json();
-  const mblogs = [...new Set(blog?.map((allblogs) => allblogs.category))]; 
+  const mblogs = [...new Set(blog?.map((allblogs) => allblogs.category))]; }
+    catch(err){
+        console.log(err)
+    }
 
 
   return (
