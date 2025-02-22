@@ -14,7 +14,7 @@ export default async function SingleBlog({ params }) {
   const res = await customFetch(`blog/api/${id}`, {
     // next: { revalidate: 60 } // Revalidate this page every 60 seconds.
   });
-  const blog = await res.json();
+  blog = await res.json();
   
 
   const allres = await customFetch('blog/api/', {
