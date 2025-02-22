@@ -7,7 +7,7 @@ import customFetch from "@/utils/customFetch";
 
 export default async function SingleBlog({ params }) {
   const { id } = await params;
-  
+  const mblogs = [];
   try{
   // Directly fetching data on the server.
   const res = await customFetch(`blog/api/${id}`, {
@@ -20,7 +20,7 @@ export default async function SingleBlog({ params }) {
     next: { revalidate: 60 } // Revalidate every 60 seconds
   });
   const allblogs = await allres.json();
-  const mblogs = [...new Set(blog?.map((allblogs) => allblogs.category))]; }
+   mblogs = [...new Set(allblogs?.map((allblogs) => allblogs.category))]; }
     catch(err){
         console.log(err)
     }
