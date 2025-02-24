@@ -23,7 +23,7 @@ export const mergeLocalCartOnServer = createAsyncThunk(
       }
     }
   );
-  
+
 export const fetchCartFromServer = createAsyncThunk(
   'cart/fetchCartFromServer',
   async (_, { rejectWithValue }) => {
@@ -140,8 +140,14 @@ const cartSlice = createSlice({
       state.items = state.items.filter(
         item => item.product_id !== action.payload.product_id
       );
-    }
+    },
+        // Sets the cart state from a payload (for rehydrating from local storage)
+        setCart: (state, action) => {
+            state.items = action.payload;
+          }
+    
   },
+
   extraReducers: (builder) => {
     builder
       // Handle fetch-cart async thunk
@@ -200,5 +206,5 @@ const cartSlice = createSlice({
   }
 });
 
-export const { addToCart, updateQuantity, removeFromCart } = cartSlice.actions;
+export const { addToCart, updateQuantity, removeFromCart, setCart } = cartSlice.actions;
 export default cartSlice.reducer;

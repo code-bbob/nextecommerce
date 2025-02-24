@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { updateQuantity, removeFromCart } from '@/redux/cartSlice';
 import { updateCartItemOnServer, removeCartItemOnServer } from '@/redux/cartSlice';
+import { getLocalCart,setLocalCart } from "@/utils/localCart";
 
 export default function CartSidebar({ isOpen, onClose }) {
   const dispatch = useDispatch();
@@ -38,6 +39,18 @@ export default function CartSidebar({ isOpen, onClose }) {
     if (isLoggedIn){
     dispatch(updateCartItemOnServer({ product_id, quantity: newQuantity }));
     }
+    else {
+          // Otherwise, update the local cart in localStorage
+          const localCart = getLocalCart()
+          const existingIndex = localCart.findIndex(item => item.product_id === product_id)
+          if (existingIndex !== -1) {
+            // Increase quantity if already exists
+            localCart[existingIndex].quantity += change
+          } else {
+            localCart.push(cartItem)
+          }
+          setLocalCart(localCart)
+        }
   };
 
   // Remove item: dispatch removal locally and then on the server.
@@ -45,6 +58,14 @@ export default function CartSidebar({ isOpen, onClose }) {
     dispatch(removeFromCart({ product_id }));
     if (isLoggedIn){
     dispatch(removeCartItemOnServer({ product_id }));
+    }
+    else {
+        const localCart = getLocalCart();
+        const index = localCart.findIndex(item => item.product_id === product_id);
+        if (index !== -1) {
+            localCart.splice(index, 1);
+            setLocalCart(localCart);
+        }
     }
   };
 
