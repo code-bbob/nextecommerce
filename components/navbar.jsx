@@ -3,11 +3,23 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Search } from "lucide-react";
+import { useSelector } from "react-redux";
+import { ShoppingCart } from "lucide-react";
+import CartSidebar from "@/components/cartSidebar"; 
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const router = useRouter();
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  
+
+  const cartItems = useSelector((state) => state.cart.items);
+  const itemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  const handleOpenCart = () => {
+    setIsCartOpen(true);
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -58,7 +70,22 @@ export default function NavBar() {
           <Link href="/account">
             <div className="text-gray-200 hover:text-white cursor-pointer">My Account</div>
           </Link>
-          <div className="text-gray-200">$0.00</div>
+
+          <button
+        onClick={handleOpenCart}
+        className="relative flex items-center justify-center"
+        aria-label="Open Cart"
+      >
+        <ShoppingCart className="h-6 w-6" />
+        {itemCount > 0 && (
+          <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1">
+            {itemCount}
+          </span>
+        )}
+      </button>
+
+      {/* Cart Sidebar */}
+      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
         </nav>
         {/* Mobile Navigation Toggle */}
         <div className="md:hidden">

@@ -1,118 +1,41 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { Star, ShoppingCart, Eye } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import Image from "next/image"
+import { motion } from "framer-motion"
+import { Star, ShoppingCart, Eye } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { useDispatch } from 'react-redux';
+import { addToCart, sendCartToServer } from '@/redux/cartSlice';
+import CartSidebar from "@/components/cartSidebar";
+import { useState } from "react"
+import { useSelector } from "react-redux"
 
-export default function ProductGrid({products}) {
-    // const products = [
-    //     {
-    //         "product_id": "f5ce01f7-4622-4b78-98f1-97497656e439",
-    //         "comments": [],
-    //         "images": [
-    //             {
-    //                 "image": "http://127.0.0.1:8000/media/shop/images/IMG-20240823-WA0006.jpg"
-    //             }
-    //         ],
-    //         "rating": 0,
-    //         "name": "NVIDIA 4090 GPU",
-    //         "category": "gpu",
-    //         "brandName": "Nvidia",
-    //         "series": "4090",
-    //         "price": 1000,
-    //         "description": "<p>dami xa</p>",
-    //         "published_date": "2025-02-24"
-    //     },
-    //     {
-    //         "product_id": "f5ce01f7-4622-4b78-98f-97497656e439",
-    //         "comments": [],
-    //         "images": [
-    //             {
-    //                 "image": "http://127.0.0.1:8000/media/shop/images/IMG-20240823-WA0006.jpg"
-    //             }
-    //         ],
-    //         "rating": 0,
-    //         "name": "NVIDIA 4090 GPU",
-    //         "category": "gpu",
-    //         "brandName": "Nvidia",
-    //         "series": "4090",
-    //         "price": 1000,
-    //         "description": "<p>dami xa</p>",
-    //         "published_date": "2025-02-24"
-    //     },
-    //     {
-    //         "product_id": "f5ce01f7-622-4b78-98f1-97497656e439",
-    //         "comments": [],
-    //         "images": [
-    //             {
-    //                 "image": "http://127.0.0.1:8000/media/shop/images/IMG-20240823-WA0006.jpg"
-    //             }
-    //         ],
-    //         "rating": 0,
-    //         "name": "NVIDIA 4090 GPU",
-    //         "category": "gpu",
-    //         "brandName": "Nvidia",
-    //         "series": "4090",
-    //         "price": 1000,
-    //         "description": "<p>dami xa</p>",
-    //         "published_date": "2025-02-24"
-    //     },
-    //     {
-    //         "product_id": "f5ce1f7-4622-4b78-98f1-97497656e439",
-    //         "comments": [],
-    //         "images": [
-    //             {
-    //                 "image": "http://127.0.0.1:8000/media/shop/images/IMG-20240823-WA0006.jpg"
-    //             }
-    //         ],
-    //         "rating": 0,
-    //         "name": "NVIDIA 4090 GPU",
-    //         "category": "gpu",
-    //         "brandName": "Nvidia",
-    //         "series": "4090",
-    //         "price": 1000,
-    //         "description": "<p>dami xa</p>",
-    //         "published_date": "2025-02-24"
-    //     },
-    //     {
-    //         "product_id": "f5ce01f7-4622-4b78-98f1-9749656e439",
-    //         "comments": [],
-    //         "images": [
-    //             {
-    //                 "image": "http://127.0.0.1:8000/media/shop/images/IMG-20240823-WA0006.jpg"
-    //             }
-    //         ],
-    //         "rating": 0,
-    //         "name": "NVIDIA 4090 GPU",
-    //         "category": "gpu",
-    //         "brandName": "Nvidia",
-    //         "series": "4090",
-    //         "price": 1000,
-    //         "description": "<p>dami xa</p>",
-    //         "published_date": "2025-02-24"
-    //     },
-    //     {
-    //         "product_id": "f5ce01f7-4622-4b78-98f1-97497656e9",
-    //         "comments": [],
-    //         "images": [
-    //             {
-    //                 "image": "http://127.0.0.1:8000/media/shop/images/IMG-20240823-WA0006.jpg"
-    //             }
-    //         ],
-    //         "rating": 0,
-    //         "name": "NVIDIA 4090 GPU",
-    //         "category": "gpu",
-    //         "brandName": "Nvidia",
-    //         "series": "4090",
-    //         "price": 1000,
-    //         "description": "<p>dami xa</p>",
-    //         "published_date": "2025-02-24"
-    //     }
-    // ]
+export default function ProductGrid({ products, isLoading }) {
+    const [isCartOpen,setIsCartOpen] = useState(false);
+    const dispatch = useDispatch();
+    const isLoggedIn = useSelector((state) => state.access.isAuthenticated);
+
+    const handleAddToCart = (product) => {
+        // Dispatch the addToCart action with product details.
+        setIsCartOpen(true)
+        dispatch(addToCart({"product_id": product.product_id, "price": product.price, "image": product.images[0]?.image, "name": product.name}));
+        if (isLoggedIn){
+        dispatch(sendCartToServer({"product_id": product.product_id, "price": product.price, "image": product.images[0]?.image, "name": product.name}));
+        }
+
+      };
+    
+    if (isLoading) {
+        return (
+          <div className="flex justify-center items-center h-[calc(100vh-200px)]">
+            <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
+          </div>
+        )
+      }
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
       {products?.map((product) => (
         <motion.div
           key={product.product_id}
@@ -120,7 +43,7 @@ export default function ProductGrid({products}) {
           whileHover={{ y: -5 }}
           transition={{ duration: 0.3 }}
         >
-           <div className="relative h-48 overflow-hidden">
+          <div className="relative h-40 sm:h-48 overflow-hidden">
             <Image
               src={product.images[0]?.image || "/placeholder.svg"}
               alt={product.name}
@@ -128,26 +51,33 @@ export default function ProductGrid({products}) {
               style={{ objectFit: "cover" }}
               className="transition-transform duration-300 hover:scale-110"
             />
-            <Badge className="absolute top-2 right-2 font-bold bg-red-800">{product.category?.toLocaleUpperCase()}</Badge>
+            <Badge className="absolute top-2 right-2 font-bold bg-red-800">
+              {product.category?.toLocaleUpperCase()}
+            </Badge>
           </div>
-          <div className="p-4">
-            <h3 className="text-lg font-semibold mb-2 text-white">{product.name}</h3>
+          <div className="p-3 sm:p-4">
+            <h3 className="text-base sm:text-lg font-semibold mb-2 text-white truncate">{product.name}</h3>
             <div className="flex items-center mb-2">
-              <Star className="text-yellow-400 mr-1 h-4 w-4" />
-              <span className="text-sm text-gray-300">{product.rating.toFixed(1)}</span>
+              <Star className="text-yellow-400 mr-1 h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="text-xs sm:text-sm text-gray-300">{product.rating.toFixed(1)}</span>
             </div>
-            <p className="text-xl font-bold mb-4 text-green-400">${product.price.toFixed(2)}</p>
+            <p className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-green-400">${product.price.toFixed(2)}</p>
             <div className="flex justify-between items-center">
-              <Button variant="outline" size="sm" className=" text-white border-black bg-gradient-to-r from-black via-gray-600 to-black hover:bg-gradient-to-r hover:from-gray-400 hover:via-black hover:to-gray-400 hover:text-white">
-                <Eye className="mr-2 h-4 w-4" /> View
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-xs sm:text-sm text-white border-black bg-gradient-to-r from-black via-gray-600 to-black hover:bg-gradient-to-r hover:from-gray-400 hover:via-black hover:to-gray-400 hover:text-white"
+              >
+                <Eye className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> View
               </Button>
-              <Button size="sm" className="bg-green-800 hover:bg-green-700 text-white">
-                <ShoppingCart className="mr-2 h-4 w-4" /> Add
+              <Button size="sm"  onClick={()=>handleAddToCart(product)} className="text-xs sm:text-sm bg-green-800 hover:bg-green-700 text-white">
+                <ShoppingCart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Add
               </Button>
             </div>
           </div>
         </motion.div>
       ))}
     </div>
-  );
+  )
 }
+

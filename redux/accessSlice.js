@@ -1,8 +1,9 @@
 // redux/accessSlice.js
 import { createSlice } from '@reduxjs/toolkit';
+import Cookies from 'js-cookie';
 
 const initialState = {
-  isAuthenticated: false,
+  isAuthenticated: Cookies.get('isAuthenticated') === 'true',
 };
 
 const accessSlice = createSlice({
@@ -11,9 +12,11 @@ const accessSlice = createSlice({
   reducers: {
     login: (state) => {
       state.isAuthenticated = true;
+      Cookies.set('isAuthenticated', true);
     },
     logout: (state) => {
       state.isAuthenticated = false;
+      Cookies.remove('isAuthenticated');
     },
   },
 });
