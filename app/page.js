@@ -51,7 +51,7 @@ export default function Home() {
               width={600}
               className="transition-transform duration-300 group-hover:scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/70 to-blue-600/70 opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-300/70 to-blue-300/70 opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
             <div className="absolute bottom-0 left-0 p-6 text-white z-10">
               <Gpu className="w-12 h-12 mb-4" />
               <h3 className="text-3xl font-bold mb-2">GPUs</h3>
@@ -91,7 +91,7 @@ export default function Home() {
               width={600}
               className="transition-transform duration-300 group-hover:scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-red-600/70 to-orange-600/70 opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-red-500/70 to-orange-500/70 opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
             <div className="absolute bottom-0 left-0 p-6 text-white z-10">
               <Cpu className="w-10 h-10 mb-3" />
               <h3 className="text-2xl font-bold mb-1">Processors</h3>

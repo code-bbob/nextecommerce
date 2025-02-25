@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { updateQuantity, removeFromCart } from '@/redux/cartSlice';
 import { updateCartItemOnServer, removeCartItemOnServer } from '@/redux/cartSlice';
 import { getLocalCart,setLocalCart } from "@/utils/localCart";
+import { toast, Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+
 
 export default function CartSidebar({ isOpen, onClose }) {
   const dispatch = useDispatch();
@@ -15,6 +18,19 @@ export default function CartSidebar({ isOpen, onClose }) {
   const isLoggedIn = useSelector((state) => state.access.isAuthenticated);
   const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const sidebarRef = useRef(null);
+  const router = useRouter();
+
+  const handleCheckout=()=>{
+    if (isLoggedIn){
+      // Redirect to the checkout page
+      router.push("/checkout");
+    } else {
+      //toast you need to be logged in to continue
+      toast.error("You need to be logged in to continue");
+      // Redirect to the login page
+      router.push("/auth/login");
+    }
+  }
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -71,6 +87,7 @@ export default function CartSidebar({ isOpen, onClose }) {
 
   return (
     <>
+      <Toaster position="top-center" reverseOrder={false}/>
       {isOpen && <div className="fixed bg-black bg-opacity-50 z-40" onClick={onClose}></div>}
 
       <div
@@ -148,7 +165,7 @@ export default function CartSidebar({ isOpen, onClose }) {
             <span className="text-gray-300">Shipping</span>
             <span className="text-gray-400">Calculated at Checkout</span>
           </div>
-          <Button variant="default" className="w-full mt-4 bg-gray-200 text-black hover:bg-gray-300 font-semibold">
+          <Button variant="default" onClick = {()=>handleCheckout()} className="w-full mt-4 bg-gray-200 text-black hover:bg-gray-300 font-semibold">
             Proceed to Checkout
           </Button>
         </div>

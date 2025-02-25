@@ -17,6 +17,8 @@ const accessSlice = createSlice({
     logout: (state) => {
       state.isAuthenticated = false;
       Cookies.remove('isAuthenticated');
+      Cookies.remove('accessToken');
+      Cookies.remove('refreshToken');
     },
   },
 });

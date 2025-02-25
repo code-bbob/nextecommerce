@@ -1,21 +1,39 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { useSelector } from "react-redux";
 import { ShoppingCart } from "lucide-react";
-import CartSidebar from "@/components/cartSidebar"; 
+import CartSidebar from "@/components/cartSidebar";
+import { useDispatch } from "react-redux"; 
+import { logout } from "@/redux/accessSlice";
+import Image from "next/image";
+
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const router = useRouter();
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.access.isAuthenticated)
+  const [hasHydrated, setHasHydrated] = useState(false);
+
+  useEffect(() => {
+    setHasHydrated(true);
+  }, []);
+
   
 
   const cartItems = useSelector((state) => state.cart.items);
   const itemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  const handleLogout = () => {
+    
+    dispatch(logout());
+    router.push("/auth/login");
+  }
 
   const handleOpenCart = () => {
     setIsCartOpen(true);
@@ -34,15 +52,12 @@ export default function NavBar() {
     <header className="shadow-md py-4 px-6 ">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center">
-          <div className="w-10 h-10 mr-3 bg-green-500 rounded-md"></div>
+          <Image src="/images/digi.png" alt="logo" width={100} height={50}></Image>
           <div className="text-2xl font-bold text-white cursor-pointer">
-            <Link href="/">
-              <div>TechStore</div>
-            </Link>
           </div>
         </div>
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-6">
+        <nav className="hidden md:flex font-bold items-center space-x-6">
         <form onSubmit={handleSearch} className="relative">
             <input
               type="text"
@@ -64,19 +79,22 @@ export default function NavBar() {
           <Link href="/about">
             <div className="text-gray-200 hover:text-white cursor-pointer">About Us</div>
           </Link>
-          <Link href="/contact">
-            <div className="text-gray-200 hover:text-white cursor-pointer">Contact</div>
-          </Link>
+          
           <Link href="/account">
             <div className="text-gray-200 hover:text-white cursor-pointer">My Account</div>
           </Link>
+          {hasHydrated && isLoggedIn &&
+          <div onClick={() => handleLogout()}>
+            <div className="text-gray-200 hover:text-white cursor-pointer">Logout</div>
+          </div>
+          }
 
           <button
         onClick={handleOpenCart}
         className="relative flex items-center justify-center"
         aria-label="Open Cart"
       >
-        <ShoppingCart className="h-6 w-6" />
+        <ShoppingCart className="h-6 w-6 hover:text-white" />
         {itemCount > 0 && (
           <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1">
             {itemCount}

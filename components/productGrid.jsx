@@ -10,13 +10,18 @@ import { useState } from "react"
 import { addToCart, sendCartToServer } from '@/redux/cartSlice'
 import CartSidebar from "@/components/cartSidebar"
 import { getLocalCart, setLocalCart } from "@/utils/localCart"
+import { useRouter } from "next/navigation"
 
 export default function ProductGrid({ products, isLoading }) {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const dispatch = useDispatch()
   const isLoggedIn = useSelector((state) => state.access.isAuthenticated)
+  const router = useRouter()
+  console.log(products)
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (e,product) => {
+    e.stopPropagation()
+    e.preventDefault()
     setIsCartOpen(true)
     
     const cartItem = {
@@ -64,6 +69,7 @@ export default function ProductGrid({ products, isLoading }) {
           className="bg-gradient-to-br from-black via-gray-800 to-black backdrop-blur-md rounded-lg overflow-hidden shadow-lg"
           whileHover={{ y: -5 }}
           transition={{ duration: 0.3 }}
+          onClick={() => router.push(`/product/${product.product_id}`)}
         >
           <div className="relative h-40 sm:h-48 overflow-hidden">
             <Image
@@ -84,7 +90,7 @@ export default function ProductGrid({ products, isLoading }) {
             <div className="flex items-center mb-2">
               <Star className="text-yellow-400 mr-1 h-3 w-3 sm:h-4 sm:w-4" />
               <span className="text-xs sm:text-sm text-gray-300">
-                {product.rating.toFixed(1)}
+                {product.ratings.stats.avg_rating.toFixed(1)}
               </span>
             </div>
             <p className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-green-400">
@@ -94,13 +100,13 @@ export default function ProductGrid({ products, isLoading }) {
               <Button
                 variant="outline"
                 size="sm"
-                className="text-xs sm:text-sm text-white border-black bg-gradient-to-r from-black via-gray-600 to-black hover:bg-gradient-to-r hover:from-gray-400 hover:via-black hover:to-gray-400 hover:text-white"
+                className="text-xs sm:text-sm text-white border-black bg-black hover:font-bold"
               >
                 <Eye className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> View
               </Button>
               <Button
                 size="sm"
-                onClick={() => handleAddToCart(product)}
+                onClick={(e) => handleAddToCart(e,product)}
                 className="text-xs sm:text-sm bg-green-800 hover:bg-green-700 text-white"
               >
                 <ShoppingCart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Add
