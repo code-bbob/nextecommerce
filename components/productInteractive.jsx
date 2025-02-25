@@ -13,7 +13,6 @@ import customFetch from "@/utils/customFetch";
 
 
 export default function ProductInteractive({ product }) {
-    console.log(product)
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(
     product.images[0]?.image || "/placeholder.svg"

@@ -15,7 +15,6 @@ export default async function ProductPage({ params }) {
     notFound();
   }
   product = await res.json();
-  console.log(product)
   if (!product) {
     notFound();
   }

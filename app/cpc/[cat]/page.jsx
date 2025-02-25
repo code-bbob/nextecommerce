@@ -21,12 +21,13 @@ export default function CatPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        let apiUrl = `shop/api/catsearch/${category}`
+        let apiUrl = `shop/api/catsearch/${category}/`
         if (ordering) {
           apiUrl += `?ordering=${ordering}`
         }
         const res = await customFetch(apiUrl)
         const newProducts = await res.json()
+        console.log(newProducts)
         setProducts(newProducts)
       } catch (err) {
         console.error(err)

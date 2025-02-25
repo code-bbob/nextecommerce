@@ -17,7 +17,6 @@ export default function ProductGrid({ products, isLoading }) {
   const dispatch = useDispatch()
   const isLoggedIn = useSelector((state) => state.access.isAuthenticated)
   const router = useRouter()
-  console.log(products)
 
   const handleAddToCart = (e,product) => {
     e.stopPropagation()
