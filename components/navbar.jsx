@@ -76,8 +76,8 @@ export default function NavBar() {
           <Link href="/store">
             <div className="text-gray-200 hover:text-white cursor-pointer">Store</div>
           </Link>
-          <Link href="/about">
-            <div className="text-gray-200 hover:text-white cursor-pointer">About Us</div>
+          <Link href="/cpc">
+            <div className="text-gray-200 hover:text-white cursor-pointer">Custom PC</div>
           </Link>
           
           <Link href="/account">
@@ -167,26 +167,32 @@ export default function NavBar() {
                 </Link>
               </li>
               <li>
+                <Link href="/cpc">
+                  <div className="block text-gray-200 hover:text-white cursor-pointer">Custom PC</div>
+                </Link>
+              </li>
+              <li>
                 <Link href="/about">
                   <div className="block text-gray-200 hover:text-white cursor-pointer">About Us</div>
                 </Link>
               </li>
-              <li>
-                <Link href="/contact">
-                  <div className="block text-gray-200 hover:text-white cursor-pointer">Contact</div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/account">
-                  <div className="block text-gray-200 hover:text-white cursor-pointer">My Account</div>
-                </Link>
-              </li>
-              <li>
-                <div className="text-gray-200">$0.00</div>
-              </li>
-              
             </ul>
-          </div>
+          
+          <button
+        onClick={handleOpenCart}
+        className="relative mt-3 items-center justify-center"
+        aria-label="Open Cart"
+      >
+        <ShoppingCart className="h-6 w-6 text-white" />
+        {itemCount > 0 && (
+          <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1">
+            {itemCount}
+          </span>
+        )}
+      </button>
+      </div>
+      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+
         </nav>
       )}
     </header>

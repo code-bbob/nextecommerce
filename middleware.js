@@ -6,7 +6,7 @@ export function middleware(req) {
   const { pathname } = req.nextUrl;
 
   // Define your protected routes. Here "/" is included.
-  const protectedRoutes = ['/', '/repair', '/search'];
+  const protectedRoutes = ['/checkout', '/repair', '/search'];
 
   // If the current pathname is protected and there's no token, redirect to login
   if (protectedRoutes.includes(pathname) && !token) {

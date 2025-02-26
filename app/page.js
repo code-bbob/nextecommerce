@@ -1,159 +1,234 @@
-import Image from "next/image";
-import Link from "next/link";
-import NavBar from "@/components/navbar";
-import { Cpu, HardDrive, CpuIcon as Gpu, Server, Database, Wind, Box, Zap } from "lucide-react"
-import Footer from "@/components/footer";
+"use client"
 
-export default function Home() {
+import { Suspense, useState, useEffect } from "react"
+import NavBar from "@/components/navbar"
+import ProductGrid from "@/components/productGrid"
+import FilterSidebar from "@/components/filterSidebar"
+import customFetch from "@/utils/customFetch"
+import Footer from "@/components/footer"
+import { useParams, useSearchParams, useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Filter, ChevronLeft, ChevronRight } from "lucide-react"
+import { X } from "lucide-react"
+
+export default function Page() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  
+  // Get the current page from URL or default to 1
+  const currentPage = parseInt(searchParams.get('page') || '1', 10)
+  
+  const [products, setProducts] = useState([]);
+  const [ordering, setOrdering] = useState("");
+  const [rating, setRating] = useState("");
+  const [minRating, setMinRating] = useState("")
+  const [minPrice, setMinPrice] = useState("")
+  const [maxPrice, setMaxPrice] = useState("")
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [pagination, setPagination] = useState({
+    count: 0,
+    total_pages: 1,
+    current_page: 1,
+    next: null,
+    previous: null
+  })
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true)
+        
+        // Build the query parameters
+        const queryParams = new URLSearchParams()
+        console.log(queryParams.toString())
+        if (ordering) {
+          queryParams.append('ordering', ordering)
+        }
+        if (rating) {
+          queryParams.append('ordering', rating)
+          console.log(queryParams.toString())
+        }
+        if (minRating) {
+          queryParams.append('min_rating', minRating)
+        }
+        if (minPrice) {
+          queryParams.append('min_price', minPrice)
+        }
+        if (maxPrice) {
+          queryParams.append('max_price', maxPrice)
+        }
+
+        // Add page parameter
+        queryParams.append('page', currentPage.toString())
+        
+        // Create the API URL
+        const apiUrl = `shop/api/?${queryParams.toString()}`
+        
+        const res = await customFetch(apiUrl)
+        const data = await res.json()
+        
+        if (data.results) {
+          setProducts(data.results)
+          setPagination({
+            count: data.count,
+            total_pages: data.total_pages,
+            current_page: data.current_page,
+            next: data.links.next,
+            previous: data.links.previous
+          })
+        } else {
+          setProducts(data)
+        }
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchProducts()
+  }, [ordering, rating,minRating, currentPage, minPrice, maxPrice])
+
+  const handlePageChange = (newPage) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('page', newPage.toString())
+    const currentPath = window.location.pathname
+    router.push(`${currentPath}?${params.toString()}`)
+  }
+
+  const getPageNumbers = () => {
+    const totalPages = pagination.total_pages
+    const currentPage = pagination.current_page
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1)
+    }
+    const pages = [1]
+    if (currentPage > 3) {
+      pages.push('...')
+    }
+    const start = Math.max(2, currentPage - 1)
+    const end = Math.min(totalPages - 1, currentPage + 1)
+    for (let i = start; i <= end; i++) {
+      pages.push(i)
+    }
+    if (currentPage < totalPages - 2) {
+      pages.push('...')
+    }
+    if (totalPages > 1) {
+      pages.push(totalPages)
+    }
+    return pages
+  }
+
   return (
-    <div className="bg-gradient-to-br from-black via-gray-600 to-white font-sans">
-      
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-black via-gray-600 to-black font-sans">
       <NavBar />
-      <div className="md:h-screen pt-4 flex grow flex-col gap-4 md:flex-row">
-        <div className="text-center text-white mt-5 md:mt-20 px-4">
-          <h2 className="text-3xl font-bold mb-4">Best Quality PCS</h2>
-          <h1 className="text-4xl font-extrabold mb-6">
-            Build your dream PC at home starting just Rs. 50000
-          </h1>
-          <h2 className="text-3xl font-bold mb-4">Only @CompanyName </h2>
-          <h2 className="text-3xl font-bold mb-4">Choose from the best of the best </h2>
-          <h2 className="text-3xl font-bold mb-4">Regardless of your budget </h2>
-          <Link href="/#shop">
-          <button className="bg-red-500 mb-4 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-full">
-            SHOP NOW
-          </button>
-          </Link>
+      <div className="flex-grow flex md:flex-row flex-col">
+        {/* Desktop Sidebar */}
+        <aside className="hidden md:block md:w-64">
+          <div className="sticky top-0 h-screen overflow-y-auto">
+            <Suspense fallback={<div className="text-white p-4">Loading filters...</div>}>
+              <FilterSidebar
+                setOrdering={setOrdering}
+                setRating={setRating}
+                setMinRating={setMinRating}
+                setMinPrice={setMinPrice}
+                setMaxPrice={setMaxPrice}
+                isSidebarOpen={isSidebarOpen}
+                setIsSidebarOpen={setIsSidebarOpen}
 
-        </div>
-        <div className="flex items-center justify-center p-6 md:w-4/5 md:px-28 md:py-12">
-          <Image
-            src="/images/pc.png"
-            width={800}
-            height={800}
-            alt="Screenshots of the dashboard project showing desktop version"
-          />
-        </div>
-      </div>
-      <div
-        className="container mx-auto px-4 pt-4 pb-16 bg-gradient-to-br from-black via-gray-600 to-black shadow-lg"
-        id="shop"
-      >
-        <h2 className="text-4xl font-bold pb-5 text-center text-white">Explore Our Categories</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:h-[600px]">
-          <Link
-            href="/cpc/gpu"
-            className="col-span-1 md:col-span-2 lg:col-span-3 lg:row-span-2 group relative overflow-hidden rounded-lg shadow-lg aspect-video md:aspect-auto"
-          >
-            <Image
-              src="/images/gpu.png"
-              alt="GPUs"
-              height={600}
-              width={600}
-              className="transition-transform duration-300 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-300/70 to-blue-300/70 opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-            <div className="absolute bottom-0 left-0 p-6 text-white z-10">
-              <Gpu className="w-12 h-12 mb-4" />
-              <h3 className="text-3xl font-bold mb-2">GPUs</h3>
-              <p className="text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                Elevate your visual experience
-              </p>
-            </div>
-          </Link>
-          <Link
-            href="/cpc/ram"
-            className="col-span-1 md:col-span-2 lg:col-span-3 group relative overflow-hidden rounded-lg shadow-lg aspect-video md:aspect-auto"
-          >
-            <Image
-              src="/images/ram.jpg"
-              alt="RAM"
-              height={600}
-              width={600}
-              className="transition-transform duration-300 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-green-600/70 to-teal-600/70 opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-            <div className="absolute bottom-0 left-0 p-6 text-white z-10">
-              <HardDrive className="w-10 h-10 mb-3" />
-              <h3 className="text-2xl font-bold mb-1">RAM</h3>
-              <p className="text-base opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                Boost your system's speed
-              </p>
-            </div>
-          </Link>
-          <Link
-            href="/cpc/cpu"
-            className="col-span-1 md:col-span-2 lg:col-span-3 group relative overflow-hidden rounded-lg shadow-lg aspect-video md:aspect-auto"
-          >
-            <Image
-              src="/images/cpu.jpg"
-              alt="Processors"
-              height={600}
-              width={600}
-              className="transition-transform duration-300 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-red-500/70 to-orange-500/70 opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-            <div className="absolute bottom-0 left-0 p-6 text-white z-10">
-              <Cpu className="w-10 h-10 mb-3" />
-              <h3 className="text-2xl font-bold mb-1">Processors</h3>
-              <p className="text-base opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                Power up your performance
-              </p>
-            </div>
-          </Link>
-        </div>
-      <div className="container mx-auto px-4 py-8 md:py-16">
-        <div className="overflow-x-auto pb-6">
-          <div className="flex space-x-4 md:space-x-6">
-            {[
-              {
-                name: "Motherboard",
-                icon: Server,
-                color: "from-blue-400/70 to-indigo-400/70",
-                image: "/images/motherboard.jpg",
-              },
-              { name: "SSD", icon: Database, color: "from-green-400/70 to-emerald-400/70", image: "/images/ssd.jpg" },
-              { name: "Cooling", icon: Wind, color: "from-cyan-400/70 to-sky-400/70", image: "/images/cooling.jpg" },
-              { name: "Case", icon: Box, color: "from-gray-400/70 to-slate-400/70", image: "/images/case.jpg" },
-              {
-                name: "Power Supply",
-                icon: Zap,
-                color: "from-yellow-400/70 to-amber-400/70",
-                image: "/images/powersupply.jpg",
-              },
-            ].map((item, index) => (
-              <Link
-                key={index}
-                href={`/cpc/${item.name.toLowerCase().replace(" ", "-")}`}
-                className="group relative w-64 h-80 flex-shrink-0 overflow-hidden rounded-lg shadow-lg"
-              >
-                <Image
-                  src={item.image || "/placeholder.svg"}
-                  alt={item.name}
-                  fill
-                  style={{ objectFit: 'cover' }} 
-                  className="transition-transform duration-300 group-hover:scale-110"
-                />
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-50 transition-opacity duration-300`}
-                ></div>
-                <div className="absolute bottom-0 left-0 p-6 text-white z-10">
-                  <item.icon className="w-10 h-10 mb-3" />
-                  <h3 className="text-2xl font-bold mb-1">{item.name}</h3>
-                  <p className="text-base opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    Explore {item.name}
-                  </p>
-                </div>
-              </Link>
-            ))}
+              />
+            </Suspense>
           </div>
-        </div>
-      </div>
-      </div>
+        </aside>
+        
+        {/* Mobile Sidebar (modal-style) */}
+        {isSidebarOpen && (
+          <div className="md:hidden fixed inset-0 z-50 bg-black/80 p-4 overflow-y-auto">
+            <div className="bg-gradient-to-br from-black via-slate-500 to-black p-4">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-white">Filters</h2>
+                <Button variant="ghost" className="text-white" onClick={() => setIsSidebarOpen(false)}>
+                  <X />
+                </Button>
+              </div>
+              <Suspense fallback={<div className="text-white p-4">Loading filters...</div>}>
+                <FilterSidebar
+                  setOrdering={setOrdering}
+                  setRating={setRating}
+                  setMinRating={setMinRating}
+                  isSidebarOpen={isSidebarOpen}
+                  setIsSidebarOpen={setIsSidebarOpen}
+                />
+              </Suspense>
+            </div>
+          </div>
+        )}
+        <main className="flex-1 p-4 md:p-8">
+          <div className="flex justify-between md:justify-center items-center mb-6">
+            <h1 className="text-2xl md:text-4xl font-extrabold text-white capitalize">
 
-
-      {/* Footer */}
-      <Footer/>
+            </h1>
+            <Button variant="outline" className="md:hidden bg-black text-white" onClick={() => setIsSidebarOpen(true)}>
+              <Filter className="mr-2 h-4 w-4" />
+              Filters
+            </Button>
+          </div>
+          <Suspense fallback={<div className="text-white">Loading products...</div>}>
+            <ProductGrid products={products} isLoading={isLoading} />
+            
+            {/* Pagination controls */}
+            {pagination.total_pages > 1 && (
+              <div className="flex flex-col items-center mt-8 space-y-2">
+                <div className="text-white text-sm">
+                  Page {pagination.current_page} of {pagination.total_pages}
+                </div>
+                
+                <div className="flex space-x-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handlePageChange(pagination.current_page - 1)}
+                    disabled={!pagination.previous}
+                    className="bg-gray-800 text-white hover:bg-gray-700"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  
+                  {getPageNumbers().map((page, index) => (
+                    page === '...' ? (
+                      <span key={`ellipsis-${index}`} className="px-3 py-2 text-white">...</span>
+                    ) : (
+                      <Button
+                        key={`page-${page}`}
+                        variant={page === pagination.current_page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => page !== pagination.current_page && handlePageChange(page)}
+                        className={page === pagination.current_page 
+                          ? "bg-gradient-to-r from-pink-500 to-violet-500 text-white" 
+                          : "bg-gray-800 text-white hover:bg-gray-700"}
+                      >
+                        {page}
+                      </Button>
+                    )
+                  ))}
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handlePageChange(pagination.current_page + 1)}
+                    disabled={!pagination.next}
+                    className="bg-gray-800 text-white hover:bg-gray-700"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </Suspense>
+        </main>
+      </div>
+      <Footer />
     </div>
   )
 }
-

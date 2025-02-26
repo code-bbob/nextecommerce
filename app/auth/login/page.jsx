@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { toast, Toaster } from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 import customFetch from "@/utils/customFetch";
+import Image from 'next/image';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -86,28 +87,28 @@ const Login = () => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 p-4">
+    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-500 to-slate-800 p-4">
       <Toaster position="top-center" reverseOrder={false} />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl shadow-2xl overflow-hidden"
+        className="w-full max-w-md bg-gradient-to-b from-black via-gray-500 to-black rounded-2xl shadow-2xl overflow-hidden"
       >
         <div className="p-6">
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center"
+            className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
           >
-            <Lock className="w-10 h-10 text-white" />
+          <Image src="/images/digi.png" alt="Logo" width={64} height={64} />
           </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
-            className="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-blue-400 to-indigo-400 text-transparent bg-clip-text"
+            className="text-2xl font-bold mb-4 text-center bg-white text-transparent bg-clip-text"
           >
             Welcome Back
           </motion.h2>
@@ -124,7 +125,7 @@ const Login = () => {
                 placeholder="Email Address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
+                className="pl-10 bg-white border-slate-600 text-black placeholder-slate-400"
                 required
               />
             </motion.div>
@@ -140,7 +141,7 @@ const Login = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 pr-10 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
+                className="pl-10 pr-10 bg-white border-slate-600 text-black placeholder-slate-400"
                 required
               />
               <button
@@ -161,7 +162,7 @@ const Login = () => {
                 <input type="checkbox" className="form-checkbox text-blue-500" />
                 <span className="text-sm text-slate-300">Remember me</span>
               </label>
-              <Link href="/auth/forgot-password" className="text-sm text-blue-400 hover:text-blue-300 transition-colors">
+              <Link href="/auth/forgot-password" className="text-sm text-white hover:text-blue-300 transition-colors">
                 Forgot Password?
               </Link>
             </motion.div>
@@ -180,7 +181,7 @@ const Login = () => {
               transition={{ delay: 0.7, duration: 0.5 }}
             >
               <Button
-                className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+                className="w-full bg-black hover:bg-black text-white font-semibold py-3 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900"
                 type="submit"
                 disabled={isLoading}
               >
@@ -199,7 +200,7 @@ const Login = () => {
                 <div className="w-full border-t border-gray-600"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-slate-900 text-slate-400">Or continue with</span>
+                <span className="px-2 text-white">Or continue with</span>
               </div>
             </div>
             <div className="mt-4">
@@ -221,7 +222,7 @@ const Login = () => {
         >
           <p className="text-sm pb-4 text-slate-400">
             Don't have an account?{" "}
-            <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300 transition-colors">
+            <Link href="/auth/signup" className="text-white hover:text-blue-300 transition-colors">
               Sign Up
             </Link>
           </p>

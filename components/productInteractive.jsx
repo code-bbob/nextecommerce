@@ -263,11 +263,13 @@ const [modalImage, setModalImage] = useState(null);
                   className="bg-black/30 rounded-lg p-4 space-y-2"
                 >
                   <div className="flex items-center space-x-2">
-                    <Avatar>
+                    {!rate.user_dp&&<Avatar>
                       <AvatarFallback className="bg-black">
                         {rate.user[0].toUpperCase()}
                       </AvatarFallback>
-                    </Avatar>
+                    </Avatar>}
+                    {rate.user_dp&&<Image src={rate.user_dp} alt="User avatar" width={32} height={32} className="rounded-full" />}
+                    
                     <div className="flex flex-col">
                       <span className="font-medium text-white">
                         {rate.user}
@@ -342,11 +344,12 @@ const [modalImage, setModalImage] = useState(null);
                     className="bg-black/30 rounded-lg p-4 space-y-4"
                   >
                     <div className="flex items-start space-x-4">
-                      <Avatar>
-                        <AvatarFallback className="bg-black">
-                          {comment.user[0].toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
+                    {!comment.user_dp &&<Avatar>
+                              <AvatarFallback className="bg-black">
+                                {comment.user[0].toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>}
+                            {comment.user_dp&&<Image src={comment.user_dp} alt="User" width={32} height={32} className="rounded-full" />}
                       <div className="flex-1 space-y-1">
                         <p className="font-medium text-white">
                           {comment.user}
@@ -364,11 +367,12 @@ const [modalImage, setModalImage] = useState(null);
                             key={index}
                             className="flex items-start space-x-4"
                           >
-                            <Avatar>
+                            {!reply.user_dp &&<Avatar>
                               <AvatarFallback className="bg-black">
                                 {reply.user[0].toUpperCase()}
                               </AvatarFallback>
-                            </Avatar>
+                            </Avatar>}
+                            {reply.user_dp&&<Image src={reply.user_dp} alt="User" width={32} height={32} className="rounded-full" />}
                             <div className="flex-1 space-y-1">
                               <p className="font-medium text-white">
                                 {reply.user}
