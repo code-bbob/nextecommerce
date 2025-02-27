@@ -6,7 +6,7 @@ import { Sliders, X } from "lucide-react"
 import { Slider } from "@/components/ui/slider"
 import { useState } from "react"
 
-export default function FilterSidebar({ category, setOrdering, setRating,setMinRating,setMinPrice,setMaxPrice, isSidebarOpen, setIsSidebarOpen }) {
+export default function FilterSidebar({ category, setOrdering, setRating,setMinRating,setMinPrice,setMaxPrice,setBrandName, isSidebarOpen, setIsSidebarOpen }) {
   const handleOrderChange = (value) => {
     setOrdering(value)
   }
@@ -27,12 +27,18 @@ export default function FilterSidebar({ category, setOrdering, setRating,setMinR
   const [tempMinRating, setTempMinRating] = useState(0);
   const [tempMinPrice, setTempMinPrice] = useState('');
   const [tempMaxPrice, setTempMaxPrice] = useState('');
+  const [tempBrandName, setTempBrandName] = useState('');
 
   const applyFilters = () => {
     setMinRating(tempMinRating);
     setMinPrice(Number(tempMinPrice));
     setMaxPrice(Number(tempMaxPrice));
   };
+
+  const handleBrandFilter = (e,brandName) => {
+    e.preventDefault();
+    setBrandName(brandName);
+  } 
 
 
   return (
@@ -99,6 +105,23 @@ export default function FilterSidebar({ category, setOrdering, setRating,setMinR
       <Button  className="w-full mt-4" onClick={applyFilters}>
         Apply Price Filters
       </Button>
+      
+
+      <h3 className="text-yellow-500 font-semibold mb-2">Brand Name</h3>
+      <form onSubmit={(e)=>handleBrandFilter(e,tempBrandName)}>
+        <input
+          type="text"
+          value={tempBrandName}
+          placeholder="Search by brand..."
+          className="w-full rounded-md border border-white/20 bg-stone-600 text-white px-2 py-1"
+          onChange={(e) => setTempBrandName(e.target.value)}
+        />
+
+      <Button type="submit"className="w-full mt-4">
+        Apply Brand Filter
+      </Button>
+      </form>
+
     </div>
       
   )

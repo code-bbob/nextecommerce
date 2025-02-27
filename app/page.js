@@ -26,6 +26,7 @@ export default function Page() {
   const [maxPrice, setMaxPrice] = useState("")
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [brandName, setBrandName] = useState("")
   const [pagination, setPagination] = useState({
     count: 0,
     total_pages: 1,
@@ -58,6 +59,9 @@ export default function Page() {
         if (maxPrice) {
           queryParams.append('max_price', maxPrice)
         }
+        if (brandName) {
+          queryParams.append('brand', brandName)
+        }
 
         // Add page parameter
         queryParams.append('page', currentPage.toString())
@@ -87,7 +91,7 @@ export default function Page() {
       }
     }
     fetchProducts()
-  }, [ordering, rating,minRating, currentPage, minPrice, maxPrice])
+  }, [ordering, rating,minRating, currentPage, minPrice, maxPrice,brandName])
 
   const handlePageChange = (newPage) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -134,6 +138,7 @@ export default function Page() {
                 setMinRating={setMinRating}
                 setMinPrice={setMinPrice}
                 setMaxPrice={setMaxPrice}
+                setBrandName={setBrandName}
                 isSidebarOpen={isSidebarOpen}
                 setIsSidebarOpen={setIsSidebarOpen}
 

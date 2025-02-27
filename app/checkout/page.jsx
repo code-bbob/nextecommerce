@@ -62,12 +62,6 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <div
-        onClick={() => router.push("/")}
-        className="hidden absolute lg:block text-white mt-8 pl-3"
-      >
-        <Image src="/images/digi.png" alt="logo" width={50} height={30} />
-      </div>
       <div className="container mx-auto px-4 py-8">
         {/* Wrap the whole page in a form */}
 
@@ -83,6 +77,7 @@ export default function CheckoutPage() {
           <div className="flex-1 space-y-8">
             <nav className="text-sm mb-8">
               <ol className="flex items-center space-x-2">
+              <Image src="/images/digi.png" alt="logo" width={50} height={30} />
                 <li className="text-white">Information</li>
                 <li>›</li>
                 <li className="text-gray-500">Shipping</li>

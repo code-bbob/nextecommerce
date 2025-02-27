@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-br from-black via-gray-600 to-black text-white py-8 md:py-12 px-4 md:px-6">
+    <footer className="bg-gradient-to-br from-black via-gray-600 to-black text-white py-8 md:py-4 px-4 md:px-6">
         <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0 text-center md:text-left">
             <h3 className="text-xl md:text-2xl font-bold mb-1">Bibhab Basnet</h3>

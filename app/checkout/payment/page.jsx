@@ -36,6 +36,7 @@ export default function PaymentPage() {
           <div className="flex-1 space-y-8">
             <nav className="text-sm mb-8">
               <ol className="flex items-center space-x-2">
+              <Image src="/images/digi.png" alt="logo" width={50} height={30} />
                 <li>
                   <Link
                     href="/checkout"
@@ -94,8 +95,8 @@ export default function PaymentPage() {
                   <span className="text-gray-400">Shipping method</span>
                   <p className="text-sm mt-1">
                     {checkout.shippingMethod === "economy"
-                      ? "Economy · $4.90"
-                      : "Standard · $6.90"}
+                      ? "Economy · Rs. 4.90"
+                      : "Standard · Rs. 6.90"}
                   </p>
                 </div>
                 <Link

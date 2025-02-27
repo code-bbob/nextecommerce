@@ -61,6 +61,7 @@ export default function ShippingPage() {
           <div className="flex-1 space-y-8">
             <nav className="text-sm mb-8">
               <ol className="flex items-center space-x-2">
+              <Image src="/images/digi.png" alt="logo" width={50} height={30} />
                 <li>
                   <Link
                     href="/checkout"
@@ -139,7 +140,7 @@ export default function ShippingPage() {
                         </div>
                       </Label>
                     </div>
-                    <span>${method.price.toFixed(2)}</span>
+                    <span>RS. {method.price.toFixed(2)}</span>
                   </div>
                 ))}
               </RadioGroup>

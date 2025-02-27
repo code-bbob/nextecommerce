@@ -4,7 +4,7 @@ import ProductInteractive from "@/components/productInteractive";
 import { notFound } from "next/navigation";
 
 export default async function ProductPage({ params }) {
-  const { id } = params;
+  const { id } = await params;
   const backendUrl = `http://127.0.0.1:8000/shop/api/${id}/`;
   let product = {};
   

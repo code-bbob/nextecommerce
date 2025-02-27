@@ -92,28 +92,87 @@ export default function ProductGrid({ products, isLoading }) {
                 {product.ratings.stats.avg_rating.toFixed(1)}
               </span>
             </div>
-            <p className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-green-400">
-              ${product.price.toFixed(2)}
+            <p className="text-lg sm:text-lg font-bold mb-3 sm:mb-4 text-green-400">
+              RS. {product.price.toFixed(2)}
             </p>
-            <div className="flex justify-between items-center">
-              <Button
+            <div className="flex justify-center items-center">
+              {/* <Button
                 variant="outline"
                 size="sm"
-                className="text-xs sm:text-sm text-white border-black bg-black hover:font-bold"
+                className="text-xs sm:text-xs text-white border-black bg-black hover:font-bold"
               >
-                <Eye className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> View
-              </Button>
+                <Eye className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />View
+              </Button> */}
+              {/* <div></div> */}
               <Button
                 size="sm"
                 onClick={(e) => handleAddToCart(e,product)}
-                className="text-xs sm:text-sm bg-green-800 hover:bg-green-700 text-white"
+                className="text-xs sm:text-sm bg-red-800 hover:bg-red-600 text-white"
               >
-                <ShoppingCart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Add
+                <ShoppingCart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Add to cart
               </Button>
             </div>
           </div>
         </motion.div>
       ))}
+            {products?.map((product) => (
+        <motion.div
+          key={product.product_id}
+          className="bg-gradient-to-br from-black via-gray-800 to-black backdrop-blur-md rounded-lg overflow-hidden shadow-lg"
+          whileHover={{ y: -5 }}
+          transition={{ duration: 0.3 }}
+          onClick={() => router.push(`/product/${product.product_id}`)}
+        >
+          <div className="relative h-40 sm:h-48 overflow-hidden">
+            <Image
+              src={product.images[0]?.image || "/placeholder.svg"}
+              alt={product.name}
+              fill
+              style={{ objectFit: "cover" }}
+              className="transition-transform duration-300 hover:scale-110"
+            />
+            <Badge className="absolute top-2 right-2 font-bold bg-red-800">
+              {product.category?.toLocaleUpperCase()}
+            </Badge>
+          </div>
+          <div className="p-3 sm:p-4">
+            <h3 className="text-base sm:text-lg font-semibold mb-2 text-white truncate">
+              {product.name}
+            </h3>
+            <div className="flex items-center mb-2">
+              <Star className="text-yellow-400 mr-1 h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="text-xs sm:text-sm text-gray-300">
+                {product.ratings.stats.avg_rating.toFixed(1)}
+              </span>
+            </div>
+            <p className="text-lg sm:text-lg font-bold mb-3 sm:mb-4 text-green-400">
+              RS. {product.price.toFixed(2)}
+            </p>
+            <div className="flex justify-center items-center">
+              {/* <Button
+                variant="outline"
+                size="sm"
+                className="text-xs sm:text-xs text-white border-black bg-black hover:font-bold"
+              >
+                <Eye className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />View
+              </Button> */}
+              {/* <div></div> */}
+              <Button
+                size="sm"
+                onClick={(e) => handleAddToCart(e,product)}
+                className="text-xs sm:text-sm bg-red-800 hover:bg-red-600 text-white"
+              >
+                <ShoppingCart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Add to cart
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+      {products?.length === 0 && (
+        <div className="text-white text-center col-span-2 md:col-span-3 lg:col-span-4">
+          No products found
+        </div>
+      )}  
     </div>
   )
 }
