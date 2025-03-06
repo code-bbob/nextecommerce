@@ -6,6 +6,9 @@ import {
   updatePhone,
   updateNewsOptIn,
   updateShippingAddress,
+  updateFirstName,
+  updateLastName,
+  updateMunicipality
 } from "@/redux/checkoutSlice";
 import { OrderSummary } from "@/components/orderSummary";
 import { Input } from "@/components/ui/input";
@@ -42,7 +45,7 @@ export default function CheckoutPage() {
         lastName: checkout.shippingAddress.lastName,
         address: checkout.shippingAddress.address,
         apartment: checkout.shippingAddress.apartment,
-        municipality: checkout.shippingAddress.municipality || "",
+        municipality: checkout.shippingAddress.municipality,
         city: checkout.shippingAddress.city,
         state: checkout.shippingAddress.state,
         country: checkout.shippingAddress.country,
@@ -55,9 +58,10 @@ export default function CheckoutPage() {
     dispatch(updatePhone(data.phone));
     dispatch(updateNewsOptIn(data.newsOptIn));
     dispatch(updateShippingAddress(data.shippingAddress));
+    
     // Optionally, dispatch phone if you want to store it in Redux as well.
     // Navigate to the next page, for example:
-    router.push("/checkout/shipping");
+    router.replace("/checkout/shipping");
   };
 
   return (

@@ -13,16 +13,35 @@ const initialState = {
     apartment: "",
     city: "",
     state: "",
-    zip: "",
+    municipality: "",
   },
   shippingMethod: "economy",
-  shippingCost: 0
+  shippingCost: 0,
+  paymentMethod: "",
+  paymentAmount: "",
+  paymentStatus: "",
 };
 
 const checkoutSlice = createSlice({
   name: 'checkout',
   initialState,
   reducers: {
+
+    updateFirstName(state, action) {
+      state.shippingAddress.firstName = action.payload;
+    },
+    updateLastName(state, action) {
+      state.shippingAddress.lastName = action.payload;
+    },
+    updatePaymentMethod(state, action) {
+      state.paymentMethod = action.payload;
+    },
+    updatePaymentAmount(state, action) {
+      state.paymentAmount = action.payload;
+    },
+    updateMunicipality(state, action) {
+      state.shippingAddress.municipality = action.payload;
+    },
     
     updateEmail(state, action) {
       state.email = action.payload;
@@ -54,5 +73,5 @@ const checkoutSlice = createSlice({
   }
 });
 
-export const { updateEmail,updatePhone, updateNewsOptIn, updateShippingAddress, updateShippingMethod,updateShippingCost, updateCheckoutData } = checkoutSlice.actions;
+export const { updateFirstName,updateLastName,updatePaymentAmount,updatePaymentMethod,updateMunicipality,updateEmail,updatePhone, updateNewsOptIn, updateShippingAddress, updateShippingMethod,updateShippingCost, updateCheckoutData } = checkoutSlice.actions;
 export default checkoutSlice.reducer;

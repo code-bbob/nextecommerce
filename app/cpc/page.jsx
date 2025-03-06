@@ -4,6 +4,14 @@ import NavBar from "@/components/navbar";
 import { Cpu, HardDrive, CpuIcon as Gpu, Server, Database, Wind, Box, Zap } from "lucide-react"
 import Footer from "@/components/footer";
 
+
+
+export const metadata = {
+  title: 'Best Custom PC in Nepal. Best price Custom PC in Nepal. Cheapest Custom PC in Nepal',
+  description: 'Best Custom PC in Nepal. Best price Custom PC in Nepal. Cheapest Custom PC in Nepal',
+}
+
+
 export default function Home() {
   return (
     <div className="bg-gradient-to-br from-black via-gray-600 to-white font-sans">
@@ -35,7 +43,7 @@ export default function Home() {
         </div>
       </div>
       <div
-        className="container mx-auto px-4 pt-4 pb-16 bg-gradient-to-br from-black via-gray-600 to-black shadow-lg"
+        className=" mx-auto px-4 pt-4 pb-16 bg-gradient-to-br from-black via-gray-600 to-black shadow-lg"
         id="shop"
       >
         <h2 className="text-4xl font-bold pb-5 text-center text-white">Explore Our Categories</h2>

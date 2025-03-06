@@ -6,26 +6,90 @@ import { ChevronLeft, CreditCard } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import { useRouter } from "next/navigation";
+import customFetch from "@/utils/customFetch";
+import { useDispatch } from "react-redux";
+import { fetchCartFromServer } from "@/redux/cartSlice";
+import NavBar from "@/components/navbar";
 
 export default function PaymentPage() {
   const checkout = useSelector((state) => state.checkout);
   const router = useRouter();
+  const cart = useSelector((state) => state.cart.items);
+  const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
+  const shippingCost = useSelector((state) => state.checkout.shippingCost)
+  const total = subtotal + shippingCost
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (!checkout.email || !checkout.shippingAddress.address) {
-      router.push("/checkout");
+      router.replace("/checkout");
     }
   }, [checkout.email, checkout.shippingAddress.address]);
 
+  const handleNext = async () => {
+    setLoading(true);
+    let carts = []
+    cart?.map((item) => {
+      carts.push(item.id)
+    })
+    try{
+    const res = await customFetch(`cart/api/order/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        carts: carts,
+      }),
+    });
+    console.log(res)
+    const response = await res.json();
+    const order_id = response.id;
+    const payload = {
+      "order": order_id,
+      "phone_number": checkout.phone,
+      "first_name" : checkout.shippingAddress.firstName,
+      "last_name" : checkout.shippingAddress.lastName,
+      "email": checkout.email,
+      "shipping_address": checkout.shippingAddress.address,
+      "city": checkout.shippingAddress.city,
+      "municipality": checkout.shippingAddress.municipality,
+      "shipping_method": checkout.shippingMethod,
+      "payment_method": "COD",
+      "payment_amount": subtotal,
+      "shipping_cost": shippingCost,
+    }
+    const res2 = await customFetch(`cart/api/delivery/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    dispatch(fetchCartFromServer());
+    router.replace(`/tracking/${response.id}`);
+  }
+  catch(err){
+    console.log(err)
+  }
+  finally{
+    setLoading(false)
+  }
+}
+
+if (loading){
+    return (
+      <div className="bg-black h-screen">
+        <NavBar/>
+      <div className="flex justify-center items-center h-[calc(100vh-200px)]">
+        <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
+      </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-black text-white">
-      <div
-        onClick={() => router.push("/")}
-        className="hidden lg:block absolute mt-8 text-white pl-3"
-      >
-        <Image src="/images/digi.png" alt="logo" width={50} height={30} />
-      </div>
+      
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="order-first lg:order-last">
@@ -128,8 +192,8 @@ export default function PaymentPage() {
                 <ChevronLeft className="h-4 w-4 mr-1" />
                 Return to shipping
               </Link>
-              <Button disabled className="bg-gray-700 cursor-not-allowed">
-                Pay now
+              <Button disabled={loading} onClick={()=>handleNext()} className="bg-gray-700">
+                Proceed
               </Button>
             </div>
           </div>

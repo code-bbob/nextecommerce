@@ -1,239 +1,221 @@
-"use client"
+"use client";
 
-import { Suspense, useState, useEffect } from "react"
-import NavBar from "@/components/navbar"
-import ProductGrid from "@/components/productGrid"
-import FilterSidebar from "@/components/filterSidebar"
-import customFetch from "@/utils/customFetch"
-import Footer from "@/components/footer"
-import { useParams, useSearchParams, useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Filter, ChevronLeft, ChevronRight } from "lucide-react"
-import { X } from "lucide-react"
+import Image from "next/image";
+import Head from "next/head";
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import NavBar from "@/components/navbar";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+// Sample products with prices and discount labels
+const products = [
+  { id: 1, name: "AI Smart Assistant", img: "/images/featured1.png", price: 199, discount: 25 },
+  { id: 2, name: "Quantum Computing Guide", img: "/images/featured2.png", price: 99, discount: 30 },
+  { id: 3, name: "VR Metaverse Bundle", img: "/images/featured3.png", price: 299, discount: 20 },
+];
 
 export default function Page() {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  
-  // Get the current page from URL or default to 1
-  const currentPage = parseInt(searchParams.get('page') || '1', 10)
-  
-  const [products, setProducts] = useState([]);
-  const [ordering, setOrdering] = useState("");
-  const [rating, setRating] = useState("");
-  const [minRating, setMinRating] = useState("")
-  const [minPrice, setMinPrice] = useState("")
-  const [maxPrice, setMaxPrice] = useState("")
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [brandName, setBrandName] = useState("")
-  const [pagination, setPagination] = useState({
-    count: 0,
-    total_pages: 1,
-    current_page: 1,
-    next: null,
-    previous: null
-  })
+  // Countdown timer for a limited-time offer (expires in 2 days)
+  const calculateTimeLeft = () => {
+    const difference = +new Date("2025-12-31T23:59:59") - +new Date();
+    let timeLeft = {};
+    if (difference > 0) {
+      timeLeft = {
+        Days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        Hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        Minutes: Math.floor((difference / 1000 / 60) % 60),
+        Seconds: Math.floor((difference / 1000) % 60),
+      };
+    }
+    return timeLeft;
+  };
 
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setIsLoading(true)
-        
-        // Build the query parameters
-        const queryParams = new URLSearchParams()
-        console.log(queryParams.toString())
-        if (ordering) {
-          queryParams.append('ordering', ordering)
-        }
-        if (rating) {
-          queryParams.append('ordering', rating)
-          console.log(queryParams.toString())
-        }
-        if (minRating) {
-          queryParams.append('min_rating', minRating)
-        }
-        if (minPrice) {
-          queryParams.append('min_price', minPrice)
-        }
-        if (maxPrice) {
-          queryParams.append('max_price', maxPrice)
-        }
-        if (brandName) {
-          queryParams.append('brand', brandName)
-        }
+    const timer = setTimeout(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+    return () => clearTimeout(timer);
+  });
 
-        // Add page parameter
-        queryParams.append('page', currentPage.toString())
-        
-        // Create the API URL
-        const apiUrl = `shop/api/?${queryParams.toString()}`
-        
-        const res = await customFetch(apiUrl)
-        const data = await res.json()
-        
-        if (data.results) {
-          setProducts(data.results)
-          setPagination({
-            count: data.count,
-            total_pages: data.total_pages,
-            current_page: data.current_page,
-            next: data.links.next,
-            previous: data.links.previous
-          })
-        } else {
-          setProducts(data)
-        }
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    fetchProducts()
-  }, [ordering, rating,minRating, currentPage, minPrice, maxPrice,brandName])
-
-  const handlePageChange = (newPage) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('page', newPage.toString())
-    const currentPath = window.location.pathname
-    router.push(`${currentPath}?${params.toString()}`)
-  }
-
-  const getPageNumbers = () => {
-    const totalPages = pagination.total_pages
-    const currentPage = pagination.current_page
-    if (totalPages <= 5) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1)
-    }
-    const pages = [1]
-    if (currentPage > 3) {
-      pages.push('...')
-    }
-    const start = Math.max(2, currentPage - 1)
-    const end = Math.min(totalPages - 1, currentPage + 1)
-    for (let i = start; i <= end; i++) {
-      pages.push(i)
-    }
-    if (currentPage < totalPages - 2) {
-      pages.push('...')
-    }
-    if (totalPages > 1) {
-      pages.push(totalPages)
-    }
-    return pages
-  }
+  // Helper to display the countdown timer
+  const timerComponents = [];
+  Object.keys(timeLeft).forEach((interval) => {
+    timerComponents.push(
+      <span key={interval} className="mx-1">
+        {timeLeft[interval]} {interval}
+      </span>
+    );
+  });
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-black via-gray-600 to-black font-sans">
-      <NavBar />
-      <div className="flex-grow flex md:flex-row flex-col">
-        {/* Desktop Sidebar */}
-        <aside className="hidden md:block md:w-64">
-          <div className="sticky top-0 h-screen overflow-y-auto">
-            <Suspense fallback={<div className="text-white p-4">Loading filters...</div>}>
-              <FilterSidebar
-                setOrdering={setOrdering}
-                setRating={setRating}
-                setMinRating={setMinRating}
-                setMinPrice={setMinPrice}
-                setMaxPrice={setMaxPrice}
-                setBrandName={setBrandName}
-                isSidebarOpen={isSidebarOpen}
-                setIsSidebarOpen={setIsSidebarOpen}
+    <>
+      <Head>
+        <title>Digitech - Unbeatable Prices for Premium Products</title>
+        <meta name="description" content="Experience the best prices in retail – premium tech products at prices that can’t be beaten. Shop now and save big!" />
+        <meta name="keywords" content="best prices, retail deals, premium tech, unbeatable prices, online shopping" />
+        <link rel="canonical" href="https://www.digitech.com" />
+      </Head>
 
-              />
-            </Suspense>
-          </div>
-        </aside>
-        
-        {/* Mobile Sidebar (modal-style) */}
-        {isSidebarOpen && (
-          <div className="md:hidden fixed inset-0 z-50 bg-black/80 p-4 overflow-y-auto">
-            <div className="bg-gradient-to-br from-black via-slate-500 to-black p-4">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-white">Filters</h2>
-                <Button variant="ghost" className="text-white" onClick={() => setIsSidebarOpen(false)}>
-                  <X />
+      <div className="bg-gradient-to-b from-black via-gray-900 to-black min-h-screen text-white font-mono">
+        <NavBar />
+
+        <main className="container mx-auto px-6 ">
+          {/* Hero Section with MacBook Image */}
+          <section className="flex flex-col-reverse md:flex-row items-center justify-between py-12">
+            <div className="w-full md:w-1/2 text-center md:text-left">
+              <motion.div
+                initial={{ opacity: 0, x: -60 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 1 }}
+              >
+                <h1 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 drop-shadow-2xl">
+                  Unbeatable Prices, Unmatched Quality
+                </h1>
+                <p className="mt-6 text-xl md:text-2xl text-gray-300">
+                  Shop premium tech products at prices that no one else can match. Discover why
+                  smart shoppers choose us!
+                </p>
+                <Button className="mt-8 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xl px-8 py-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300">
+                  Shop Now
                 </Button>
-              </div>
-              <Suspense fallback={<div className="text-white p-4">Loading filters...</div>}>
-                <FilterSidebar
-                  setOrdering={setOrdering}
-                  setRating={setRating}
-                  setMinRating={setMinRating}
-                  isSidebarOpen={isSidebarOpen}
-                  setIsSidebarOpen={setIsSidebarOpen}
-                />
-              </Suspense>
+              </motion.div>
             </div>
-          </div>
-        )}
-        <main className="flex-1 p-4 md:p-8">
-          <div className="flex justify-between md:justify-center items-center mb-6">
-            <h1 className="text-2xl md:text-4xl font-extrabold text-white capitalize">
 
-            </h1>
-            <Button variant="outline" className="md:hidden bg-black text-white" onClick={() => setIsSidebarOpen(true)}>
-              <Filter className="mr-2 h-4 w-4" />
-              Filters
-            </Button>
-          </div>
-          <Suspense fallback={<div className="text-white">Loading products...</div>}>
-            <ProductGrid products={products} isLoading={isLoading} />
-            
-            {/* Pagination controls */}
-            {pagination.total_pages > 1 && (
-              <div className="flex flex-col items-center mt-8 space-y-2">
-                <div className="text-white text-sm">
-                  Page {pagination.current_page} of {pagination.total_pages}
+            {/* Updated Image Section */}
+            <motion.div
+              className="w-full md:w-1/2 flex flex-col justify-center mb-8 md:mb-0"
+              initial={{ opacity: 0, x: 60 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1 }}
+            >
+              <Image
+                src="/images/cp.png"
+                alt="MacBook Showcase"
+                width={800}      // Adjust as needed
+                height={400}     // Adjust as needed
+                className="object-contain"
+                priority
+              />
+              <p className="mt-4  text-center  text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500">
+      Now available at Rs. 99,999
+    </p>
+    <div className="flex justify-center">
+                <Button className="mt-8 mr-8 w-36 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xl px-8 py-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300">
+                  Buy Now
+                </Button>
+                <Button className="mt-8 w-36 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xl px-8 py-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300">
+                  Apply EMI
+                </Button>
                 </div>
-                
-                <div className="flex space-x-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handlePageChange(pagination.current_page - 1)}
-                    disabled={!pagination.previous}
-                    className="bg-gray-800 text-white hover:bg-gray-700"
+            </motion.div>
+          </section>
+
+
+          {/* Limited-Time Offer Countdown */}
+          <section className="bg-gray-800 rounded-xl p-6 my-12 text-center shadow-xl">
+            <h2 className="text-3xl font-bold mb-4">Limited Time Offer!</h2>
+            <p className="text-xl text-gray-300 mb-4">Grab these deals before they vanish.</p>
+            <div className="text-2xl font-mono text-yellow-400">
+              {timerComponents.length ? timerComponents : <span>Offer Expired!</span>}
+            </div>
+          </section>
+
+          {/* Featured Products */}
+          <section className="mt-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-center mb-12">Featured Products</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {products.map((product, index) => {
+                const discountedPrice = (product.price * (100 - product.discount)) / 100;
+                return (
+                  <motion.div
+                    key={product.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 * index, duration: 0.6 }}
+                    className="flex flex-col items-center"
                   >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  
-                  {getPageNumbers().map((page, index) => (
-                    page === '...' ? (
-                      <span key={`ellipsis-${index}`} className="px-3 py-2 text-white">...</span>
-                    ) : (
-                      <Button
-                        key={`page-${page}`}
-                        variant={page === pagination.current_page ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => page !== pagination.current_page && handlePageChange(page)}
-                        className={page === pagination.current_page 
-                          ? "bg-gradient-to-r from-pink-500 to-violet-500 text-white" 
-                          : "bg-gray-800 text-white hover:bg-gray-700"}
-                      >
-                        {page}
+                    <Card className="bg-gray-800 p-6 rounded-xl shadow-2xl border border-gray-700 hover:-translate-y-2 transition-transform duration-300">
+                      <div className="relative w-60 h-60 mx-auto">
+                        <Image
+                          src={product.img}
+                          alt={product.name}
+                          layout="fill"
+                          objectFit="cover"
+                          className="rounded-xl"
+                          priority
+                        />
+                      </div>
+                      <h3 className="mt-6 text-2xl font-semibold">{product.name}</h3>
+                      <p className="mt-2 text-lg">
+                        <span className="line-through text-gray-500 mr-2">${product.price}</span>
+                        <span className="text-green-400 font-bold">${discountedPrice.toFixed(2)}</span>
+                      </p>
+                      <Button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full">
+                        Buy Now
                       </Button>
-                    )
-                  ))}
-                  
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handlePageChange(pagination.current_page + 1)}
-                    disabled={!pagination.next}
-                    className="bg-gray-800 text-white hover:bg-gray-700"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            )}
-          </Suspense>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Social Proof & Testimonials */}
+          <section className="mt-20 bg-gray-800 p-8 rounded-xl shadow-2xl">
+            <h2 className="text-4xl font-bold text-center mb-8">Why Our Customers Love Us</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.8 }}
+                className="text-center"
+              >
+                <p className="text-xl italic">"I couldn't believe the prices – the quality is incredible. I've never shopped anywhere else!"</p>
+                <p className="mt-4 font-bold">– Alex M.</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="text-center"
+              >
+                <p className="text-xl italic">"The best deals I've ever seen. Fast, reliable, and unbeatable value. Highly recommended!"</p>
+                <p className="mt-4 font-bold">– Jamie L.</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7, duration: 0.8 }}
+                className="text-center"
+              >
+                <p className="text-xl italic">"A game changer in digital shopping. I always find exactly what I need at the best price."</p>
+                <p className="mt-4 font-bold">– Morgan S.</p>
+              </motion.div>
+            </div>
+          </section>
         </main>
+
+        {/* Footer Section with Trust Badges */}
+        <footer className="mt-12 py-8 border-t border-gray-700 text-center text-gray-500">
+          <p>&copy; {new Date().getFullYear()} Digitech. All rights reserved.</p>
+          <div className="mt-4 flex justify-center space-x-6">
+            <a href="https://twitter.com/digitech" className="hover:text-white transition-colors duration-300">
+              Twitter
+            </a>
+            <a href="https://facebook.com/digitech" className="hover:text-white transition-colors duration-300">
+              Facebook
+            </a>
+            <a href="https://instagram.com/digitech" className="hover:text-white transition-colors duration-300">
+              Instagram
+            </a>
+          </div>
+          <div className="mt-6">
+            <span className="inline-block bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold">Best Price Guarantee</span>
+          </div>
+        </footer>
       </div>
-      <Footer />
-    </div>
-  )
+    </>
+  );
 }

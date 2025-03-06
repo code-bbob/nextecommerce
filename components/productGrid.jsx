@@ -18,6 +18,12 @@ export default function ProductGrid({ products, isLoading }) {
   const isLoggedIn = useSelector((state) => state.access.isAuthenticated)
   const router = useRouter()
 
+  const handleEmi = (e,product_id) => {
+    e.stopPropagation()
+    e.preventDefault()
+    router.push(`/product/emi/${product_id}`);
+  }
+
   const handleAddToCart = (e,product) => {
     e.stopPropagation()
     e.preventDefault()
@@ -96,13 +102,14 @@ export default function ProductGrid({ products, isLoading }) {
               RS. {product.price.toFixed(2)}
             </p>
             <div className="flex justify-center items-center">
-              {/* <Button
+              <Button
                 variant="outline"
+                onClick={(e)=>handleEmi(e,product.product_id)}
                 size="sm"
                 className="text-xs sm:text-xs text-white border-black bg-black hover:font-bold"
               >
-                <Eye className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />View
-              </Button> */}
+                Apply EMI
+              </Button>
               {/* <div></div> */}
               <Button
                 size="sm"

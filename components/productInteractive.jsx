@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, sendCartToServer } from "@/redux/cartSlice";
 import customFetch from "@/utils/customFetch";
+import toast from "react-hot-toast";
 
 
 export default function ProductInteractive({ product }) {
@@ -48,6 +49,10 @@ const [modalImage, setModalImage] = useState(null);
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
+    if (!isLoggedIn) {
+      toast.error("You need to be logged in to post a comment");
+      return;
+    }
 
     try {
       const response = await customFetch(

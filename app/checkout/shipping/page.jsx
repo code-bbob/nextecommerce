@@ -32,7 +32,7 @@ export default function ShippingPage() {
   // find if the page was refreshed and go back to the previous page if it was
   useEffect(() => {
     if (!checkout.email || !checkout.shippingAddress.address) {
-      router.push("/checkout");
+      router.replace("/checkout");
     }
   }, [checkout.email, checkout.shippingAddress.address]);
   const [selectedMethod, setSelectedMethod] = useState(checkout.shippingMethod);
@@ -45,12 +45,6 @@ export default function ShippingPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <div
-        onClick={() => router.push("/")}
-        className="hidden lg:block text-white absolute mt-8 pl-3"
-      >
-        <Image src="/images/digi.png" alt="logo" width={50} height={30} />
-      </div>
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="order-first lg:order-last">

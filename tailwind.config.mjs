@@ -54,7 +54,20 @@ export default {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		  keyframes: {
+			neonGradientGlow: {
+			  "0%": { borderColor: "rgba(255, 0, 102, 0.7)", boxShadow: "0 0 10px rgba(255, 0, 102, 0.5)" }, /* Reddish-Pink */
+			  "50%": { borderColor: "rgba(0, 102, 255, 0.8)", boxShadow: "0 0 20px rgba(0, 102, 255, 0.6)" }, /* Electric Blue */
+			  "100%": { borderColor: "rgba(128, 0, 128, 0.7)", boxShadow: "0 0 10px rgba(128, 0, 128, 0.5)" }, /* Deep Purple */
+			},
+		  },
+		  animation: {
+			"gradient-neon": "neonGradientGlow 4s ease-in-out infinite",
+		  },
+		  boxShadow: {
+			"neon-gradient-soft": "0 0 15px rgba(255, 0, 102, 0.6), 0 0 20px rgba(0, 102, 255, 0.5), 0 0 25px rgba(128, 0, 128, 0.4)",
+		  },
   	}
   },
   plugins: [require("tailwindcss-animate")],

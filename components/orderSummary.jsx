@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import { useSelector } from "react-redux"
 import { ChevronDown, ChevronUp } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export function OrderSummary() {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -11,7 +12,13 @@ export function OrderSummary() {
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
   const shippingCost = useSelector((state) => state.checkout.shippingCost)
   const total = subtotal + shippingCost
+  const router = useRouter()
 
+  useEffect(() => {
+  if (cartItems.length === 0) {
+    router.replace('/')
+  }
+}, [cartItems])
   // Mobile summary header
   const MobileSummaryHeader = () => (
     <button

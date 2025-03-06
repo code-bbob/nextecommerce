@@ -10,7 +10,7 @@ import { updateCartItemOnServer, removeCartItemOnServer } from '@/redux/cartSlic
 import { getLocalCart,setLocalCart } from "@/utils/localCart";
 import { toast, Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-
+import { fetchCartFromServer } from "@/redux/cartSlice";
 
 export default function CartSidebar({ isOpen, onClose }) {
   const dispatch = useDispatch();
@@ -20,9 +20,11 @@ export default function CartSidebar({ isOpen, onClose }) {
   const sidebarRef = useRef(null);
   const router = useRouter();
 
+
   const handleCheckout=()=>{
     if (isLoggedIn){
       // Redirect to the checkout page
+      dispatch(fetchCartFromServer());
       router.push("/checkout");
     } else {
       //toast you need to be logged in to continue
@@ -119,7 +121,7 @@ export default function CartSidebar({ isOpen, onClose }) {
                   </div>
                   <div className="flex-1">
                     <p className="font-semibold text-sm">{item.name}</p>
-                    <p className="text-sm">${item.price?.toFixed(2)}</p>
+                    <p className="text-sm">RS. {item.price?.toFixed(2)}</p>
                     <div className="flex items-center mt-1 space-x-2">
                       <button
                         onClick={() => handleUpdateQuantity(item.product_id, -1)}
@@ -165,7 +167,7 @@ export default function CartSidebar({ isOpen, onClose }) {
             <span className="text-gray-300">Shipping</span>
             <span className="text-gray-400">Calculated at Checkout</span>
           </div>
-          <Button variant="default" onClick = {()=>handleCheckout()} className="w-full mt-4 bg-gray-200 text-black hover:bg-gray-300 font-semibold">
+          <Button variant="default" disabled={items.length===0} onClick = {()=>handleCheckout()} className="w-full mt-4 bg-gray-200 text-black hover:bg-gray-300 font-semibold">
             Proceed to Checkout
           </Button>
         </div>

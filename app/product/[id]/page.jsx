@@ -10,7 +10,7 @@ export default async function ProductPage({ params }) {
   
   // Fetch product data from backend. { cache: "no-store" } ensures fresh data.
   try {
-  const res = await fetch(backendUrl, { cache: "no-store" });
+  const res = await fetch(backendUrl);
   if (!res.ok) {
     notFound();
   }
