@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart, sendCartToServer } from "@/redux/cartSlice";
 import customFetch from "@/utils/customFetch";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 
 export default function ProductInteractive({ product }) {
@@ -19,6 +20,8 @@ export default function ProductInteractive({ product }) {
     product.images[0]?.image || "/placeholder.svg"
   );
 const [modalImage, setModalImage] = useState(null);
+
+const router = useRouter();
 
   
   
@@ -153,6 +156,13 @@ const [modalImage, setModalImage] = useState(null);
             </div>
 
             <div className="flex space-x-4">
+              <Button
+                className="flex-1 bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600"
+                size="lg"
+                onClick={() => router.push('/product/emi/' + product.product_id)}
+              >
+                Apply Emi
+              </Button>
               <Button
                 className="flex-1 bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600"
                 size="lg"

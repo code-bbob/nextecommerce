@@ -66,7 +66,7 @@ export default function ProductGrid({ products, isLoading }) {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3  lg:grid-cols-4 gap-2  md:gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-3  lg:grid-cols-3 gap-2  md:gap-6">
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
       {products?.map((product) => (
         <motion.div
@@ -98,15 +98,17 @@ export default function ProductGrid({ products, isLoading }) {
                 {product.ratings.stats.avg_rating.toFixed(1)}
               </span>
             </div>
-            <p className="text-lg sm:text-lg font-bold mb-3 sm:mb-4 text-green-400">
-              RS. {product.price.toFixed(2)}
-            </p>
-            <div className="flex justify-center items-center">
+            {/* <span className="text-lg sm:text-lg font-bold mb-3  sm:mb-4 text-green-400">RS. </span> */}
+            {product.old_price &&<strike className="text-lg sm:text-lg font-bold mb-3 mr-5 sm:mb-4 text-gray-400">RS. {product.old_price}</strike>}
+            <span className="text-lg sm:text-lg font-bold mb-3 sm:mb-4 text-green-400">
+              RS. {product.price}
+            </span>
+            <div className="flex flex-col justify-center items-center">
               <Button
                 variant="outline"
                 onClick={(e)=>handleEmi(e,product.product_id)}
                 size="sm"
-                className="text-xs sm:text-xs text-white border-black bg-black hover:font-bold"
+                className="text-xs w-full sm:text-xs text-white border-black bg-zinc-500 mb-2 hover:font-bold"
               >
                 Apply EMI
               </Button>
@@ -114,7 +116,7 @@ export default function ProductGrid({ products, isLoading }) {
               <Button
                 size="sm"
                 onClick={(e) => handleAddToCart(e,product)}
-                className="text-xs sm:text-sm bg-red-800 hover:bg-red-600 text-white"
+                className="text-xs w-full sm:text-sm bg-red-800 hover:bg-red-600 text-white"
               >
                 <ShoppingCart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Add to cart
               </Button>

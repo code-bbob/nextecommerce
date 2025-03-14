@@ -1,25 +1,111 @@
-"use client"
+"use client";
+import { useState, useEffect, memo } from "react";
+import Image from "next/image";
+import { useSelector, useDispatch } from "react-redux";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useRouter } from "next/navigation";
+import customFetch from "@/utils/customFetch";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  updatePaymentAmount,
+  updateSubtotal,
+  updateDiscount,
+} from "@/redux/checkoutSlice";
 
-import { useEffect, useState } from "react"
-import Image from "next/image"
-import { useSelector } from "react-redux"
-import { ChevronDown, ChevronUp } from "lucide-react"
-import { useRouter } from "next/navigation"
+const CouponInput = memo(function CouponInput({ subtotal, shippingCost, onApplyCoupon }) {
+  const [couponCode, setCouponCode] = useState("");
+  const [couponMessage, setCouponMessage] = useState("");
+
+  const applyCoupon = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!couponCode.trim()) return;
+    try {
+      const res = await customFetch(`cart/api/coupon/?code=${couponCode.trim()}`);
+      const data = await res.json();
+      if (res.ok && data.status === "Success") {
+        let discountValue = 0;
+        if (data.amount) {
+          discountValue = data.amount;
+        } else if (data.percentage) {
+          discountValue = ((subtotal + shippingCost) * data.percentage) / 100;
+        }
+        onApplyCoupon(discountValue);
+        setCouponMessage("Coupon applied successfully!");
+      } else {
+        setCouponMessage(data.message || "Coupon is not valid.");
+        onApplyCoupon(0);
+      }
+    } catch (error) {
+      setCouponMessage("An error occurred. Please try again.");
+      onApplyCoupon(0);
+    }
+  };
+
+  return (
+    <div className="mt-6 p-4 bg-black rounded border border-gray-700">
+      <label htmlFor="coupon" className="block text-sm font-medium text-gray-200 mb-1">
+        Coupon Code
+      </label>
+      <div className="flex gap-2">
+        <Input
+          type="text"
+          id="coupon"
+          value={couponCode}
+          onChange={(e) => setCouponCode(e.target.value)}
+          placeholder="Enter coupon code"
+          className="flex-1 px-3 py-2 rounded border border-gray-700 bg-black text-gray-100 focus:outline-none"
+        />
+        <Button
+          onClick={applyCoupon}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 transition"
+        >
+          Apply
+        </Button>
+      </div>
+      {couponMessage && (
+        <p className="mt-2 text-sm text-center text-yellow-400">
+          {couponMessage}
+        </p>
+      )}
+    </div>
+  );
+});
 
 export function OrderSummary() {
-  const [isExpanded, setIsExpanded] = useState(false)
-  const cartItems = useSelector((state) => state.cart.items)
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
-  const shippingCost = useSelector((state) => state.checkout.shippingCost)
-  const total = subtotal + shippingCost
-  const router = useRouter()
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { subtotal: reduxSubtotal, discount: reduxDiscount, shippingCost } = useSelector(
+    (state) => state.checkout
+  );
+  console.log(shippingCost)
+  const cartItems = useSelector((state) => state.cart.items);
 
+  // Compute subtotal based on cart items.
+  const computedSubtotal = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
+  // Compute total amount.
+  const total = computedSubtotal + shippingCost - reduxDiscount;
+
+  // Update Redux subtotal and payment amount when cart items change.
   useEffect(() => {
-  if (cartItems.length === 0) {
-    router.replace('/')
-  }
-}, [cartItems])
-  // Mobile summary header
+    dispatch(updateSubtotal(computedSubtotal));
+    dispatch(updatePaymentAmount(total));
+  }, [computedSubtotal, total, dispatch]);
+
+  // Redirect to homepage if cart is empty.
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      router.replace("/");
+    }
+  }, [cartItems, router]);
+
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const MobileSummaryHeader = () => (
     <button
       onClick={() => setIsExpanded(!isExpanded)}
@@ -27,13 +113,16 @@ export function OrderSummary() {
     >
       <div className="flex items-center gap-2">
         <span className="text-blue-500">Order summary</span>
-        {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        {isExpanded ? (
+          <ChevronUp className="h-4 w-4" />
+        ) : (
+          <ChevronDown className="h-4 w-4" />
+        )}
       </div>
-      <span className="font-semibold">${total.toFixed(2)}</span>
+      <span className="font-semibold">RS. {total.toFixed(2)}</span>
     </button>
-  )
+  );
 
-  // Content for both mobile and desktop
   const SummaryContent = () => (
     <>
       <div className="flex-1 overflow-y-auto p-6">
@@ -45,7 +134,12 @@ export function OrderSummary() {
                 <div className="absolute -right-2 -top-2 w-5 h-5 z-50 bg-gray-700 rounded-full flex items-center justify-center text-xs">
                   {item.quantity}
                 </div>
-                <Image src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover rounded" />
+                <Image
+                  src={item.image || "/placeholder.svg"}
+                  alt={item.name}
+                  fill
+                  className="object-cover rounded"
+                />
               </div>
               <div className="flex-1">
                 <p className="font-medium">{item.name}</p>
@@ -54,7 +148,11 @@ export function OrderSummary() {
               <p className="font-medium">RS. {(item.price * item.quantity).toFixed(2)}</p>
             </div>
           ))}
-          
+          <CouponInput
+            subtotal={reduxSubtotal}
+            shippingCost={shippingCost}
+            onApplyCoupon={(discountValue) => dispatch(updateDiscount(discountValue))}
+          />
         </div>
       </div>
 
@@ -62,23 +160,29 @@ export function OrderSummary() {
         <div className="space-y-4">
           <div className="flex justify-between">
             <span className="text-gray-400">Subtotal</span>
-            <span>RS. {subtotal.toFixed(2)}</span>
+            <span>RS. {computedSubtotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-400">Shipping</span>
             <span>RS. {shippingCost.toFixed(2)}</span>
           </div>
+          {reduxDiscount > 0 && (
+            <div className="flex justify-between">
+              <span className="text-gray-400">Discount</span>
+              <span className="text-green-400">- RS. {reduxDiscount.toFixed(2)}</span>
+            </div>
+          )}
           <div className="flex justify-between text-lg font-semibold">
             <span>Total</span>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-400">USD</span>
-              <span>RS. {total.toFixed(2)}</span>
+              <span className="text-sm text-gray-400">RS.</span>
+              <span>{total.toFixed(2)}</span>
             </div>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 
   return (
     <>
@@ -103,6 +207,5 @@ export function OrderSummary() {
         </div>
       </div>
     </>
-  )
+  );
 }
-

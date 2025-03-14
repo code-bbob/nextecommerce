@@ -14,36 +14,48 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <div className="bg-gradient-to-br from-black via-gray-600 to-white font-sans">
+    <div className="bg-gradient-to-br from-black via-gray-900 to-black font-sans">
       
       <NavBar />
-      <div className="md:h-screen pt-4 flex grow flex-col gap-4 md:flex-row">
-        <div className="text-center text-white mt-5 md:mt-20 px-4">
-          <h2 className="text-3xl font-bold mb-4">Best Quality PCS</h2>
-          <h1 className="text-4xl font-extrabold mb-6">
-            Build your dream PC at home starting just Rs. 50000
-          </h1>
-          <h2 className="text-3xl font-bold mb-4">Only @CompanyName </h2>
-          <h2 className="text-3xl font-bold mb-4">Choose from the best of the best </h2>
-          <h2 className="text-3xl font-bold mb-4">Regardless of your budget </h2>
-          <Link href="/#shop">
-          <button className="bg-red-500 mb-4 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-full">
+      <div className="min-h-screen flex flex-col-reverse md:flex-row">
+      {/* Textual Content */}
+      <header className="flex-1 flex flex-col md:mt-20 text-center p-6 md:p-12">
+        <h2 className="text-3xl font-bold mb-4 font-serif text-white">
+          Best Quality PCs
+        </h2>
+        <h1 className="text-4xl md:text-5xl font-extrabold font-sans mb-3 text-white">
+          Build Your Dream PC at Home, Starting at Just Rs. 50,000
+        </h1>
+        <h2 className="text-3xl font-bold mb-4 text-yellow-600">
+          Only @Digitech
+        </h2>
+        {/* <h2 className="text-2xl font-bold mb-4 text-white">
+          Choose from the Best of the Best
+        </h2>
+        <h2 className="text-2xl font-bold mb-8 text-white">
+          Regardless of Your Budget
+        </h2> */}
+        <Link href="/#shop">
+          <div className="inline-block bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400 transition">
             SHOP NOW
-          </button>
-          </Link>
-
-        </div>
-        <div className="flex items-center justify-center p-6 md:w-4/5 md:px-28 md:py-12">
-          <Image
-            src="/images/pc.png"
-            width={800}
-            height={800}
-            alt="Screenshots of the dashboard project showing desktop version"
-          />
-        </div>
-      </div>
+          </div>
+        </Link>
+      </header>
+      
+      {/* Visual Content */}
+      <main className="flex-1 flex items-center justify-center p-6 md:px-16 md:py-12">
+        <Image
+          src="/images/pc.png"
+          width={800}
+          height={800}
+          alt="High-quality PC build showcasing premium components"
+          priority
+          className="object-contain"
+        />
+      </main>
+    </div>
       <div
-        className=" mx-auto px-4 pt-4 pb-16 bg-gradient-to-br from-black via-gray-600 to-black shadow-lg"
+        className=" mx-auto px-4 pt-4 pb-16 bg-gradient-to-br shadow-lg"
         id="shop"
       >
         <h2 className="text-4xl font-bold pb-5 text-center text-white">Explore Our Categories</h2>

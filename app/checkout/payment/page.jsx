@@ -1,120 +1,107 @@
-// pages/checkout/payment.tsx
 "use client";
 import { OrderSummary } from "@/components/orderSummary";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, CreditCard } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSelector } from "react-redux";
-import { useEffect,useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import customFetch from "@/utils/customFetch";
-import { useDispatch } from "react-redux";
 import { fetchCartFromServer } from "@/redux/cartSlice";
 import NavBar from "@/components/navbar";
+import { resetCheckout } from "@/redux/checkoutSlice";
 
 export default function PaymentPage() {
-  const checkout = useSelector((state) => state.checkout);
-  const router = useRouter();
-  const cart = useSelector((state) => state.cart.items);
-  const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
-  const shippingCost = useSelector((state) => state.checkout.shippingCost)
-  const total = subtotal + shippingCost
-  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const router = useRouter();
+  const checkout = useSelector((state) => state.checkout);
+  const cartItems = useSelector((state) => state.cart.items);
+
+  // Destructure checkout values.
+  const { subtotal, shippingCost, discount, email, shippingAddress, shippingMethod, phone } = checkout;
+  const total = subtotal + shippingCost - discount;
 
   useEffect(() => {
-    if (!checkout.email || !checkout.shippingAddress.address) {
+    if (!email || !shippingAddress.address) {
       router.replace("/checkout");
     }
-  }, [checkout.email, checkout.shippingAddress.address]);
+  }, [email, shippingAddress.address, router]);
+
+  const [loading, setLoading] = useState(false);
 
   const handleNext = async () => {
     setLoading(true);
-    let carts = []
-    cart?.map((item) => {
-      carts.push(item.id)
-    })
-    try{
-    const res = await customFetch(`cart/api/order/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        carts: carts,
-      }),
-    });
-    console.log(res)
-    const response = await res.json();
-    const order_id = response.id;
-    const payload = {
-      "order": order_id,
-      "phone_number": checkout.phone,
-      "first_name" : checkout.shippingAddress.firstName,
-      "last_name" : checkout.shippingAddress.lastName,
-      "email": checkout.email,
-      "shipping_address": checkout.shippingAddress.address,
-      "city": checkout.shippingAddress.city,
-      "municipality": checkout.shippingAddress.municipality,
-      "shipping_method": checkout.shippingMethod,
-      "payment_method": "COD",
-      "payment_amount": subtotal,
-      "shipping_cost": shippingCost,
+    const carts = cartItems.map((item) => item.id);
+    try {
+      const res = await customFetch(`cart/api/order/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ carts }),
+      });
+      const response = await res.json();
+      const order_id = response.id;
+      const payload = {
+        order: order_id,
+        phone_number: phone,
+        first_name: shippingAddress.firstName,
+        last_name: shippingAddress.lastName,
+        email: email,
+        shipping_address: shippingAddress.address,
+        city: shippingAddress.city,
+        municipality: shippingAddress.municipality,
+        shipping_method: shippingMethod,
+        payment_method: "COD",
+        subtotal: subtotal,
+        shipping_cost: shippingCost,
+        discount: discount,
+        payment_amount: total,
+      };
+      await customFetch(`cart/api/delivery/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      dispatch(fetchCartFromServer());
+      dispatch(resetCheckout());
+      router.replace(`/tracking/${order_id}`);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-    const res2 = await customFetch(`cart/api/delivery/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    dispatch(fetchCartFromServer());
-    router.replace(`/tracking/${response.id}`);
-  }
-  catch(err){
-    console.log(err)
-  }
-  finally{
-    setLoading(false)
-  }
-}
+  };
 
-if (loading){
+  if (loading) {
     return (
       <div className="bg-black h-screen">
-        <NavBar/>
-      <div className="flex justify-center items-center h-[calc(100vh-200px)]">
-        <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
+        <NavBar />
+        <div className="flex justify-center items-center h-[calc(100vh-200px)]">
+          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
+        </div>
       </div>
-      </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen bg-black text-white">
-      
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="order-first lg:order-last">
             <OrderSummary />
           </div>
-
-          {/* Left Column - Payment */}
           <div className="flex-1 space-y-8">
             <nav className="text-sm mb-8">
               <ol className="flex items-center space-x-2">
-              <Image src="/images/digi.png" alt="logo" width={50} height={30} />
+                <Image src="/images/digi.png" alt="logo" width={50} height={30} />
                 <li>
-                  <Link
-                    href="/checkout"
-                    className="text-blue-500 hover:text-blue-400"
-                  >
+                  <Link href="/checkout" className="text-blue-500 hover:text-blue-400">
                     Information
                   </Link>
                 </li>
                 <li>›</li>
                 <li>
-                  <Link
-                    href="/checkout/shipping"
-                    className="text-blue-500 hover:text-blue-400"
-                  >
+                  <Link href="/checkout/shipping" className="text-blue-500 hover:text-blue-400">
                     Shipping
                   </Link>
                 </li>
@@ -122,20 +109,13 @@ if (loading){
                 <li className="text-white">Payment</li>
               </ol>
             </nav>
-
-            {/* Summary Sections */}
             <div className="border border-gray-800 rounded-lg">
               <div className="p-4 flex justify-between items-center border-b border-gray-800">
                 <div>
                   <span className="text-gray-400">Contact</span>
-                  <p className="text-sm mt-1">
-                    {checkout.email || "example@email.com"}
-                  </p>
+                  <p className="text-sm mt-1">{email || "example@email.com"}</p>
                 </div>
-                <Link
-                  href="/checkout"
-                  className="text-blue-500 text-sm hover:text-blue-400"
-                >
+                <Link href="/checkout" className="text-blue-500 text-sm hover:text-blue-400">
                   Change
                 </Link>
               </div>
@@ -143,14 +123,10 @@ if (loading){
                 <div>
                   <span className="text-gray-400">Ship to</span>
                   <p className="text-sm mt-1">
-                    {checkout.shippingAddress.address ||
-                      "123 Street Name, City, State ZIP"}
+                    {shippingAddress.address || "123 Street Name, City, State ZIP"}
                   </p>
                 </div>
-                <Link
-                  href="/checkout"
-                  className="text-blue-500 text-sm hover:text-blue-400"
-                >
+                <Link href="/checkout" className="text-blue-500 text-sm hover:text-blue-400">
                   Change
                 </Link>
               </div>
@@ -158,41 +134,30 @@ if (loading){
                 <div>
                   <span className="text-gray-400">Shipping method</span>
                   <p className="text-sm mt-1">
-                    {checkout.shippingMethod === "economy"
-                      ? "Economy · Rs. 4.90"
-                      : "Standard · Rs. 6.90"}
+                    {shippingMethod === "Urgent"
+                      ? "Urgent · RS. 8.90"
+                      : "Standard · RS. 6.90"}
                   </p>
                 </div>
-                <Link
-                  href="/checkout/shipping"
-                  className="text-blue-500 text-sm hover:text-blue-400"
-                >
+                <Link href="/checkout/shipping" className="text-blue-500 text-sm hover:text-blue-400">
                   Change
                 </Link>
               </div>
             </div>
-
-            {/* Payment Section */}
             <section className="space-y-4">
               <h2 className="text-xl font-semibold">Payment</h2>
-              <p className="text-sm text-gray-400">
-                All transactions are secure and encrypted.
-              </p>
+              <p className="text-sm text-gray-400">All transactions are secure and encrypted.</p>
               <div className="bg-gray-900 rounded-lg p-8 text-center space-y-4">
                 <CreditCard className="mx-auto h-12 w-12 text-gray-500" />
                 <p>This store can&apos;t accept payments right now.</p>
               </div>
             </section>
-
             <div className="flex justify-between items-center">
-              <Link
-                href="/checkout/shipping"
-                className="text-blue-500 hover:text-blue-400 flex items-center"
-              >
+              <Link href="/checkout/shipping" className="text-blue-500 hover:text-blue-400 flex items-center">
                 <ChevronLeft className="h-4 w-4 mr-1" />
                 Return to shipping
               </Link>
-              <Button disabled={loading} onClick={()=>handleNext()} className="bg-gray-700">
+              <Button disabled={loading} onClick={handleNext} className="bg-gray-700">
                 Proceed
               </Button>
             </div>

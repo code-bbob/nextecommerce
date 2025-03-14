@@ -1,5 +1,4 @@
-// store/checkoutSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   email: "",
@@ -15,10 +14,12 @@ const initialState = {
     state: "",
     municipality: "",
   },
-  shippingMethod: "economy",
+  shippingMethod: "standard",  // Updated default method
+  subtotal: 0,
+  discount: 0,
   shippingCost: 0,
   paymentMethod: "",
-  paymentAmount: "",
+  paymentAmount: 0,  // Changed from empty string to 0
   paymentStatus: "",
 };
 
@@ -26,7 +27,6 @@ const checkoutSlice = createSlice({
   name: 'checkout',
   initialState,
   reducers: {
-
     updateFirstName(state, action) {
       state.shippingAddress.firstName = action.payload;
     },
@@ -39,10 +39,15 @@ const checkoutSlice = createSlice({
     updatePaymentAmount(state, action) {
       state.paymentAmount = action.payload;
     },
+    updateSubtotal(state, action) {
+      state.subtotal = action.payload;
+    },
+    updateDiscount(state, action) {
+      state.discount = action.payload;
+    },
     updateMunicipality(state, action) {
       state.shippingAddress.municipality = action.payload;
     },
-    
     updateEmail(state, action) {
       state.email = action.payload;
     },
@@ -69,9 +74,22 @@ const checkoutSlice = createSlice({
         state.shippingAddress = { ...state.shippingAddress, ...data.shippingAddress };
       }
       if (data.shippingMethod !== undefined) state.shippingMethod = data.shippingMethod;
+    },
+    resetCheckout(state) {
+      state.email = "";
+      state.phone = "";
+      state.newsOptIn = false;
+      state.shippingAddress = { ...initialState.shippingAddress };
+      state.shippingMethod = initialState.shippingMethod;
+      state.subtotal = 0;
+      state.discount = 0;
+      state.shippingCost = 0;
+      state.paymentMethod = "";
+      state.paymentAmount = 0;
+      state.paymentStatus = "";
     }
   }
 });
 
-export const { updateFirstName,updateLastName,updatePaymentAmount,updatePaymentMethod,updateMunicipality,updateEmail,updatePhone, updateNewsOptIn, updateShippingAddress, updateShippingMethod,updateShippingCost, updateCheckoutData } = checkoutSlice.actions;
+export const { updateFirstName, updateLastName, updatePaymentAmount, updatePaymentMethod, updateMunicipality, updateEmail, updatePhone, updateNewsOptIn, updateShippingAddress, updateShippingMethod, updateShippingCost, updateCheckoutData, updateDiscount, updateSubtotal, resetCheckout } = checkoutSlice.actions;
 export default checkoutSlice.reducer;

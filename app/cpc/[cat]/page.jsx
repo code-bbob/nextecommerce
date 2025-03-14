@@ -43,13 +43,11 @@ export default function CatPage() {
         
         // Build the query parameters
         const queryParams = new URLSearchParams()
-        console.log(queryParams.toString())
         if (ordering) {
           queryParams.append('ordering', ordering)
         }
         if (rating) {
           queryParams.append('ordering', rating)
-          console.log(queryParams.toString())
         }
         if (minRating) {
           queryParams.append('min_rating', minRating)

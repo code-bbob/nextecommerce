@@ -1,4 +1,3 @@
-// pages/checkout/shipping.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,26 +16,22 @@ import { useRouter } from "next/navigation";
 
 const shippingMethods = [
   { id: "Urgent", name: "Urgent", price: 8.9, duration: "Same day" },
-  {
-    id: "standard",
-    name: "Standard",
-    price: 6.9,
-    duration: "3 to 4 business days",
-  },
+  { id: "standard", name: "Standard", price: 6.9, duration: "3 to 4 business days" },
 ];
 
 export default function ShippingPage() {
   const dispatch = useDispatch();
   const router = useRouter();
   const checkout = useSelector((state) => state.checkout);
-  // find if the page was refreshed and go back to the previous page if it was
+
   useEffect(() => {
     if (!checkout.email || !checkout.shippingAddress.address) {
       router.replace("/checkout");
     }
-  }, [checkout.email, checkout.shippingAddress.address]);
-  const [selectedMethod, setSelectedMethod] = useState(checkout.shippingMethod);
-  const [selectedCost, setSelectedCost] = useState(checkout.shippingCost);
+  }, [checkout.email, checkout.shippingAddress.address, router]);
+
+  const [selectedMethod, setSelectedMethod] = useState(checkout.shippingMethod || "standard");
+  const [selectedCost, setSelectedCost] = useState(checkout.shippingCost || 0);
 
   useEffect(() => {
     dispatch(updateShippingMethod(selectedMethod));
@@ -50,17 +45,12 @@ export default function ShippingPage() {
           <div className="order-first lg:order-last">
             <OrderSummary />
           </div>
-
-          {/* Left Column - Shipping Method */}
           <div className="flex-1 space-y-8">
             <nav className="text-sm mb-8">
               <ol className="flex items-center space-x-2">
-              <Image src="/images/digi.png" alt="logo" width={50} height={30} />
+                <Image src="/images/digi.png" alt="logo" width={50} height={30} />
                 <li>
-                  <Link
-                    href="/checkout"
-                    className="text-blue-500 hover:text-blue-400"
-                  >
+                  <Link href="/checkout" className="text-blue-500 hover:text-blue-400">
                     Information
                   </Link>
                 </li>
@@ -70,20 +60,13 @@ export default function ShippingPage() {
                 <li className="text-gray-500">Payment</li>
               </ol>
             </nav>
-
-            {/* Contact and Shipping Summary */}
             <div className="border border-gray-800 rounded-lg">
               <div className="p-4 flex justify-between items-center border-b border-gray-800">
                 <div>
                   <span className="text-gray-400">Contact</span>
-                  <p className="text-sm mt-1">
-                    {checkout.email || "example@email.com"}
-                  </p>
+                  <p className="text-sm mt-1">{checkout.email || "example@email.com"}</p>
                 </div>
-                <Link
-                  href="/checkout"
-                  className="text-blue-500 text-sm hover:text-blue-400"
-                >
+                <Link href="/checkout" className="text-blue-500 text-sm hover:text-blue-400">
                   Change
                 </Link>
               </div>
@@ -91,20 +74,14 @@ export default function ShippingPage() {
                 <div>
                   <span className="text-gray-400">Ship to</span>
                   <p className="text-sm mt-1">
-                    {checkout.shippingAddress.address ||
-                      "123 Street Name, City, State ZIP"}
+                    {checkout.shippingAddress.address || "123 Street Name, City, State ZIP"}
                   </p>
                 </div>
-                <Link
-                  href="/checkout"
-                  className="text-blue-500 text-sm hover:text-blue-400"
-                >
+                <Link href="/checkout" className="text-blue-500 text-sm hover:text-blue-400">
                   Change
                 </Link>
               </div>
             </div>
-
-            {/* Shipping Method Selection */}
             <section className="space-y-4">
               <h2 className="text-xl font-semibold">Shipping method</h2>
               <RadioGroup
@@ -128,9 +105,7 @@ export default function ShippingPage() {
                       <Label htmlFor={method.id} className="cursor-pointer">
                         <div>
                           <p>{method.name}</p>
-                          <p className="text-sm text-gray-400">
-                            {method.duration}
-                          </p>
+                          <p className="text-sm text-gray-400">{method.duration}</p>
                         </div>
                       </Label>
                     </div>
@@ -139,25 +114,16 @@ export default function ShippingPage() {
                 ))}
               </RadioGroup>
             </section>
-
             <div className="flex justify-between items-center">
-              <Link
-                href="/checkout"
-                className="text-blue-500 hover:text-blue-400 flex items-center"
-              >
+              <Link href="/checkout" className="text-blue-500 hover:text-blue-400 flex items-center">
                 <ChevronLeft className="h-4 w-4 mr-1" />
                 Return to information
               </Link>
               <Link href="/checkout/payment">
-                <Button className="bg-blue-500 hover:bg-blue-600">
-                  Continue to payment
-                </Button>
+                <Button className="bg-blue-500 hover:bg-blue-600">Continue to payment</Button>
               </Link>
             </div>
           </div>
-
-          {/* Right Column - Order Summary */}
-          {/* <OrderSummary /> */}
         </div>
       </div>
     </div>
