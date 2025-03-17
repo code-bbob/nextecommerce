@@ -25,7 +25,7 @@ export default function CartSidebar({ isOpen, onClose }) {
     if (isLoggedIn){
       // Redirect to the checkout page
       dispatch(fetchCartFromServer());
-      router.push("/checkout");
+      window.open('/checkout','_blank');
     } else {
       //toast you need to be logged in to continue
       toast.error("You need to be logged in to continue");
@@ -157,7 +157,7 @@ export default function CartSidebar({ isOpen, onClose }) {
         <div className="p-4 border-t border-gray-700">
           <div className="flex justify-between mb-2">
             <span className="text-gray-300">Subtotal</span>
-            <span className="font-semibold">${subtotal.toFixed(2)}</span>
+            <span className="font-semibold">RS. {subtotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between mb-2">
             <span className="text-gray-300">Taxes</span>

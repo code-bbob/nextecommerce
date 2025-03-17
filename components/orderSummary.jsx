@@ -44,7 +44,7 @@ const CouponInput = memo(function CouponInput({ subtotal, shippingCost, onApplyC
   };
 
   return (
-    <div className="mt-6 p-4 bg-black rounded border border-gray-700">
+    <div className="mb-3">
       <label htmlFor="coupon" className="block text-sm font-medium text-gray-200 mb-1">
         Coupon Code
       </label>
@@ -59,7 +59,7 @@ const CouponInput = memo(function CouponInput({ subtotal, shippingCost, onApplyC
         />
         <Button
           onClick={applyCoupon}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 transition"
+          className="px-4 py-2 bg-black border border-white text-white rounded hover:bg-blue-500 transition"
         >
           Apply
         </Button>
@@ -97,12 +97,6 @@ export function OrderSummary() {
     dispatch(updatePaymentAmount(total));
   }, [computedSubtotal, total, dispatch]);
 
-  // Redirect to homepage if cart is empty.
-  useEffect(() => {
-    if (cartItems.length === 0) {
-      router.replace("/");
-    }
-  }, [cartItems, router]);
 
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -142,21 +136,21 @@ export function OrderSummary() {
                 />
               </div>
               <div className="flex-1">
-                <p className="font-medium">{item.name}</p>
+                <p className="font-medium line-clamp-2">{item.name}</p>
                 <p className="text-sm text-gray-400">{item.variant}</p>
               </div>
               <p className="font-medium">RS. {(item.price * item.quantity).toFixed(2)}</p>
             </div>
           ))}
-          <CouponInput
-            subtotal={reduxSubtotal}
-            shippingCost={shippingCost}
-            onApplyCoupon={(discountValue) => dispatch(updateDiscount(discountValue))}
-          />
         </div>
       </div>
 
       <div className="border-t border-gray-800 p-6 bg-black">
+      <CouponInput
+            subtotal={reduxSubtotal}
+            shippingCost={shippingCost}
+            onApplyCoupon={(discountValue) => dispatch(updateDiscount(discountValue))}
+          />
         <div className="space-y-4">
           <div className="flex justify-between">
             <span className="text-gray-400">Subtotal</span>

@@ -30,7 +30,7 @@ catch (error) {
 
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-600 to-black font-sans">
+    <div className="min-h-screen bg-white font-sans">
       <NavBar />
       {/* Pass product data to a client component for interactivity */}
       {product.brandName==="Samsung" && <SamsungForm product={product} />}

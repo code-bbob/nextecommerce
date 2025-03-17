@@ -172,7 +172,7 @@ const SamsungForm = ({ product }) => {
       onSubmit={handleSubmit}
       className="p-3"
     >
-      <div className="text-center mb-3 text-white font-semibold text-xl">
+      <div className="text-center mb-3 text-black font-bold text-2xl">
         {productName} EMI Form - Step {currentStep} of 3
       </div>
       <div className="grid grid-cols-8 gap-4">
@@ -209,7 +209,7 @@ const SamsungForm = ({ product }) => {
 
       {/* Step 1: Applicant Details */}
       {currentStep === 1 && (
-        <Card className="bg-inherit col-span-5 text-white border border-white p-4">
+        <Card className="bg-inherit col-span-5 text-black border-2 border-gray-500 p-4">
           <h2 className="text-2xl font-semibold text-center mb-4">
             Applicant Details
           </h2>
@@ -224,7 +224,7 @@ const SamsungForm = ({ product }) => {
                   value={applicantData.firstName}
                   onChange={handleApplicantChange}
                   required
-                  className="bg-inherit"
+                  className="bg-inherit border border-black"
                 />
               </div>
               <div>
@@ -294,7 +294,7 @@ const SamsungForm = ({ product }) => {
           </div>
 
           {/* Present Address */}
-          <fieldset className="border p-4 rounded mt-4">
+          <fieldset className="border-2 border-black p-4 rounded mt-4">
             <legend className="font-semibold px-2">Present Address</legend>
             <div className="grid md:grid-cols-3 gap-4">
               <div>
@@ -333,7 +333,7 @@ const SamsungForm = ({ product }) => {
           </fieldset>
 
           {/* Applicant Documents */}
-          <fieldset className="border p-4 rounded mt-4">
+          <fieldset className="border-2 border-black p-4 rounded mt-4">
             <legend className="font-semibold px-2">Applicant Documents (The legal age requirement is above 20 years old)</legend>
             <div className="grid md:grid-cols-3 gap-4">
               <div>
@@ -346,7 +346,7 @@ const SamsungForm = ({ product }) => {
                   accept="image/*"
                   onChange={handleApplicantFileChange}
                   required
-                  className="mt-1 block w-full p-2 border rounded"
+                  className="mt-1 block w-full p-2 border border-black rounded"
                 />
               </div>
               <div>
@@ -359,7 +359,7 @@ const SamsungForm = ({ product }) => {
                   accept="image/*"
                   onChange={handleApplicantFileChange}
                   required
-                  className="mt-1 block w-full p-2 border rounded"
+                  className="mt-1 block w-full p-2 border border-black rounded"
                 />
               </div>
               <div>
@@ -372,11 +372,11 @@ const SamsungForm = ({ product }) => {
                   accept="image/*"
                   onChange={handleApplicantFileChange}
                   required
-                  className="mt-1 block w-full p-2 border rounded"
+                  className="mt-1 block w-full p-2 border border-black rounded"
                 />
               </div>
             </div>
-            <p className="mt-3 text-xs text-gray-300">
+            <p className="mt-3 text-xs text-gray-900">
               Note: Maximum file size for each document is 2MB.
             </p>
           </fieldset>
@@ -395,7 +395,7 @@ const SamsungForm = ({ product }) => {
 
       {/* Step 2: Guarantor Details */}
       {currentStep === 2 && (
-        <Card className="col-span-5 bg-inherit text-white border border-white p-4">
+        <Card className="col-span-5 bg-inherit text-black border-2 border-black p-4">
           <h2 className="text-2xl font-semibold text-center mb-4">
             Guarantor Details
           </h2>
@@ -477,8 +477,8 @@ const SamsungForm = ({ product }) => {
           </div>
 
           {/* Guarantor Address */}
-          <fieldset className="border p-4 rounded mt-4">
-            <legend className="font-semibold px-2">Address</legend>
+          <fieldset className="border-2 border-black p-4 rounded mt-4">
+            <legend className="font-semibold px-2">Present Address</legend>
             <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium">
@@ -516,7 +516,7 @@ const SamsungForm = ({ product }) => {
           </fieldset>
 
           {/* Guarantor Documents */}
-          <fieldset className="border p-4 rounded mt-4">
+          <fieldset className="border-2 border-black p-4 rounded mt-4">
             <legend className="font-semibold px-2">Documents (The legal age requirement is above 20 years old)</legend>
             <div className="grid md:grid-cols-3 gap-4">
               <div>
@@ -529,7 +529,7 @@ const SamsungForm = ({ product }) => {
                   accept="image/*"
                   onChange={handleGuarantorFileChange}
                   required
-                  className="mt-1 block w-full p-2 border rounded"
+                  className="mt-1 block w-full p-2 border border-black rounded"
                 />
               </div>
               <div>
@@ -559,7 +559,7 @@ const SamsungForm = ({ product }) => {
                 />
               </div>
             </div>
-            <p className="mt-3 text-xs text-gray-300">
+            <p className="mt-3 text-xs text-gray-900">
               Note: Maximum file size for each document is 2MB.
             </p>
           </fieldset>
@@ -585,11 +585,11 @@ const SamsungForm = ({ product }) => {
 
       {/* Step 3: EMI & Downpayment Details */}
       {currentStep === 3 && (
-        <Card className="col-span-5 bg-inherit text-white border border-white p-4">
+        <Card className="col-span-5 bg-inherit text-black border-2 border-black p-4">
           <h2 className="text-2xl font-semibold text-center mb-4">
             EMI & Downpayment Details
           </h2>
-          <fieldset className="border p-4 rounded mt-4">
+          <fieldset className="border-2 border-black p-4 rounded mt-4">
             <legend className="font-semibold px-2">Downpayment & EMI</legend>
             <div className="grid md:grid-cols-2 gap-4">
               <div>
@@ -626,7 +626,7 @@ const SamsungForm = ({ product }) => {
                   name="emiDuration"
                   value={emiDuration}
                   onChange={handleEmiDurationChange}
-                  className="bg-inherit p-2 border rounded"
+                  className="bg-inherit border border-black p-2 rounded"
                 >
                   <option className="text-black" value="6">
                     6 Months

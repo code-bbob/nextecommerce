@@ -9,6 +9,7 @@ import Footer from "@/components/footer"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Filter, ChevronLeft, ChevronRight, X } from "lucide-react"
+import CatBar from "@/components/catbar"
 
 function StorePage() {
   const searchParams = useSearchParams()
@@ -80,12 +81,13 @@ function StorePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-black via-gray-600 to-black font-sans">
+    <div className="flex flex-col min-h-screen bg-gray-200 font-sans">
       <NavBar />
+      <CatBar />
       <div className="flex-grow flex md:flex-row flex-col">
         {/* Desktop Sidebar */}
-        <aside className="hidden md:block md:w-64">
-          <div className="sticky top-0 h-screen overflow-y-auto">
+        <aside className="hidden md:block md:w-60">
+          <div className="sticky top-20 h-screen overflow-y-auto">
             <Suspense fallback={<div className="text-white p-4">Loading filters...</div>}>
               <FilterSidebar
                 setOrdering={setOrdering}

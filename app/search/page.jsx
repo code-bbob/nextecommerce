@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect } from "react"
 import NavBar from "@/components/navbar"
 import ProductGrid from "@/components/productGrid"
-import FilterSidebar from "@/components/filterSidebar"
+import FilterSidebar from "@/components/filterSidebar"  
 import customFetch from "@/utils/customFetch"
 import Footer from "@/components/footer"
 import { useSearchParams, useRouter } from "next/navigation"
@@ -17,7 +17,7 @@ function Search() {
   
   // Get the current page from URL or default to 1
   const currentPage = parseInt(searchParams.get("page") || "1", 10)
-  // Get the search term (if provided in URL: ?search=sth)
+  // Get the search term (if provided in URL: ?q=sth)
   const searchQuery = searchParams.get("q") || ""
   
   const [products, setProducts] = useState([])
@@ -45,7 +45,7 @@ function Search() {
         // Build the query parameters
         const queryParams = new URLSearchParams()
         
-        // Append the search term if it exists. This will also be used to select the endpoint.
+        // Append the search term if it exists. This will also determine which endpoint to use.
         if (searchQuery) {
           queryParams.append("search", searchQuery)
         }
@@ -54,7 +54,6 @@ function Search() {
           queryParams.append("ordering", ordering)
         }
         if (rating) {
-          // Ensure you use the correct query key for rating
           queryParams.append("rating", rating)
         }
         if (minRating) {
@@ -69,11 +68,11 @@ function Search() {
         if (brandName) {
           queryParams.append("brand", brandName)
         }
-
+        
         // Add page parameter
         queryParams.append("page", currentPage.toString())
         
-        // If a search query exists, use the search endpoint.
+        // Select endpoint based on whether a search query exists
         const apiUrl = searchQuery 
           ? `shop/api/search/?${queryParams.toString()}`
           : `shop/api/?${queryParams.toString()}`
@@ -103,28 +102,29 @@ function Search() {
   }, [searchQuery, ordering, rating, minRating, currentPage, minPrice, maxPrice, brandName])
 
   const handlePageChange = (newPage) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set("page", newPage.toString())
+    const paramsObj = new URLSearchParams(searchParams.toString())
+    paramsObj.set("page", newPage.toString())
     const currentPath = window.location.pathname
-    router.push(`${currentPath}?${params.toString()}`)
+    router.push(`${currentPath}?${paramsObj.toString()}`)
   }
 
+  // Generate pagination numbers with ellipsis if needed
   const getPageNumbers = () => {
     const totalPages = pagination.total_pages
-    const currentPage = pagination.current_page
+    const current = pagination.current_page
     if (totalPages <= 5) {
       return Array.from({ length: totalPages }, (_, i) => i + 1)
     }
     const pages = [1]
-    if (currentPage > 3) {
+    if (current > 3) {
       pages.push("...")
     }
-    const start = Math.max(2, currentPage - 1)
-    const end = Math.min(totalPages - 1, currentPage + 1)
+    const start = Math.max(2, current - 1)
+    const end = Math.min(totalPages - 1, current + 1)
     for (let i = start; i <= end; i++) {
       pages.push(i)
     }
-    if (currentPage < totalPages - 2) {
+    if (current < totalPages - 2) {
       pages.push("...")
     }
     if (totalPages > 1) {
@@ -134,12 +134,35 @@ function Search() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-black via-gray-600 to-black font-sans">
+    <div className="flex flex-col min-h-screen bg-gray-200 font-sans">
       <NavBar />
       <div className="flex-grow flex md:flex-row flex-col">
         {/* Desktop Sidebar */}
         <aside className="hidden md:block md:w-64">
           <div className="sticky top-0 h-screen overflow-y-auto">
+            <FilterSidebar
+              setOrdering={setOrdering}
+              setRating={setRating}
+              setMinRating={setMinRating}
+              setMinPrice={setMinPrice}
+              setMaxPrice={setMaxPrice}
+              setBrandName={setBrandName}
+              isSidebarOpen={isSidebarOpen}
+              setIsSidebarOpen={setIsSidebarOpen}
+            />
+          </div>
+        </aside>
+        
+        {/* Mobile Sidebar (modal-style) */}
+        {isSidebarOpen && (
+          <div className="md:hidden fixed inset-0 z-50 bg-black/80 p-4 overflow-y-auto">
+            <div className="bg-gray-200 p-4">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-black">Filters</h2>
+                <Button variant="ghost" className="text-black" onClick={() => setIsSidebarOpen(false)}>
+                  <X />
+                </Button>
+              </div>
               <FilterSidebar
                 setOrdering={setOrdering}
                 setRating={setRating}
@@ -150,92 +173,73 @@ function Search() {
                 isSidebarOpen={isSidebarOpen}
                 setIsSidebarOpen={setIsSidebarOpen}
               />
-          </div>
-        </aside>
-        
-        {/* Mobile Sidebar (modal-style) */}
-        {isSidebarOpen && (
-          <div className="md:hidden fixed inset-0 z-50 bg-black/80 p-4 overflow-y-auto">
-            <div className="bg-gradient-to-br from-black via-slate-500 to-black p-4">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-white">Filters</h2>
-                <Button variant="ghost" className="text-white" onClick={() => setIsSidebarOpen(false)}>
-                  <X />
-                </Button>
-              </div>
-                <FilterSidebar
-                  setOrdering={setOrdering}
-                  setRating={setRating}
-                  setMinRating={setMinRating}
-                  setMinPrice={setMinPrice}
-                  setMaxPrice={setMaxPrice}
-                  setBrandName={setBrandName}
-                  isSidebarOpen={isSidebarOpen}
-                  setIsSidebarOpen={setIsSidebarOpen}
-                />
             </div>
           </div>
         )}
+        
         <main className="flex-1 p-4 md:p-8">
           <div className="flex justify-between md:justify-center items-center mb-6">
-            <h1 className="text-2xl md:text-xl font-bold text-white capitalize">
+            <h1 className="text-md md:text-xl font-bold text-black capitalize">
               {searchQuery ? `Items matching "${searchQuery}"` : "Products"}
             </h1>
-            <Button variant="outline" className="md:hidden bg-black text-white" onClick={() => setIsSidebarOpen(true)}>
+            <Button 
+              variant="outline" 
+              className="md:hidden bg-white text-black" 
+              onClick={() => setIsSidebarOpen(true)}
+            >
               <Filter className="mr-2 h-4 w-4" />
               Filters
             </Button>
           </div>
-            <ProductGrid products={products} isLoading={isLoading} />
-            
-            {/* Pagination controls */}
-            {pagination.total_pages > 1 && (
-              <div className="flex flex-col items-center mt-8 space-y-2">
-                <div className="text-white text-sm">
-                  Page {pagination.current_page} of {pagination.total_pages}
-                </div>
-                
-                <div className="flex space-x-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handlePageChange(pagination.current_page - 1)}
-                    disabled={!pagination.previous}
-                    className="bg-gray-800 text-white hover:bg-gray-700"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  
-                  {getPageNumbers().map((page, index) => (
-                    page === "..." ? (
-                      <span key={`ellipsis-${index}`} className="px-3 py-2 text-white">...</span>
-                    ) : (
-                      <Button
-                        key={`page-${page}`}
-                        variant={page === pagination.current_page ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => page !== pagination.current_page && handlePageChange(page)}
-                        className={page === pagination.current_page 
-                          ? "bg-gradient-to-r from-pink-500 to-violet-500 text-white" 
-                          : "bg-gray-800 text-white hover:bg-gray-700"}
-                      >
-                        {page}
-                      </Button>
-                    )
-                  ))}
-                  
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handlePageChange(pagination.current_page + 1)}
-                    disabled={!pagination.next}
-                    className="bg-gray-800 text-white hover:bg-gray-700"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
+          
+          <ProductGrid products={products} isLoading={isLoading} />
+          
+          {/* Pagination Controls */}
+          {pagination.total_pages > 0 && (
+            <div className="flex flex-col items-center mt-8 space-y-2">
+              <div className="text-black text-sm">
+                Page {pagination.current_page} of {pagination.total_pages}
               </div>
-            )}
+              
+              <div className="flex space-x-2">
+                <button 
+                  onClick={() => handlePageChange(pagination.current_page - 1)}
+                  disabled={!pagination.previous || pagination.current_page === 1}
+                  className="bg-gray-800 text-black hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed px-3 py-2 text-sm rounded"
+                >
+                  <ChevronLeft className="h-4 w-4 inline-block mr-1" />
+                  Prev
+                </button>
+                
+                {getPageNumbers().map((page, index) =>
+                  page === "..." ? (
+                    <span key={`ellipsis-${index}`} className="px-3 py-2 text-black">...</span>
+                  ) : (
+                    <button
+                      key={`page-${page}`}
+                      onClick={() => page !== pagination.current_page && handlePageChange(page)}
+                      className={`px-3 py-2 text-sm rounded ${
+                        page === pagination.current_page
+                          ? "bg-gradient-to-r from-pink-500 to-violet-500 text-black"
+                          : "bg-gray-800 text-black hover:bg-gray-700"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
+                
+                <button 
+                  onClick={() => handlePageChange(pagination.current_page + 1)}
+                  disabled={!pagination.next || pagination.current_page === pagination.total_pages}
+                  className="bg-gray-800 text-black hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed px-3 py-2 text-sm rounded"
+                >
+                  Next 
+                  <ChevronRight className="h-4 w-4 inline-block ml-1" />
+                </button>
+              </div>
+            </div>
+          )}
         </main>
       </div>
       <Footer />
@@ -245,9 +249,8 @@ function Search() {
 
 export default function Page(){
   return(
-    <Suspense fallback={<div className="text-white">Loading products...</div>}>
+    <Suspense fallback={<div className="text-black">Loading products...</div>}>
       <Search />
     </Suspense>
-
   )
 }

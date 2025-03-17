@@ -24,17 +24,17 @@ const Slider = React.forwardRef(({ className, onValueChange, ...props }, ref) =>
         {...props}
         onValueChange={handleValueChange}
       >
-        <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-white/30">
-          <SliderPrimitive.Range className="absolute h-full bg-white/80" />
+        <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-gray-400">
+          <SliderPrimitive.Range className="absolute h-full bg-black" />
         </SliderPrimitive.Track>
         <SliderPrimitive.Thumb className="block h-4 w-4 rounded-full border border-primary/50 bg-background shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50" />
       </SliderPrimitive.Root>
       
       <div className="flex justify-between mt-2">
-        <span className="text-xs text-white">0 </span>
-        <span className="text-xs text-white">5 </span>
+        <span className="text-xs font-bold text-black">0 </span>
+        <span className="text-xs font-bold text-black">5 </span>
       </div>
-      <div className="mt-2 text-sm font-bold text-white">
+      <div className="mt-2 text-sm font-bold text-black">
     Chosen value: {currentValue[0]}
   </div>
     </div>

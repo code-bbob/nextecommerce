@@ -24,6 +24,7 @@ export default function PaymentPage() {
 
   useEffect(() => {
     if (!email || !shippingAddress.address) {
+      console.log("eta po ayo")
       router.replace("/checkout");
     }
   }, [email, shippingAddress.address, router]);
@@ -64,7 +65,10 @@ export default function PaymentPage() {
       });
       dispatch(fetchCartFromServer());
       dispatch(resetCheckout());
-      router.replace(`/tracking/${order_id}`);
+      console.log("rerouting to home page")
+      router.push(`/`).then(() => {
+        dispatch(resetCheckout());
+      });
     } catch (err) {
       console.error(err);
     } finally {
@@ -149,7 +153,7 @@ export default function PaymentPage() {
               <p className="text-sm text-gray-400">All transactions are secure and encrypted.</p>
               <div className="bg-gray-900 rounded-lg p-8 text-center space-y-4">
                 <CreditCard className="mx-auto h-12 w-12 text-gray-500" />
-                <p>This store can&apos;t accept payments right now.</p>
+                <p>This store only accepts cash on delivery right now.</p>
               </div>
             </section>
             <div className="flex justify-between items-center">

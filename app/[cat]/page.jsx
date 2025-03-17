@@ -6,16 +6,17 @@ import ProductGrid from "@/components/productGrid"
 import FilterSidebar from "@/components/filterSidebar"
 import customFetch from "@/utils/customFetch"
 import Footer from "@/components/footer"
-import { useSearchParams, useParams,useRouter } from "next/navigation"
+import { useSearchParams, useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Filter, ChevronLeft, ChevronRight, X } from "lucide-react"
+import CatBar from "@/components/catbar"
 
 function StorePage() {
   const searchParams = useSearchParams()
   const params = useParams()
   const router = useRouter()
   const cat = params.cat
-  const currentPage = parseInt(searchParams.get('page') || '1', 10)
+  const currentPage = parseInt(searchParams.get('page') || '1', 18)
   
   const [products, setProducts] = useState([])
   const [ordering, setOrdering] = useState("")
@@ -40,7 +41,7 @@ function StorePage() {
         setIsLoading(true)
         const queryParams = new URLSearchParams()
         if (ordering) queryParams.append('ordering', ordering)
-        if (rating) queryParams.append('ordering', rating)
+        if (rating) queryParams.append('rating', rating) // Adjusted to use 'rating'
         if (minRating) queryParams.append('min_rating', minRating)
         if (minPrice) queryParams.append('min_price', minPrice)
         if (maxPrice) queryParams.append('max_price', maxPrice)
@@ -71,21 +72,22 @@ function StorePage() {
       }
     }
     fetchProducts()
-  }, [ordering, rating, minRating, currentPage, minPrice, maxPrice, brandName])
+  }, [ordering, rating, minRating, currentPage, minPrice, maxPrice, brandName, cat])
 
   const handlePageChange = (newPage) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('page', newPage.toString())
+    const paramsObj = new URLSearchParams(searchParams.toString())
+    paramsObj.set('page', newPage.toString())
     const currentPath = window.location.pathname
-    router.push(`${currentPath}?${params.toString()}`)
+    router.push(`${currentPath}?${paramsObj.toString()}`)
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-black via-gray-600 to-black font-sans">
+    <div className="flex flex-col min-h-screen bg-gray-200 font-sans">
       <NavBar />
+      <CatBar/>
       <div className="flex-grow flex md:flex-row flex-col">
         {/* Desktop Sidebar */}
-        <aside className="hidden md:block md:w-64">
+        <aside className="hidden md:block md:w-60">
           <div className="sticky top-0 h-screen overflow-y-auto">
             <Suspense fallback={<div className="text-white p-4">Loading filters...</div>}>
               <FilterSidebar
@@ -107,6 +109,25 @@ function StorePage() {
           <Suspense fallback={<div className="text-white">Loading products...</div>}>
             <ProductGrid products={products} isLoading={isLoading} />
           </Suspense>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-center items-center mt-8 space-x-4">
+            <Button 
+              onClick={() => handlePageChange(currentPage - 1)} 
+              disabled={!pagination.previous || currentPage === 1}
+            >
+              <ChevronLeft className="mr-2" /> Previous
+            </Button>
+            <span className="text-white">
+              {currentPage} of {pagination.total_pages}
+            </span>
+            <Button 
+              onClick={() => handlePageChange(currentPage + 1)} 
+              disabled={!pagination.next || currentPage === pagination.total_pages}
+            >
+              Next <ChevronRight className="ml-2" />
+            </Button>
+          </div>
         </main>
       </div>
       <Footer />
