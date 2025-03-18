@@ -4,6 +4,11 @@ import CountdownTimer from "@/components/CountdownTimer.client";
 import FeaturedProducts from "@/components/FeaturedProducts.client";
 import Testimonials from "@/components/Testimonials.client";
 import Footer from "@/components/Footer.server";
+import BlackNavBar from "@/components/blackNavbar";
+import LaptopSlider from "@/components/LaptopSlider.client";
+import OurServices from "@/components/ourServices";
+import BlogSlider from "@/components/blogsSlider";
+
 
 
 export const metadata = {
@@ -16,12 +21,15 @@ export default function Page() {
   return (
     <>
       <div className="bg-gradient-to-b from-black via-gray-900 to-black min-h-screen text-white">
-        <NavBar />
+        <BlackNavBar />
         <main className="container mx-auto px-6">
           <HeroCarousel />
           <CountdownTimer />
           <FeaturedProducts />
           <Testimonials />
+          <LaptopSlider/>
+          <OurServices/>
+        <BlogSlider/>
         </main>
         <Footer />
       </div>

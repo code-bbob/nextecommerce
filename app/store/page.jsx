@@ -81,7 +81,7 @@ function StorePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-200 font-sans">
+  <div className="flex flex-col min-h-screen bg-white font-sans">
       <NavBar />
       <CatBar />
       <div className="flex-grow flex md:flex-row flex-col">

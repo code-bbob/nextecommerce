@@ -44,11 +44,11 @@ export default function FilterSidebar({ category, setOrdering, setRating,setMinR
 
 
   return (
-    <div className="p-4  w-full h-screen shadow-2xl bg-white border-r border-white/10">
+    <div className="p-4  w-full h-screen shadow-2xl bg-white text-black  border-r border-black/10">
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
-          <Sliders className="mr-2 h-5 w-5 text-black" />
-          <h2 className="text-xl font-bold text-black">Filters</h2>
+          <Sliders className="mr-2 h-5 w-5" />
+          <h2 className="text-xl font-bold ">Filters</h2>
         </div>
         {/* Show close button only on mobile (when sidebar modal is open) */}
         {isSidebarOpen && (
@@ -58,7 +58,7 @@ export default function FilterSidebar({ category, setOrdering, setRating,setMinR
         )}
       </div>
       <Select onValueChange={handleOrderChange}>
-        <SelectTrigger className="w-full bg-white text-black border-black mb-4">
+        <SelectTrigger className="w-full bg-white border-black mb-4">
           <SelectValue placeholder="Sort by price" />
         </SelectTrigger>
         <SelectContent className="">
@@ -67,7 +67,7 @@ export default function FilterSidebar({ category, setOrdering, setRating,setMinR
         </SelectContent>
       </Select>
       <Select onValueChange={handleRatingChange}>
-        <SelectTrigger className="w-full border  text-black border-black mb-4">
+        <SelectTrigger className="w-full border border-black mb-4">
           <SelectValue placeholder="Sort by rating" />
         </SelectTrigger>
         <SelectContent className="">
@@ -86,20 +86,20 @@ export default function FilterSidebar({ category, setOrdering, setRating,setMinR
         
       </div>
       <div className="mt-4">
-        <h3 className="text-black font-semibold mb-2">Price Range</h3>
+        <h3 className=" font-semibold mb-2">Price Range</h3>
         <div className="flex space-x-2">
           <input
             type="number"
             value={tempMinPrice}
             placeholder="Min Price"
-            className="w-full rounded-md border border-black bg-white text-black  px-2 h-10"
+            className="w-full rounded-md border border-black bg-white px-2 h-10"
             onChange={(e) => setTempMinPrice(e.target.value)}
           />
           <input
             type="number"
             value={tempMaxPrice}
             placeholder="Max Price"
-            className="w-full rounded-md border border-black bg-white text-black px-2  h-10"
+            className="w-full rounded-md border border-black text-black bg-white px-2  h-10"
             onChange={(e) => setTempMaxPrice(e.target.value)}
           />
       <Button  className="bg-black" onClick={applyFilters}>
@@ -110,7 +110,7 @@ export default function FilterSidebar({ category, setOrdering, setRating,setMinR
       </div>
       
 
-      <h3 className="text-black font-semibold my-2">Brand Name</h3>
+      <h3 className=" font-semibold my-2">Brand Name</h3>
       <form className="flex gap-2 " onSubmit={(e)=>handleBrandFilter(e,tempBrandName)}>
         <input
           type="text"

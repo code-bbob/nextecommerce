@@ -72,7 +72,7 @@ export default function ProductGrid({ products, isLoading }) {
         <motion.div
         key={product.product_id}
         // Use flex and flex-col to control vertical spacing
-        className="flex flex-col bg-white rounded-lg overflow-hidden shadow-lg"
+        className="flex flex-col bg-white text-black rounded-lg overflow-hidden shadow-lg"
         whileHover={{ y: -5 }}
         transition={{ duration: 0.3 }}
         onClick={() => router.push(`/product/${product.product_id}`)}
@@ -94,14 +94,14 @@ export default function ProductGrid({ products, isLoading }) {
         {/* Content Container */}
         <div className="p-3 sm:p-4 flex flex-col flex-grow">
           {/* Product Title */}
-          <h3 className="text-base mb-2 text-black line-clamp-3">
+          <h3 className="text-base mb-2 line-clamp-3">
             {product.name}
           </h3>
       
           {/* Rating */}
           <div className="flex items-center mb-2">
             <Star className="text-yellow-400 mr-1 h-3 w-3 sm:h-4 sm:w-4" />
-            <span className="text-xs sm:text-sm text-black">
+            <span className="text-xs sm:text-sm">
               {product.ratings.stats.avg_rating.toFixed(1)}
             </span>
           </div>
@@ -110,7 +110,7 @@ export default function ProductGrid({ products, isLoading }) {
           <div>
 
           {product.old_price && (
-            <strike className="text-lg sm:text-lg font-bold mb-3 mr-5 sm:mb-4 text-black">
+            <strike className="text-lg sm:text-lg font-bold mb-3 mr-5 sm:mb-4">
               RS. {product.old_price}
             </strike>
           )}

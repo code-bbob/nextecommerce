@@ -19,16 +19,16 @@ const heroProducts = [
     img: "/images/iphone.png",
     price: "Rs. 10,999",
   },
-  {
-    name: "Hp Elitebook 850",
-    img: "/images/newhp.png",
-    price: "Rs. 49,999",
-  },
-  {
-    name: "VR Metaverse Bundle",
-    img: "/images/featured3.png",
-    price: "Rs. 79,999",
-  },
+  // {
+  //   name: "Hp Elitebook 850",
+  //   img: "/images/newhp.png",
+  //   price: "Rs. 49,999",
+  // },
+  // {
+  //   name: "VR Metaverse Bundle",
+  //   img: "/images/featured3.png",
+  //   price: "Rs. 79,999",
+  // },
 ];
 
 export default function HeroCarousel() {
@@ -57,6 +57,12 @@ export default function HeroCarousel() {
                 <h1 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 drop-shadow-2xl">
                   Unbeatable Prices, Unmatched Quality
                 </h1>
+                <Button
+                  onClick={() => router.push("/store")}
+                  className="md:hidden mt-8 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xl px-8 py-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300"
+                >
+                  Shop Now
+                </Button>
                 <p className="mt-6 text-xl md:text-2xl text-gray-300">
                   Get the best deals on{" "}
                   <span className="font-bold">{product.name}</span>. Limited stock available at just{" "}
@@ -64,7 +70,7 @@ export default function HeroCarousel() {
                 </p>
                 <Button
                   onClick={() => router.push("/store")}
-                  className="mt-8 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xl px-8 py-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300"
+                  className="hidden md:block mt-8 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xl px-8 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300"
                 >
                   Shop Now
                 </Button>

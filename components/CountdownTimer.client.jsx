@@ -35,7 +35,7 @@ export default function CountdownTimer() {
   });
 
   return (
-    <section className="bg-gray-800 rounded-xl p-6 my-12 text-center shadow-xl">
+    <section className="bg-gray-800 rounded-xl p-6 mt-16 mb-12 text-center shadow-xl">
       <h2 className="text-3xl font-bold mb-4">Limited Time Offer!</h2>
       <p className="text-xl text-gray-300 mb-4">
         Grab these deals before they vanish.

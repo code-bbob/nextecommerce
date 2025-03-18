@@ -180,7 +180,7 @@ export default function CatBar() {
   return (
     <>
       
-      <header className="shadow-md hidden md:block bg-red-700 text-white border py-2">
+      <header className="shadow-md hidden md:block bg-gray-700 text-white py-2">
         <div className="relative">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <nav className=" md:flex ml-10 font-bold items-center space-x-10 w-full">
