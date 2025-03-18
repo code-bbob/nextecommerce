@@ -1,7 +1,7 @@
 export default function Footer() {
     return (
-      <footer className="mt-12 py-8 border-t border-gray-700 text-center text-gray-500">
-        <p>&copy; {new Date().getFullYear()} Digitech. All rights reserved.</p>
+      <footer className=" py-8 bg-black border-t border-gray-700 text-center text-gray-500">
+        <p>&copy; {new Date().getFullYear()} Bibhab Basnet. All rights reserved.</p>
         <div className="mt-4 flex justify-center space-x-6">
           <a
             href="https://twitter.com/digitech"

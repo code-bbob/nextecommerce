@@ -72,7 +72,7 @@ export default function ProductGrid({ products, isLoading }) {
         <motion.div
         key={product.product_id}
         // Use flex and flex-col to control vertical spacing
-        className="flex flex-col bg-white text-black rounded-lg overflow-hidden shadow-lg"
+        className="flex flex-col bg-gradient-to-b border-2 border-gray-900 from-black via-gray-800 to-gray-900 text-white rounded-lg overflow-hidden shadow-lg"
         whileHover={{ y: -5 }}
         transition={{ duration: 0.3 }}
         onClick={() => router.push(`/product/${product.product_id}`)}
@@ -137,7 +137,7 @@ export default function ProductGrid({ products, isLoading }) {
       ))}
             
       {products?.length === 0 && (
-        <div className="text-black text-center col-span-2 md:col-span-3 lg:col-span-4">
+        <div className="text-white text-center col-span-2 md:col-span-3 lg:col-span-4">
           No products found
         </div>
       )}  

@@ -19,7 +19,7 @@ function useDebounce(value, delay) {
   return debouncedValue;
 }
 
-export default function BlackNavBar() {
+export default function BlackNavBar({color}) {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -97,7 +97,7 @@ export default function BlackNavBar() {
   const renderSuggestions = () => {
     if (!suggestions.length) return null;
     return (
-      <div className="absolute left-0 right-0 mt-1 bg-black text-white rounded shadow-lg z-10 max-h-60 overflow-y-auto">
+      <div className={`absolute left-0 right-0 mt-1 bg-${color} text-white rounded shadow-lg z-10 max-h-60 overflow-y-auto`}>
         {suggestions.map((item) => (
           <div
             key={item.id}
@@ -163,7 +163,7 @@ export default function BlackNavBar() {
       )}
 
       {/* Main Nav Bar */}
-      <header className="bg-black text-white sticky top-0 z-50 shadow-md">
+      <header className={`bg-${color} text-white sticky p-2 top-0 z-50 shadow-2xl`}>
         <div className="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
           {/* Left side: Logo + Mobile Menu Button */}
           <div className="flex items-center space-x-3">
@@ -228,11 +228,17 @@ export default function BlackNavBar() {
             <div className="hidden md:flex items-center space-x-4 font-semibold">
               <Link href="/store" className="flex items-center space-x-1">
                 <Zap className="h-5 w-5 text-orange-400" />
-                <span className="text-orange-400">WEEKLY</span>
-                <span className="text-white">DEALS</span>
+                <div>
+
+                <p className="text-orange-400">WEEKLY</p>
+                <p className="text-white text-right">DEALS</p>
+                </div>
               </Link>
               <Link href="/store" className="hover:text-gray-200">
                 Store
+              </Link>
+              <Link href="/blog" className="hover:text-gray-200">
+                Blogs
               </Link>
               {/* Logout (if logged in) */}
               {hasHydrated && isLoggedIn && (
@@ -288,6 +294,13 @@ export default function BlackNavBar() {
                   onClick={() => setIsSidePanelOpen(false)}
                 >
                   Store
+                </Link>
+                <Link
+                  href="/blog"
+                  className="hover:text-gray-300"
+                  onClick={() => setIsSidePanelOpen(false)}
+                >
+                  Blogs
                 </Link>
                 <Link
                   href="/laptop"

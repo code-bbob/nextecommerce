@@ -9,6 +9,7 @@ import Footer from "@/components/footer"
 import { useSearchParams, useParams,useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Filter, ChevronLeft, ChevronRight, X } from "lucide-react"
+import BlackNavBar from "@/components/blackNavbar"
 
 function StorePage() {
   const searchParams = useSearchParams()
@@ -81,8 +82,8 @@ function StorePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-black via-gray-600 to-black font-sans">
-      <NavBar />
+    <div className="flex flex-col min-h-screen bg-gray-700 font-sans">
+      <BlackNavBar color="inherit"/>
       <div className="flex-grow flex md:flex-row flex-col">
         {/* Desktop Sidebar */}
         <aside className="hidden md:block md:w-64">
@@ -107,6 +108,23 @@ function StorePage() {
           <Suspense fallback={<div className="text-white">Loading products...</div>}>
             <ProductGrid products={products} isLoading={isLoading} />
           </Suspense>
+          <div className="flex justify-center items-center mt-8 space-x-4">
+            <Button 
+              onClick={() => handlePageChange(currentPage - 1)} 
+              disabled={!pagination.previous || currentPage === 1}
+            >
+              <ChevronLeft className="mr-2" /> Previous
+            </Button>
+            <span className="text-white">
+              {currentPage} of {pagination.total_pages}
+            </span>
+            <Button 
+              onClick={() => handlePageChange(currentPage + 1)} 
+              disabled={!pagination.next || currentPage === pagination.total_pages}
+            >
+              Next <ChevronRight className="ml-2" />
+            </Button>
+          </div>
         </main>
       </div>
       <Footer />

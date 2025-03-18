@@ -10,6 +10,7 @@ import { useSearchParams, useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Filter, ChevronLeft, ChevronRight, X } from "lucide-react"
 import CatBar from "@/components/catbar"
+import BlackNavBar from "@/components/blackNavbar"
 
 function StorePage() {
   const searchParams = useSearchParams()
@@ -82,13 +83,13 @@ function StorePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-200 font-sans">
-      <NavBar />
+    <div className="flex flex-col min-h-screen bg-gray-700 font-sans">
+      <BlackNavBar color="inherit" />
       <CatBar/>
       <div className="flex-grow flex md:flex-row flex-col">
         {/* Desktop Sidebar */}
         <aside className="hidden md:block md:w-60">
-          <div className="sticky top-0 h-screen overflow-y-auto">
+          <div className="sticky top-20 h-screen overflow-y-auto">
             <Suspense fallback={<div className="text-white p-4">Loading filters...</div>}>
               <FilterSidebar
                 setOrdering={setOrdering}

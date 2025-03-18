@@ -31,10 +31,10 @@ const Slider = React.forwardRef(({ className, onValueChange, ...props }, ref) =>
       </SliderPrimitive.Root>
       
       <div className="flex justify-between mt-2">
-        <span className="text-xs font-bold text-black">0 </span>
-        <span className="text-xs font-bold text-black">5 </span>
+        <span className="text-xs font-bold ">0 </span>
+        <span className="text-xs font-bold">5 </span>
       </div>
-      <div className="mt-2 text-sm font-bold text-black">
+      <div className="mt-2 text-sm font-bold">
     Chosen value: {currentValue[0]}
   </div>
     </div>

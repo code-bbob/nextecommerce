@@ -20,8 +20,8 @@ export const metadata = {
 export default function Page() {
   return (
     <>
-      <div className="bg-gradient-to-b from-black via-gray-900 to-black min-h-screen text-white">
-        <BlackNavBar />
+      <div className="bg-gradient-to-b from-black via-gray-900 to-black bg-fixed min-h-screen text-white">
+        <BlackNavBar color="black"/>
         <main className="container mx-auto px-6">
           <HeroCarousel />
           <CountdownTimer />

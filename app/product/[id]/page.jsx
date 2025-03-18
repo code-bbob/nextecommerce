@@ -1,4 +1,6 @@
 // app/product/[id]/page.jsx
+import BlackNavBar from "@/components/blackNavbar";
+import Footer from "@/components/Footer.server";
 import NavBar from "@/components/navbar";
 import ProductInteractive from "@/components/productInteractive";
 import { notFound } from "next/navigation";
@@ -6,7 +8,7 @@ import Script from "next/script";
 
 // Generate dynamic metadata based on the product data
 export async function generateMetadata({ params }) {
-  const { id } = params;
+  const { id } = await params;
   const backendUrl = `http://127.0.0.1:8000/shop/api/${id}/`;
   
   try {
@@ -60,7 +62,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ProductPage({ params }) {
-  const { id } = params;
+  const { id } =await params;
   const backendUrl = `http://127.0.0.1:8000/shop/api/${id}/`;
   let product = {};
   
@@ -77,8 +79,6 @@ export default async function ProductPage({ params }) {
   } catch (error) {
     console.error(error);
   }
-  console.log(product);
-  
   // JSON-LD structured data for SEO
   const structuredData = {
     "@context": "https://schema.org",
@@ -96,8 +96,8 @@ export default async function ProductPage({ params }) {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans">
-      <NavBar />
+    <div className="min-h-screen bg-gray-800 text-white font-sans">
+      <BlackNavBar color="inherit"/>
       {/* Pass product data to a client component for interactivity */}
       <ProductInteractive product={product} />
       {/* JSON-LD Structured Data for SEO */}
@@ -107,6 +107,7 @@ export default async function ProductPage({ params }) {
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
+      <Footer/>
     </div>
   );
 }

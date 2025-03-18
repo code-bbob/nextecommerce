@@ -1,6 +1,8 @@
 // pages/blog/index.js (or another appropriate page)
+import BlackNavBar from '@/components/blackNavbar';
 import BlogHeader from '@/components/blog/blogHeader';
 import BlogsView from '@/components/blog/blogView';
+import Footer from '@/components/Footer.server';
 import customFetch from '@/utils/customFetch';
 
 export default async function BlogPage() {
@@ -19,9 +21,11 @@ export default async function BlogPage() {
   }
 
   return (
-    <>
-      <BlogHeader blog={mblogs} />
+    <div className='bg-gradient-to-b mb-0 from-black to-gray-900'>
+      {/* <BlogHeader blog={mblogs} /> */}
+      <BlackNavBar color="black"/>
       <BlogsView blogData={blog} />
-    </>
+      <Footer />
+    </div>
   );
 }

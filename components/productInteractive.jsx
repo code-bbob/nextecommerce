@@ -114,12 +114,12 @@ export default function ProductInteractive({ product }) {
              {/* Cool Attributes Table */}
              {product.attributes.length > 0 && (
              <div className="mt-8 hidden md:block">
-              <h2 className="text-2xl font-bold mb-4 text-red-500">
+              <h2 className="text-2xl font-bold mb-4 text-gray-300 text-center">
                 Product Attributes
               </h2>
               <div className="overflow-hidden rounded-lg shadow-lg">
-                <table className="min-w-full bg-white">
-                  <thead className="bg-gray-800">
+                <table className="min-w-full ">
+                  <thead className="bg-black/50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                         Key
@@ -132,10 +132,10 @@ export default function ProductInteractive({ product }) {
                   <tbody className="divide-y divide-gray-200">
                     {product.attributes.map((attr, index) => (
                       <tr key={index} className="hover:bg-gray-100">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm ">
                           {attr.attribute}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
                           {attr.value}
                         </td>
                       </tr>
@@ -149,13 +149,13 @@ export default function ProductInteractive({ product }) {
           </div>
 
           {/* Product Details */}
-          <div className="space-y-6 text-black">
+          <div className="space-y-6">
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 to-violet-500" />
                 <span className="font-medium">{product.brandName}</span>
               </div>
-              <h1 className="text-3xl font-bold bg-clip-text text-red-500">
+              <h1 className="text-3xl font-bold bg-clip-text text-white/70">
                 {product.name}
               </h1>
               <div className="flex items-center space-x-2">
@@ -178,31 +178,33 @@ export default function ProductInteractive({ product }) {
             <div className="text-3xl text-orange-500 font-bold">
               RS. {product.price.toFixed(2)}
             </div>
+            {product.old_price && (
             <strike className="text-2xl text-grey-600 font-bold">
-              RS. {product.old_price.toFixed(2)}
+              RS. {product.old_price?.toFixed(2)}
             </strike>
+              )}
 
             </div>
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <p className="text-black font-bold">
+                <p className="text-gray-300 font-bold">
                   Category: {product.category}
                 </p>
-                <p className="text-black font-bold">Series: {product.series}</p>
+                <p className="text-gray-300 font-bold">Series: {product.series}</p>
               </div>
             </div>
 
-            <div className="flex space-x-2 bg-gray-200 p-4 md:space-x-4">
+            <div className="flex space-x-2 bg-gray-600 rounded p-4 md:space-x-4">
               <Button
-                className="flex-1 bg-black text-md hover:bg-red-700"
+                className="flex-1 bg-black text-md hover:scale-105"
                 size="lg"
                 onClick={() => router.push("/product/emi/" + product.product_id)}
               >
                 Apply Emi
               </Button>
               <Button
-                className="flex-1 bg-red-500 text-md hover:bg-red-700"
+                className="flex-1 bg-red-500 text-md hover:bg-red-700 hover:scale-105"
                 size="lg"
                 onClick={handleAddToCart}
               >
@@ -220,7 +222,7 @@ export default function ProductInteractive({ product }) {
               </Button>
             </div>
 
-            <div className="flex items-center text-sm text-gray-900">
+            <div className="flex items-center text-sm">
               <Truck className="w-4 h-4 mr-2" />
               Free delivery on orders over RS. 150
             </div>
@@ -231,13 +233,13 @@ export default function ProductInteractive({ product }) {
                 Product Attributes
               </h2>
               <div className="overflow-hidden rounded-lg shadow-lg">
-                <table className="min-w-full bg-white">
-                  <thead className="bg-gray-800">
+                <table className="min-w-full ">
+                  <thead className="bg-black/50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                         Key
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                         Value
                       </th>
                     </tr>
@@ -245,10 +247,10 @@ export default function ProductInteractive({ product }) {
                   <tbody className="divide-y divide-gray-200">
                     {product.attributes.map((attr, index) => (
                       <tr key={index} className="hover:bg-gray-100">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm ">
                           {attr.attribute}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm ">
                           {attr.value}
                         </td>
                       </tr>
@@ -262,28 +264,28 @@ export default function ProductInteractive({ product }) {
 
             {/* Tabs for additional information */}
             <Tabs defaultValue="details" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 bg-white border border-gray-800">
+              <TabsList className="grid w-full grid-cols-3 bg-black/50 border text-white border-gray-800">
                 <TabsTrigger
                   value="details"
-                  className="data-[state=active]:bg-gray-300"
+                  className="data-[state=active]:bg-gray-700 data-[state=active]:text-white"
                 >
                   Details
                 </TabsTrigger>
                 <TabsTrigger
                   value="reviews"
-                  className="data-[state=active]:bg-gray-300"
+                  className="data-[state=active]:bg-gray-700 data-[state=active]:text-white"
                 >
                   Reviews
                 </TabsTrigger>
                 <TabsTrigger
                   value="discussion"
-                  className="data-[state=active]:bg-gray-300"
+                  className="data-[state=active]:bg-gray-700 data-[state=active]:text-white"
                 >
                   Discussion
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="details" className="text-black space-y-4 mt-4">
+              <TabsContent value="details" className="text-white/70 space-y-4 mt-4">
                 <div
                   dangerouslySetInnerHTML={{ __html: product.description }}
                 />
@@ -345,7 +347,7 @@ export default function ProductInteractive({ product }) {
                       {product.ratings.data.map((rate) => (
                         <div
                           key={rate.id}
-                          className="bg-gray-200 rounded-lg p-4 space-y-2"
+                          className="bg-gray-900 text-white rounded-lg p-4 space-y-2"
                         >
                           <div className="flex items-center space-x-2">
                             {!rate.user_dp && (
@@ -365,7 +367,7 @@ export default function ProductInteractive({ product }) {
                               />
                             )}
                             <div className="flex flex-col">
-                              <span className="font-medium text-black">
+                              <span className="font-medium">
                                 {rate.user}
                               </span>
                               <div className="flex">
@@ -383,7 +385,7 @@ export default function ProductInteractive({ product }) {
                             </div>
                           </div>
                           {rate.comment && (
-                            <p className="text-black">{rate.comment}</p>
+                            <p className="">{rate.comment}</p>
                           )}
                           {/* Display the image thumbnail if available */}
                           {rate.image && (
@@ -410,7 +412,7 @@ export default function ProductInteractive({ product }) {
                 {comments.map((comment) => (
                   <div
                     key={comment.id}
-                    className="bg-gray-200 rounded-lg p-4 space-y-4"
+                    className="bg-gray-900 text-white rounded-lg p-4 space-y-4"
                   >
                     <div className="flex items-start space-x-4">
                       {!comment.user_dp && (
@@ -430,13 +432,13 @@ export default function ProductInteractive({ product }) {
                         />
                       )}
                       <div className="flex-1 space-y-1">
-                        <p className="font-medium text-black">
+                        <p className="font-medium ">
                           {comment.user}
                         </p>
-                        <p className="text-sm text-black">
+                        <p className="text-sm text-white/50">
                           {new Date(comment.published_date).toLocaleDateString()}
                         </p>
-                        <p className="text-black">{comment.text}</p>
+                        <p className="">{comment.text}</p>
                       </div>
                     </div>
                     {comment.replies.length > 0 && (
@@ -463,13 +465,13 @@ export default function ProductInteractive({ product }) {
                               />
                             )}
                             <div className="flex-1 space-y-1">
-                              <p className="font-medium text-black">
+                              <p className="font-medium ">
                                 {reply.user}
                               </p>
                               <p className="text-sm text-gray-400">
                                 {new Date(reply.published_date).toLocaleDateString()}
                               </p>
-                              <p className="text-black">{reply.text}</p>
+                              <p className="">{reply.text}</p>
                             </div>
                           </div>
                         ))}
@@ -478,7 +480,7 @@ export default function ProductInteractive({ product }) {
                   </div>
                 ))}
                 {/* Comment Form */}
-                <div className="bg-white rounded-lg p-4">
+                <div className="bg-gray-900 rounded-lg p-4">
                   <form
                     onSubmit={handleCommentSubmit}
                     className="flex flex-col"
@@ -486,10 +488,10 @@ export default function ProductInteractive({ product }) {
                     <textarea
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
-                      className="w-full p-2 rounded border border-gray-700 bg-white text-white"
+                      className="w-full p-2 rounded border border-gray-700 bg-gray-900 text-white"
                       placeholder="Write your comment..."
                     />
-                    <Button type="submit" className="mt-2 bg-red-600">
+                    <Button type="submit" className="mt-2 bg-red-700 hover:bg-red-700">
                       Post Comment
                     </Button>
                   </form>

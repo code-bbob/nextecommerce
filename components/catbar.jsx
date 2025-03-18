@@ -109,7 +109,7 @@ export default function CatBar() {
   const renderSuggestions = () => {
     if (!suggestions.length) return null;
     return (
-      <div className="absolute mt-1 w-full bg-white text-black rounded shadow-lg z-10 max-h-60 overflow-y-auto">
+      <div className="absolute mt-1 w-full bg-black text-white rounded shadow-lg z-10 max-h-60 overflow-y-auto">
         {suggestions.map((item) => (
           <div
             key={item.id}
@@ -139,7 +139,7 @@ export default function CatBar() {
     const data = preFetchedCategories[activeCategory];
     return (
       <div
-        className="absolute left-0 top-full w-full bg-white text-black z-50"
+        className="absolute left-0 top-full w-full bg-gray-900 text-white z-50"
         onMouseEnter={() => setActiveCategory(activeCategory)}
         onMouseLeave={() => setActiveCategory(null)}
       >
@@ -180,7 +180,7 @@ export default function CatBar() {
   return (
     <>
       
-      <header className="shadow-md hidden md:block bg-gray-700 text-white py-2">
+      <header className="shadow-md hidden md:block bg-gradient-to-br from-gray-800 via-gray-700 to-black text-white py-2">
         <div className="relative">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <nav className=" md:flex ml-10 font-bold items-center space-x-10 w-full">

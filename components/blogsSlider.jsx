@@ -47,7 +47,7 @@ export default function BlogSlider() {
           return (
             <div
               key={item.id}
-              className={`bg-gradient-to-b from-black via-gray-700 to-gray-900 border rounded-lg p-4 shadow-lg transition-transform duration-300 ${layoutClasses}`}
+              className={`bg-gradient-to-b from-black via-gray-700 to-gray-900  rounded-lg p-4 shadow-lg transition-transform duration-300 ${layoutClasses}`}
             >
               <h1 className="font-bold text-xl mb-4 line-clamp-2">
                 {item.title}
@@ -65,7 +65,8 @@ export default function BlogSlider() {
                 </div>
               )}
               {index === 0 &&(<div className="text-white">
-                <p className="mt-2">{item.content}</p>
+                 <p dangerouslySetInnerHTML={{ __html: item.content }}/>
+                  
                 </div>
             )}
             </div>

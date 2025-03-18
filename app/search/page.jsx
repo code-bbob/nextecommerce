@@ -5,11 +5,13 @@ import NavBar from "@/components/navbar"
 import ProductGrid from "@/components/productGrid"
 import FilterSidebar from "@/components/filterSidebar"  
 import customFetch from "@/utils/customFetch"
-import Footer from "@/components/footer"
+import Footer from "@/components/Footer.server"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Filter, ChevronLeft, ChevronRight } from "lucide-react"
 import { X } from "lucide-react"
+import BlackNavBar from "@/components/blackNavbar"
+import CatBar from "@/components/catbar"
 
 function Search() {
   const searchParams = useSearchParams()
@@ -134,8 +136,9 @@ function Search() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-200 font-sans">
-      <NavBar />
+    <div className="flex flex-col min-h-screen bg-gray-700 font-sans">
+      <BlackNavBar color="inherit"/>
+      <CatBar/>
       <div className="flex-grow flex md:flex-row flex-col">
         {/* Desktop Sidebar */}
         <aside className="hidden md:block md:w-64">
@@ -179,7 +182,7 @@ function Search() {
         
         <main className="flex-1 p-4 md:p-8">
           <div className="flex justify-between md:justify-center items-center mb-6">
-            <h1 className="text-md md:text-xl font-bold text-black capitalize">
+            <h1 className="text-md md:text-xl font-bold text-white capitalize">
               {searchQuery ? `Items matching "${searchQuery}"` : "Products"}
             </h1>
             <Button 
@@ -195,51 +198,25 @@ function Search() {
           <ProductGrid products={products} isLoading={isLoading} />
           
           {/* Pagination Controls */}
-          {pagination.total_pages > 0 && (
-            <div className="flex flex-col items-center mt-8 space-y-2">
-              <div className="text-black text-sm">
-                Page {pagination.current_page} of {pagination.total_pages}
-              </div>
-              
-              <div className="flex space-x-2">
-                <button 
-                  onClick={() => handlePageChange(pagination.current_page - 1)}
-                  disabled={!pagination.previous || pagination.current_page === 1}
-                  className="bg-gray-800 text-black hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed px-3 py-2 text-sm rounded"
-                >
-                  <ChevronLeft className="h-4 w-4 inline-block mr-1" />
-                  Prev
-                </button>
-                
-                {getPageNumbers().map((page, index) =>
-                  page === "..." ? (
-                    <span key={`ellipsis-${index}`} className="px-3 py-2 text-black">...</span>
-                  ) : (
-                    <button
-                      key={`page-${page}`}
-                      onClick={() => page !== pagination.current_page && handlePageChange(page)}
-                      className={`px-3 py-2 text-sm rounded ${
-                        page === pagination.current_page
-                          ? "bg-gradient-to-r from-pink-500 to-violet-500 text-black"
-                          : "bg-gray-800 text-black hover:bg-gray-700"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  )
-                )}
-                
-                <button 
-                  onClick={() => handlePageChange(pagination.current_page + 1)}
-                  disabled={!pagination.next || pagination.current_page === pagination.total_pages}
-                  className="bg-gray-800 text-black hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed px-3 py-2 text-sm rounded"
-                >
-                  Next 
-                  <ChevronRight className="h-4 w-4 inline-block ml-1" />
-                </button>
-              </div>
-            </div>
-          )}
+          
+            
+          <div className="flex justify-center items-center mt-8 space-x-4">
+            <Button 
+              onClick={() => handlePageChange(currentPage - 1)} 
+              disabled={!pagination.previous || currentPage === 1}
+            >
+              <ChevronLeft className="mr-2" /> Previous
+            </Button>
+            <span className="text-white">
+              {currentPage} of {pagination.total_pages}
+            </span>
+            <Button 
+              onClick={() => handlePageChange(currentPage + 1)} 
+              disabled={!pagination.next || currentPage === pagination.total_pages}
+            >
+              Next <ChevronRight className="ml-2" />
+            </Button>
+          </div>
         </main>
       </div>
       <Footer />

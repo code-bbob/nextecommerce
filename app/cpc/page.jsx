@@ -3,6 +3,7 @@ import Link from "next/link";
 import NavBar from "@/components/navbar";
 import { Cpu, HardDrive, CpuIcon as Gpu, Server, Database, Wind, Box, Zap } from "lucide-react"
 import Footer from "@/components/footer";
+import BlackNavBar from "@/components/blackNavbar";
 
 
 
@@ -14,9 +15,9 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <div className="bg-gradient-to-br from-black via-gray-900 to-black font-sans">
+    <div className="bg-gradient-to-b from-black via-gray-900 to-black font-sans">
       
-      <NavBar />
+      <BlackNavBar />
       <div className="min-h-screen flex flex-col-reverse md:flex-row">
       {/* Textual Content */}
       <header className="flex-1 flex flex-col md:mt-20 text-center p-6 md:p-12">
@@ -61,7 +62,7 @@ export default function Home() {
         <h2 className="text-4xl font-bold pb-5 text-center text-white">Explore Our Categories</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:h-[600px]">
           <Link
-            href="/cpc/gpu"
+            href="/search?q=gpu"
             className="col-span-1 md:col-span-2 lg:col-span-3 lg:row-span-2 group relative overflow-hidden rounded-lg shadow-lg aspect-video md:aspect-auto"
           >
             <Image
@@ -81,7 +82,7 @@ export default function Home() {
             </div>
           </Link>
           <Link
-            href="/cpc/ram"
+            href="/search?q=ram"
             className="col-span-1 md:col-span-2 lg:col-span-3 group relative overflow-hidden rounded-lg shadow-lg aspect-video md:aspect-auto"
           >
             <Image
@@ -101,7 +102,7 @@ export default function Home() {
             </div>
           </Link>
           <Link
-            href="/cpc/cpu"
+            href="/search?q=cpu"
             className="col-span-1 md:col-span-2 lg:col-span-3 group relative overflow-hidden rounded-lg shadow-lg aspect-video md:aspect-auto"
           >
             <Image
@@ -143,7 +144,7 @@ export default function Home() {
             ].map((item, index) => (
               <Link
                 key={index}
-                href={`/cpc/${item.name.toLowerCase().replace(" ", "-")}`}
+                href={`/search?q=${item.name.toLowerCase().replace(" ", "-")}`}
                 className="group relative w-64 h-80 flex-shrink-0 overflow-hidden rounded-lg shadow-lg"
               >
                 <Image

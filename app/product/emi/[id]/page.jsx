@@ -5,6 +5,7 @@ import ProductInteractive from "@/components/productInteractive";
 import RealmeForm from "@/components/realmeEmiForm";
 import SamsungForm from "@/components/samsungEmiForm";
 import { notFound } from "next/navigation";
+import BlackNavBar from "@/components/blackNavbar";
 
 
 export default async function ProductPage({ params }) {
@@ -30,8 +31,8 @@ catch (error) {
 
   
   return (
-    <div className="min-h-screen bg-white font-sans">
-      <NavBar />
+    <div className="min-h-screen bg-gray-800 font-sans">
+      <BlackNavBar color="inherit"/>
       {/* Pass product data to a client component for interactivity */}
       {product.brandName==="Samsung" && <SamsungForm product={product} />}
       {product.brandName === "Apple" && <SamsungForm product={product} />}

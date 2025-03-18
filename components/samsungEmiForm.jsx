@@ -19,7 +19,7 @@ const SamsungForm = ({ product }) => {
     product.images[0]?.image || "/placeholder.svg"
   );
   const router = useRouter();
-
+  const [error, setError] = useState(null);
   // Applicant state
   const [applicantData, setApplicantData] = useState({
     firstName: "",
@@ -159,6 +159,7 @@ const SamsungForm = ({ product }) => {
         console.error("Form submission error");
       }
     } catch (error) {
+      setError(error);
       console.error("Submission failed", error);
     }
   };
@@ -170,13 +171,13 @@ const SamsungForm = ({ product }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-3"
+      className="p-3 text-white"
     >
-      <div className="text-center mb-3 text-black font-bold text-2xl">
+      <div className="text-center mb-3 text-white font-bold text-2xl">
         {productName} EMI Form - Step {currentStep} of 3
       </div>
-      <div className="grid grid-cols-8 gap-4">
-      <div className="space-y-4 col-span-3">
+      <div className="md:grid md:grid-cols-8 gap-4">
+      <div className="mb-4 space-y-4 col-span-3">
         <div className="relative w-full h-96 rounded-lg overflow-hidden border border-gray-800 bg-black/50 backdrop-blur-sm">
           <Image
             src={selectedImage || "/placeholder.svg"}
@@ -209,7 +210,7 @@ const SamsungForm = ({ product }) => {
 
       {/* Step 1: Applicant Details */}
       {currentStep === 1 && (
-        <Card className="bg-inherit col-span-5 text-black border-2 border-gray-500 p-4">
+        <Card className="bg-inherit col-span-5 text-white border-2 border-gray-500 p-4">
           <h2 className="text-2xl font-semibold text-center mb-4">
             Applicant Details
           </h2>
@@ -224,7 +225,7 @@ const SamsungForm = ({ product }) => {
                   value={applicantData.firstName}
                   onChange={handleApplicantChange}
                   required
-                  className="bg-inherit border border-black"
+                  className="bg-inherit border"
                 />
               </div>
               <div>
@@ -376,7 +377,7 @@ const SamsungForm = ({ product }) => {
                 />
               </div>
             </div>
-            <p className="mt-3 text-xs text-gray-900">
+            <p className="mt-3 text-xs ">
               Note: Maximum file size for each document is 2MB.
             </p>
           </fieldset>
@@ -395,7 +396,7 @@ const SamsungForm = ({ product }) => {
 
       {/* Step 2: Guarantor Details */}
       {currentStep === 2 && (
-        <Card className="col-span-5 bg-inherit text-black border-2 border-black p-4">
+        <Card className="col-span-5 bg-inherit text-white border-2 border-black p-4">
           <h2 className="text-2xl font-semibold text-center mb-4">
             Guarantor Details
           </h2>
@@ -559,7 +560,7 @@ const SamsungForm = ({ product }) => {
                 />
               </div>
             </div>
-            <p className="mt-3 text-xs text-gray-900">
+            <p className="mt-3 text-xs">
               Note: Maximum file size for each document is 2MB.
             </p>
           </fieldset>
@@ -585,7 +586,7 @@ const SamsungForm = ({ product }) => {
 
       {/* Step 3: EMI & Downpayment Details */}
       {currentStep === 3 && (
-        <Card className="col-span-5 bg-inherit text-black border-2 border-black p-4">
+        <Card className="col-span-5 bg-inherit text-white border-2 border-black p-4">
           <h2 className="text-2xl font-semibold text-center mb-4">
             EMI & Downpayment Details
           </h2>
@@ -626,7 +627,7 @@ const SamsungForm = ({ product }) => {
                   name="emiDuration"
                   value={emiDuration}
                   onChange={handleEmiDurationChange}
-                  className="bg-inherit border border-black p-2 rounded"
+                  className="bg-inherit border border-white/50 p-2 rounded"
                 >
                   <option className="text-black" value="6">
                     6 Months
@@ -666,6 +667,7 @@ const SamsungForm = ({ product }) => {
               Submit
             </Button>
           </div>
+            {error?.response.status===400 && <p className="text-red-500">Invalid Form Submitted. Please fill all necessary fields before submission.</p>}
         </Card>
       )}
       </div>
