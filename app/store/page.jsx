@@ -82,7 +82,7 @@ function StorePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen font-sans bg-gray-700 text-gray-100">
+    <div className="flex flex-col min-h-screen bg-gray-700 text-gray-100">
       {/* NavBar */}
       <BlackNavBar color="inherit" />
 
@@ -141,7 +141,7 @@ function StorePage() {
 
 export default function PageWrapper() {
   return (
-    <Suspense fallback={<div>Loading page...</div>}>
+    <Suspense fallback={<div className="bg-gray-800">Loading page...</div>}>
       <StorePage />
     </Suspense>
   )

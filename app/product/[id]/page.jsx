@@ -12,7 +12,9 @@ export async function generateMetadata({ params }) {
   const backendUrl = `http://127.0.0.1:8000/shop/api/${id}/`;
   
   try {
-    const res = await fetch(backendUrl, { cache: "no-store" });
+    const res = await fetch(backendUrl, {
+      next: { revalidate: 3600 }  // Use same revalidation as main content
+    });
     if (!res.ok) {
       return {
         title: "Product Not Found",
@@ -61,14 +63,50 @@ export async function generateMetadata({ params }) {
   }
 }
 
+// Add this function to generate static paths
+export async function generateStaticParams() {
+  try {
+    const res = await fetch('http://127.0.0.1:8000/shop/api/', { 
+      next: { revalidate: 100 },
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    
+    if (!res.ok) {
+      console.error('Failed to fetch products for static params');
+      return [];
+    }
+
+    const data = await res.json();
+    console.log(data.results)
+    
+    // Handle the paginated response format
+    if (!data.results || !Array.isArray(data.results)) {
+      console.error('API did not return expected results array');
+      return [];
+    }
+
+    return data.results.map((product) => ({
+      id: product.product_id?.toString() || ''
+    })).filter(param => param.id);
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
+}
+
 export default async function ProductPage({ params }) {
-  const { id } =await params;
+  const { id } = await params;
   const backendUrl = `http://127.0.0.1:8000/shop/api/${id}/`;
   let product = {};
   
   // Fetch product data from backend. { cache: "no-store" } ensures fresh data.
   try {
-    const res = await fetch(backendUrl, { cache: "no-store" });
+    // Modified fetch to use ISR with 1 hour revalidation
+    const res = await fetch(backendUrl, { 
+      next: { revalidate: 100 } // Revalidate every hour
+    });
     if (!res.ok) {
       notFound();
     }
@@ -78,6 +116,7 @@ export default async function ProductPage({ params }) {
     }
   } catch (error) {
     console.error(error);
+    notFound();
   }
   // JSON-LD structured data for SEO
   const structuredData = {

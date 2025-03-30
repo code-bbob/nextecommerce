@@ -131,7 +131,7 @@ export default function ProductInteractive({ product }) {
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {product.attributes.map((attr, index) => (
-                      <tr key={index} className="hover:bg-gray-100">
+                      <tr key={index} className="hover:bg-gray-700">
                         <td className="px-6 py-4 whitespace-nowrap text-sm ">
                           {attr.attribute}
                         </td>
