@@ -15,7 +15,7 @@ export default function LaptopSlider() {
   useEffect(() => {
     async function fetchLaptops() {
       try {
-        const res = await fetch("http://127.0.0.1:8000/shop/api/catsearch/laptop/?page=1");
+        const res = await fetch("https://api.youthtech.com.np/shop/api/catsearch/laptop/?page=1");
         if (!res.ok) {
           throw new Error("Failed to fetch laptops");
         }
@@ -35,7 +35,7 @@ export default function LaptopSlider() {
       <div className="flex overflow-x-auto overflow-y-hidden gap-4 no-scrollbar">
         {products.map((item) => (
           <div key={item.product_id} className="flex-none w-60">
-            <div className="bg-gradient-to-b from-black via-gray-700 to-gray-900 rounded-lg p-4 shadow-lg flex flex-col h-full transition-transform duration-300">
+            <div className="bg-gradient-to-b from-black via-gray-700 to-gray-900 rounded-lg px-2 py-4 shadow-lg flex flex-col h-full transition-transform duration-300">
               {/* Image */}
               {item.images?.[0]?.image && (
                 <div className="relative w-full h-40 md:h-48 lg:h-52 rounded-md overflow-hidden">

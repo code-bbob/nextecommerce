@@ -9,7 +9,7 @@ import Script from "next/script";
 // Generate dynamic metadata based on the product data
 export async function generateMetadata({ params }) {
   const { id } = await params;
-  const backendUrl = `http://127.0.0.1:8000/shop/api/${id}/`;
+  const backendUrl = `https://api.youthtech.com.np/shop/api/${id}/`;
   
   try {
     const res = await fetch(backendUrl, {
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }) {
       openGraph: {
         title: `${product.name} in Nepal`,
         description: product.meta_description || product.description,
-        url: `http://127.0.0.1:3000/product/${id}`,
+        url: `https://api.youthtech.com.np/product/${id}`,
         images: [
           {
             url: product.image_url,
@@ -66,7 +66,7 @@ export async function generateMetadata({ params }) {
 // Add this function to generate static paths
 export async function generateStaticParams() {
   try {
-    const res = await fetch('http://127.0.0.1:8000/shop/api/', { 
+    const res = await fetch('https://api.youthtech.com.np/shop/api/', { 
       next: { revalidate: 100 },
       headers: {
         'Accept': 'application/json'
@@ -98,7 +98,7 @@ export async function generateStaticParams() {
 
 export default async function ProductPage({ params }) {
   const { id } = await params;
-  const backendUrl = `http://127.0.0.1:8000/shop/api/${id}/`;
+  const backendUrl = `https://api.youthtech.com.np/shop/api/${id}/`;
   let product = {};
   
   // Fetch product data from backend. { cache: "no-store" } ensures fresh data.

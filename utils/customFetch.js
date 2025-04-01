@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie'; // Import js-cookie
 
-const baseURL = 'http://127.0.0.1:8000/'; // Set base URL
+const baseURL = 'https://api.youthtech.com.np/'; // Set base URL
 
 async function refreshToken() {
   const refresh = Cookies.get('refreshToken'); // Get refresh token from cookie

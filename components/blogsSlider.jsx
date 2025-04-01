@@ -9,7 +9,7 @@ export default function BlogSlider() {
   useEffect(() => {
     async function fetchBlogs() {
       try {
-        const res = await fetch("http://127.0.0.1:8000/blog/api/");
+        const res = await fetch("https://api.youthtech.com.np/blog/api/");
         if (!res.ok) {
           throw new Error("Failed to fetch blogs");
         }

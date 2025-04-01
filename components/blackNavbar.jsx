@@ -19,7 +19,7 @@ function useDebounce(value, delay) {
   return debouncedValue;
 }
 
-export default function BlackNavBar({color}) {
+export default function BlackNavBar({ color = "black" }) {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -36,6 +36,7 @@ export default function BlackNavBar({color}) {
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   // Debounced search query
   const debouncedQuery = useDebounce(query, 500);
@@ -50,6 +51,7 @@ export default function BlackNavBar({color}) {
     async function fetchSuggestions() {
       if (debouncedQuery.trim() === "") {
         setSuggestions([]);
+        setShowSuggestions(false);
         return;
       }
       setIsLoading(true);
@@ -60,13 +62,16 @@ export default function BlackNavBar({color}) {
         if (res.ok) {
           const data = await res.json();
           setSuggestions(data);
+          setShowSuggestions(true);
         } else {
           console.error("Error fetching suggestions");
           setSuggestions([]);
+          setShowSuggestions(false);
         }
       } catch (error) {
         console.error("Error:", error);
         setSuggestions([]);
+        setShowSuggestions(false);
       } finally {
         setIsLoading(false);
       }
@@ -87,6 +92,7 @@ export default function BlackNavBar({color}) {
   const handleSearch = (e) => {
     e.preventDefault();
     setSearchOpen(false);
+    setShowSuggestions(false);
     if (query.trim()) {
       router.push(`/search?q=${encodeURIComponent(query.trim())}`);
       setQuery("");
@@ -94,21 +100,41 @@ export default function BlackNavBar({color}) {
     }
   };
 
+  const handleSuggestionClick = (itemId) => {
+    router.push(`/product/${itemId}`);
+    setQuery("");
+    setSuggestions([]);
+    setShowSuggestions(false);
+    setSearchOpen(false);
+  };
+
+  const handleClickOutside = () => {
+    setShowSuggestions(false);
+  };
+
+  useEffect(() => {
+    if (showSuggestions) {
+      document.addEventListener("click", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [showSuggestions]);
+
   const renderSuggestions = () => {
-    if (!suggestions.length) return null;
+    if (!suggestions.length || !showSuggestions) return null;
     return (
-      <div className={`absolute left-0 right-0 mt-1 bg-${color} text-white rounded shadow-lg z-10 max-h-60 overflow-y-auto`}>
+      <div
+        className="absolute left-0 right-0 top-full mt-1 bg-gray-900 text-white rounded-md shadow-lg z-50 max-h-60 overflow-y-auto border border-gray-700"
+        onClick={(e) => e.stopPropagation()}
+      >
         {suggestions.map((item) => (
           <div
             key={item.id}
-            className="flex items-center gap-3 px-4 py-2 hover:bg-gray-700 cursor-pointer"
-            onClick={() => {
-              router.push(`/product/${item.id}`);
-              setQuery("");
-              setSuggestions([]);
-            }}
+            className="flex items-center gap-3 px-4 py-2 hover:bg-gray-700 cursor-pointer border-b border-gray-700 last:border-b-0"
+            onClick={() => handleSuggestionClick(item.id)}
           >
-            <div className="relative w-10 h-10">
+            <div className="relative w-10 h-10 flex-shrink-0">
               <Image
                 src={item.image}
                 alt={item.name}
@@ -116,9 +142,9 @@ export default function BlackNavBar({color}) {
                 className="object-cover rounded"
               />
             </div>
-            <div className="flex flex-col">
-              <span className="font-medium">{item.name}</span>
-              <span className="text-sm text-white">Rs. {item.price}</span>
+            <div className="flex flex-col overflow-hidden">
+              <span className="font-medium truncate">{item.name}</span>
+              <span className="text-sm text-gray-300">Rs. {item.price}</span>
             </div>
           </div>
         ))}
@@ -132,38 +158,79 @@ export default function BlackNavBar({color}) {
       {searchOpen && (
         <>
           <div
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
-            onClick={() => setSearchOpen(false)}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40"
+            onClick={() => {
+              setSearchOpen(false);
+              setShowSuggestions(false);
+            }}
           />
-          <form
-            onSubmit={handleSearch}
-            className="fixed top-4 left-1/2 -translate-x-1/2 w-11/12 max-w-xl bg-white rounded-full px-4 py-2 flex items-center z-50"
-          >
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search products..."
-              className="flex-grow bg-transparent text-black focus:outline-none placeholder-gray-500"
-            />
-            <button
-              type="button"
-              onClick={() => setSearchOpen(false)}
-              className="text-gray-600 hover:text-gray-800 mr-2"
-              aria-label="Close search"
+          <div className="fixed top-2 left-1/2 -translate-x-1/2 w-11/12 max-w-xl z-50">
+            <form
+              onSubmit={handleSearch}
+              className="bg-white rounded-sm px-4 py-4 flex items-center relative"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X className="h-5 w-5" />
-            </button>
-            <button type="submit" className="text-gray-600 hover:text-gray-800">
-              <Search className="h-5 w-5" />
-            </button>
-            {renderSuggestions()}
-          </form>
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search products..."
+                className="flex-grow bg-transparent text-black focus:outline-none placeholder-gray-500"
+                onFocus={() => setShowSuggestions(true)}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchOpen(false);
+                  setShowSuggestions(false);
+                }}
+                className="text-gray-600 hover:text-gray-800 mr-2"
+                aria-label="Close search"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              <button type="submit" className="text-gray-600 hover:text-gray-800">
+                <Search className="h-5 w-5" />
+              </button>
+            </form>
+
+            {/* Mobile search suggestions */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="mt-2 bg-gray-900 text-white rounded-md shadow-lg overflow-hidden border border-gray-700">
+                {suggestions.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-800 cursor-pointer border-b border-gray-700 last:border-b-0"
+                    onClick={() => handleSuggestionClick(item.id)}
+                  >
+                    <div className="relative w-12 h-12 flex-shrink-0">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        className="object-cover rounded"
+                      />
+                    </div>
+                    <div className="flex flex-col overflow-hidden">
+                      <span className="font-medium truncate">{item.name}</span>
+                      <span className="text-sm text-gray-300">Rs. {item.price}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {isLoading && (
+              <div className="mt-2 p-3 bg-gray-900 text-white rounded-md shadow-lg text-center">
+                Loading results...
+              </div>
+            )}
+          </div>
         </>
       )}
 
       {/* Main Nav Bar */}
-      <header className={`bg-${color} text-white sticky p-2 top-0 z-50 shadow-2xl`}>
+      <header className={`bg-${color} text-white sticky p-2 top-0 z-40 shadow-2xl`}>
         <div className="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
           {/* Left side: Logo + Mobile Menu Button */}
           <div className="flex items-center space-x-3">
@@ -190,13 +257,18 @@ export default function BlackNavBar({color}) {
 
           {/* Middle: Desktop Search Bar */}
           <div className="hidden md:flex md:flex-grow mx-6">
-            <form onSubmit={handleSearch} className="relative w-full">
+            <form
+              onSubmit={handleSearch}
+              className="relative w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search products..."
                 className="w-full bg-gray-900 border border-gray-600 rounded-full px-4 py-2 text-white placeholder-gray-400 focus:outline-none"
+                onFocus={() => setShowSuggestions(true)}
               />
               <button
                 type="submit"
@@ -229,9 +301,8 @@ export default function BlackNavBar({color}) {
               <Link href="/store" className="flex items-center space-x-1">
                 <Zap className="h-5 w-5 text-orange-400" />
                 <div>
-
-                <p className="text-orange-400">WEEKLY</p>
-                <p className="text-white text-right">DEALS</p>
+                  <p className="text-orange-400">WEEKLY</p>
+                  <p className="text-white text-right">DEALS</p>
                 </div>
               </Link>
               <Link href="/store" className="hover:text-gray-200">

@@ -3,9 +3,9 @@ const nextConfig = {
     images: {
       remotePatterns: [
         {
-          protocol: 'http', // Or 'http' if needed
-          hostname: '127.0.0.1', // Replace with your image host
-          port: '8000', // Leave empty if default port
+          protocol: 'https', // Or 'http' if needed
+          hostname: 'digitech-ecommerce.blr1.digitaloceanspaces.com', // Replace with your image host
+          port: '', // Leave empty if default port
           pathname: '/**', // Or specify a specific path
         },
       ],
