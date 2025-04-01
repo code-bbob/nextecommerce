@@ -11,7 +11,7 @@ import "swiper/css/navigation";
 const heroProducts = [
   {
     name: "MacBook Pro M4",
-    img: "/images/cp.png",
+    img: "/images/heromac.png",
     price: "Rs. 99,999",
   },
   {
