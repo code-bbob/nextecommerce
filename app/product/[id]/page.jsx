@@ -79,7 +79,6 @@ export async function generateStaticParams() {
     }
 
     const data = await res.json();
-    console.log(data.results)
     
     // Handle the paginated response format
     if (!data.results || !Array.isArray(data.results)) {

@@ -83,6 +83,16 @@ export default function ProductInteractive({ product }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Product Images */}
           <div className="space-y-4">
+            <div className="md:hidden space-y-4">
+
+          <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 to-violet-500" />
+                <span className="font-medium">{product.brandName}</span>
+              </div>
+          <h1 className="text-3xl font-bold bg-clip-text text-white/70">
+                {product.name}
+              </h1>
+            </div>
             <div className="relative w-full h-96 rounded-lg overflow-hidden border border-gray-800 bg-white/50 backdrop-blur-sm p-4">
               <Image
                 src={selectedImage || "/placeholder.svg"}
@@ -131,14 +141,16 @@ export default function ProductInteractive({ product }) {
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {product.attributes.map((attr, index) => (
+                      attr.value && (
                       <tr key={index} className="hover:bg-gray-700">
                         <td className="px-6 py-4 whitespace-nowrap text-sm ">
                           {attr.attribute}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <td className="px-6 py-4  text-sm">
                           {attr.value}
                         </td>
                       </tr>
+                      )
                     ))}
                   </tbody>
                 </table>
@@ -212,7 +224,7 @@ export default function ProductInteractive({ product }) {
               </Button>
               <Button
                 variant="outline"
-                className="border-gray-800 hover:text-white transition-colors"
+                className="border-gray-800 hidden md:block   hover:text-white transition-colors"
               >
                 <Heart
                   size={64}
@@ -246,6 +258,7 @@ export default function ProductInteractive({ product }) {
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {product.attributes.map((attr, index) => (
+                      attr.value &&(
                       <tr key={index} className="hover:bg-gray-100">
                         <td className="px-6 py-4 whitespace-nowrap text-sm ">
                           {attr.attribute}
@@ -253,7 +266,8 @@ export default function ProductInteractive({ product }) {
                         <td className="px-6 py-4 whitespace-nowrap text-sm ">
                           {attr.value}
                         </td>
-                      </tr>
+                      </tr>)
+
                     ))}
                   </tbody>
                 </table>
