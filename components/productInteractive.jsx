@@ -263,7 +263,7 @@ export default function ProductInteractive({ product }) {
                         <td className="px-6 py-4 whitespace-nowrap text-sm ">
                           {attr.attribute}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm ">
+                        <td className="px-6 py-4 text-sm ">
                           {attr.value}
                         </td>
                       </tr>)
