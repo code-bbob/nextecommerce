@@ -40,11 +40,11 @@ export async function generateMetadata({ params }) {
         url: `https://api.youthtech.com.np/product/${id}`,
         images: [
           {
-            url: product.image_url,
+            url: product.images[0]?.image,
             width: 800,
             height: 600,
             alt: product.name,
-          },
+          },  
         ],
       },
       twitter: {
@@ -122,7 +122,7 @@ export default async function ProductPage({ params }) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    image: product.image_url,
+    image: product.images[0].image,
     description: product.meta_description || product.description,
     sku: product.sku,
     offers: {
@@ -131,7 +131,9 @@ export default async function ProductPage({ params }) {
       price: product.price,
       availability: "https://schema.org/InStock",
     },
+    
   };
+  console.log(structuredData)
 
   return (
     <div className="min-h-screen bg-gray-800 text-white font-sans">
