@@ -51,7 +51,7 @@ export async function generateMetadata({ params }) {
         card: "summary_large_image",
         title: product.name,
         description: product.meta_description || product.description,
-        images: [product.image_url],
+        images: [product.images[0]?.image],
       },
     };
   } catch (error) {
