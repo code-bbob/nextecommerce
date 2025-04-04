@@ -10,6 +10,7 @@ import { useSearchParams, useParams,useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Filter, ChevronLeft, ChevronRight, X } from "lucide-react"
 import BlackNavBar from "@/components/blackNavbar"
+import CatBar from "@/components/catbar"
 
 function StorePage() {
   const searchParams = useSearchParams()
@@ -84,6 +85,7 @@ function StorePage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-700 font-sans">
       <BlackNavBar color="inherit"/>
+      <CatBar />
       <div className="flex-grow flex md:flex-row flex-col">
         {/* Desktop Sidebar */}
         <aside className="hidden md:block md:w-64">

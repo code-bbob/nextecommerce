@@ -40,7 +40,7 @@ export default function HeroCarousel() {
         modules={[Navigation, Autoplay]}
         navigation
         autoplay={{ delay: 2000 }}
-        loop={true}
+        loop={true} 
         slidesPerView={1}
         className="w-full"
       >
@@ -57,12 +57,12 @@ export default function HeroCarousel() {
                 <h1 className="text-5xl md:text-7xl font-extrabold text-gray-300 drop-shadow-2xl">
                   Unbeatable Prices, Unmatched Quality
                 </h1>
-                <Button
+                {/* <Button
                   onClick={() => router.push("/store")}
                   className="md:hidden mt-8 bg-gray-400 text-white text-xl px-8 py-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300"
                 >
                   Shop Now
-                </Button>
+                </Button> */}
                 <p className="mt-16 text-xl md:text-2xl text-gray-300">
                   Get the best deals on{" "}
                   <span className="font-bold">{product.name}</span>. Limited stock available at just{" "}

@@ -8,6 +8,8 @@ import BlackNavBar from "@/components/blackNavbar";
 import LaptopSlider from "@/components/LaptopSlider.client";
 import OurServices from "@/components/ourServices";
 import BlogSlider from "@/components/blogsSlider";
+import BrandLogos from "@/components/BrandLogos";
+
 
 export async function generateMetadata() {
   return {
@@ -28,6 +30,7 @@ export default function Page() {
           <FeaturedProducts />
           <Testimonials />
           <LaptopSlider/>
+          <BrandLogos/>
           <OurServices/>
           <BlogSlider/>
         </main>
