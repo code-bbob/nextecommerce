@@ -159,7 +159,7 @@ export default function CatBar() {
                       <li
                         key={series.id}
                         className="hover:underline cursor-pointer"
-                        onClick={() => router.push(`/${activeCategory}/${series.id}`)}
+                        onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${series.id}`)}
                       >
                         {series.name}
                       </li>
