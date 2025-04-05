@@ -48,7 +48,7 @@ export default function CatBar() {
       const dataMap = {};
       await Promise.all(
         categories.map(async (category) => {
-          try {
+          try { 
             const res = await customFetch(
               `shop/api/navcat/?search=${encodeURIComponent(category)}`
             );
@@ -155,16 +155,34 @@ export default function CatBar() {
                     {brandObj.brand}
                   </h3>
                   <ul className="space-y-1">
-                    {brandObj.series?.map((series) => (
-                      <li
-                        key={series.id}
-                        className="hover:underline cursor-pointer"
-                        onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${series.id}`)}
-                      >
-                        {series.name}
-                      </li>
-                    ))}
-                  </ul>
+  {brandObj.series?.length > 0 ? (
+    <>
+      {brandObj.series?.map((series) => (
+        <li
+          key={series.id}
+          className="hover:underline cursor-pointer"
+          onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${series.id}`)}
+        >
+          {series.name}
+        </li>
+      ))}
+    </>
+  ) : brandObj.subcategories?.length > 0 ? ( //Check for subcategories
+    <>
+      {brandObj.subcategories?.map((subcategory) => (
+        <li
+          key={subcategory.id} // Ensure that the key is unique
+          className="hover:underline cursor-pointer"
+          onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${subcategory.id}`)} //adjust the route as required.
+        >
+          {subcategory.name}
+        </li>
+      ))}
+    </>
+  ) : (
+    <div className="text-gray-500">No series or subcategories available</div>
+  )}
+</ul>
                 </div>
               ))}
             </div>

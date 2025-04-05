@@ -10,7 +10,7 @@ import BlackNavBar from "@/components/blackNavbar";
 
 export default async function ProductPage({ params }) {
   const { id } = await params;
-  const backendUrl = `https://api.youthtech.com.np/shop/api/${id}/`;
+  const backendUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}shop/api/${id}/`;
   let product = {};
   
   // Fetch product data from backend. { cache: "no-store" } ensures fresh data.

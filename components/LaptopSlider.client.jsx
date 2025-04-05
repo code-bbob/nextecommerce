@@ -15,7 +15,7 @@ export default function LaptopSlider() {
   useEffect(() => {
     async function fetchLaptops() {
       try {
-        const res = await fetch(`https://api.youthtech.com.np/shop/api/catsearch/laptop/?page=1`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}shop/api/catsearch/laptop/?page=1`);
         if (!res.ok) {
           throw new Error("Failed to fetch laptops");
         }

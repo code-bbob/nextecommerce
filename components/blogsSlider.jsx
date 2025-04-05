@@ -9,7 +9,7 @@ export default function BlogSlider() {
   useEffect(() => {
     async function fetchBlogs() {
       try {
-        const res = await fetch("https://api.youthtech.com.np/blog/api/");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}blog/api/`);
         if (!res.ok) {
           throw new Error("Failed to fetch blogs");
         }
@@ -28,9 +28,8 @@ export default function BlogSlider() {
       <h2 className="text-3xl font-bold mb-6 text-center">Latest Blogs</h2>
 
       {/* Main grid container */}
-      <div className="grid grid-cols-7 grid-rows-2 gap-4 px-4">
+      <div className="grid grid-cols-7 grid-rows-2 gap-4 px-4 max-w-7xl mx-auto">
         {blogs.slice(0, 5).map((item, index) => {
-          // Define custom grid spans for each index
           let layoutClasses = "";
           if (index === 0) {
             layoutClasses = "col-span-2 row-span-2";
@@ -47,13 +46,13 @@ export default function BlogSlider() {
           return (
             <div
               key={item.id}
-              className={`bg-gradient-to-b from-black via-gray-700 to-gray-900  rounded-lg p-4 shadow-lg transition-transform duration-300 ${layoutClasses}`}
+              className={`bg-gradient-to-b from-black via-gray-700 to-gray-900 rounded-lg p-4 shadow-lg transition-transform duration-300 ${layoutClasses}`}
+              style={{ maxWidth: '100%' }}
             >
               <h1 className="font-bold text-xl mb-4 line-clamp-2">
                 {item.title}
               </h1>
 
-              {/* Image container */}
               {item.image && (
                 <div className="relative w-full h-40 md:h-48 lg:h-56 rounded-md overflow-hidden">
                   <Image
@@ -64,17 +63,18 @@ export default function BlogSlider() {
                   />
                 </div>
               )}
-              {index === 0 &&(<div className="text-white">
-                 <p dangerouslySetInnerHTML={{ __html: item.content }}/>
-                  
+              {index === 0 && (
+                <div className="text-white">
+                  <div style={{ maxHeight: '300px', overflowY: 'hidden' }}>
+                    <p dangerouslySetInnerHTML={{ __html: item.content }} />
+                  </div>
                 </div>
-            )}
+              )}
             </div>
           );
         })}
       </div>
 
-      {/* "See More" button */}
       <div className="flex items-center justify-center mt-6">
         <Link href="/store">
           <button className="px-6 py-3 bg-gray-800 hover:bg-blue-700 rounded-full font-semibold transition-colors">
