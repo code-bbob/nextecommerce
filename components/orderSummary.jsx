@@ -79,7 +79,7 @@ export function OrderSummary() {
   const { subtotal: reduxSubtotal, discount: reduxDiscount, shippingCost } = useSelector(
     (state) => state.checkout
   );
-  console.log(shippingCost)
+
   const cartItems = useSelector((state) => state.cart.items);
 
   // Compute subtotal based on cart items.

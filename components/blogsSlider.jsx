@@ -2,8 +2,11 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Router } from "next/router";
 
 export default function BlogSlider() {
+  const router = useRouter();
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
@@ -28,7 +31,7 @@ export default function BlogSlider() {
       <h2 className="text-3xl font-bold mb-6 text-center">Latest Blogs</h2>
 
       {/* Main grid container */}
-      <div className="grid grid-cols-7 grid-rows-2 gap-4 px-4 max-w-7xl mx-auto">
+      <div className="md:grid md:grid-cols-7 md:grid-rows-2 gap-4 px-4 max-w-7xl mx-auto">
         {blogs.slice(0, 5).map((item, index) => {
           let layoutClasses = "";
           if (index === 0) {
@@ -48,6 +51,7 @@ export default function BlogSlider() {
               key={item.id}
               className={`bg-gradient-to-b from-black via-gray-700 to-gray-900 rounded-lg p-4 shadow-lg transition-transform duration-300 ${layoutClasses}`}
               style={{ maxWidth: '100%' }}
+              onClick={() =>{router.push(`/blog/${item.id}`)}}
             >
               <h1 className="font-bold text-xl mb-4 line-clamp-2">
                 {item.title}

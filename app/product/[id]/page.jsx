@@ -133,7 +133,6 @@ export default async function ProductPage({ params }) {
     },
     
   };
-  console.log(structuredData)
 
   return (
     <div className="min-h-screen bg-gray-800 text-white font-sans">

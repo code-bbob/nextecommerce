@@ -24,7 +24,6 @@ export default function PaymentPage() {
 
   useEffect(() => {
     if (!email || !shippingAddress.address) {
-      console.log("eta po ayo")
       router.replace("/checkout");
     }
   }, [email, shippingAddress.address, router]);

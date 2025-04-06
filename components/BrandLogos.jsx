@@ -68,7 +68,7 @@ export default function BrandLogos() {
           {visibleBrands.map((brand) => (
             <Link
               key={brand.name}
-              href={`/${brand.name.toLowerCase()}`}
+              href={`/search?q=${brand.name.toLowerCase()}`}
               className={`flex flex-col items-center justify-center p-1 sm:p-2 ${
                 itemsPerPage === 3 ? "w-1/3" : itemsPerPage === 4 ? "w-1/4" : "w-1/6"
               }`}
