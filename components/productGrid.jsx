@@ -165,9 +165,9 @@ export default function ProductGrid({ products, isLoading }) {
                 <strike className="text-lg sm:text-lg font-bold mb-3 mr-5 sm:mb-4">RS. {product.old_price}</strike>
               )}
               {
-                (product.deal && product.deal_price)?<strike className="text-lg sm:text-lg font-bold text-yellow-600 mb-2">RS. {product.price}</strike>:<p className="text-lg sm:text-lg font-bold text-yellow-600 mb-2">RS. {product.price}</p>
+                (product.deal && product.deal_price)?<strike className="text-lg sm:text-lg font-bold text-yellow-600 mb-2">RS. {product.deal_price}</strike>:<p className="text-lg sm:text-lg font-bold text-yellow-600 mb-2">RS. {product.price}</p>
               }
-              {product.deal && product.deal_price && <p className="text-lg sm:text-lg font-bold text-green-600 mb-2">RS. {product.deal_price}</p> }
+              {product.deal && product.deal_price && <p className="text-lg sm:text-lg font-bold text-green-600 mb-2">RS. {product.price}</p> }
             </div>
 
             {/* Use mt-auto on the bottom section to push it to the bottom */}
