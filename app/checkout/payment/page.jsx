@@ -18,7 +18,6 @@ export default function PaymentPage() {
   const checkout = useSelector((state) => state.checkout);
   const cartItems = useSelector((state) => state.cart.items);
 
-  // Destructure checkout values.
   const { subtotal, shippingCost, discount, email, shippingAddress, shippingMethod, phone } = checkout;
   const total = subtotal + shippingCost - discount;
 
@@ -32,16 +31,17 @@ export default function PaymentPage() {
 
   const handleNext = async () => {
     setLoading(true);
-    const carts = cartItems.map((item) => item.id);
     try {
-      const res = await customFetch(`cart/api/order/`, {
+      const carts = cartItems.map((item) => item.id);
+      const orderRes = await customFetch(`cart/api/order/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ carts }),
       });
-      const response = await res.json();
-      const order_id = response.id;
-      const payload = {
+      const orderResponse = await orderRes.json();
+      const order_id = orderResponse.id;
+
+      const deliveryPayload = {
         order: order_id,
         phone_number: phone,
         first_name: shippingAddress.firstName,
@@ -57,23 +57,26 @@ export default function PaymentPage() {
         discount: discount,
         payment_amount: total,
       };
+
       await customFetch(`cart/api/delivery/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(deliveryPayload),
       });
-      dispatch(fetchCartFromServer());
-      dispatch(resetCheckout());
-      console.log("rerouting to home page")
-      router.push(`/`).then(() => {
-        dispatch(resetCheckout());
-      });
+
+      await dispatch(fetchCartFromServer());
+      await dispatch(resetCheckout());
+      router.push(`/`);
     } catch (err) {
       console.error(err);
+      // Handle the error (e.g., show an error message to the user)
     } finally {
       setLoading(false);
     }
   };
+
+  // ... (rest of your component)
+
 
   if (loading) {
     return (

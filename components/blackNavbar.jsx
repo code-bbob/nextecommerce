@@ -298,11 +298,11 @@ export default function BlackNavBar({ color = "black" }) {
 
             {/* Weekly Deals + Store Link */}
             <div className="hidden md:flex items-center space-x-4 font-semibold">
-              <Link href="/store" className="flex items-center space-x-1">
+              <Link href="/deals" className="flex items-center space-x-1">
                 <Zap className="h-5 w-5 text-orange-400" />
                 <div>
-                  <p className="text-orange-400">WEEKLY</p>
-                  <p className="text-white text-right">DEALS</p>
+                  <p className="text-orange-400">NEW YEAR</p>
+                  <p className="text-white text-center">DEALS</p>
                 </div>
               </Link>
               <Link href="/store" className="hover:text-gray-200">

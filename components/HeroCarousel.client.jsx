@@ -10,8 +10,8 @@ import "swiper/css/navigation";
 
 const heroProducts = [
   {
-    name: "MacBook Pro M4",
-    img: "/images/heromac.png",
+    name: "MacBook Air M2",
+    img: "/images/bibhabok.png",
     price: "Rs. 99,999",
   },
   {
@@ -35,7 +35,7 @@ export default function HeroCarousel() {
   const router = useRouter();
 
   return (
-    <section className="pt-10">
+    <section className="pt">
       <Swiper
         modules={[Navigation, Autoplay]}
         navigation
@@ -64,7 +64,7 @@ export default function HeroCarousel() {
                   Shop Now
                 </Button> */}
                 <p className="mt-16 text-xl md:text-2xl text-gray-300">
-                  Get the best deals on{" "}
+                  Get the best <span className="text-red-600 text-3xl font-bold">New Year 2082</span> on{" "}
                   <span className="font-bold">{product.name}</span>. Limited stock available at just{" "}
                   <span className="text-yellow-400">{product.price}</span>!
                 </p>
@@ -83,7 +83,7 @@ export default function HeroCarousel() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 1 }}
               >
-                <div className="relative w-full h-80">
+                <div className="relative w-full h-96">
                   <Image
                     src={product.img}
                     alt={product.name}

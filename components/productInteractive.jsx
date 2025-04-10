@@ -93,12 +93,12 @@ export default function ProductInteractive({ product }) {
                 {product.name}
               </h1>
             </div>
-            <div className="relative w-full h-96 rounded-lg overflow-hidden border border-gray-800 bg-white/50 backdrop-blur-sm p-4">
+            <div className="relative w-full h-96 rounded-lg overflow-hidden border border-gray-800 bg-inherit backdrop-blur-sm p-4">
               <Image
                 src={selectedImage || "/placeholder.svg"}
                 alt={product.name}
                 fill
-                className="object-cover mr-4"
+                className="object-contain mr-4"
               />
             </div>
             <div className="grid grid-cols-4 gap-4">

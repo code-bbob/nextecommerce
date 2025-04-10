@@ -49,7 +49,7 @@ function StorePage() {
 
         queryParams.append("page", currentPage.toString())
 
-        const apiUrl = `shop/api/?${queryParams.toString()}`
+        const apiUrl = `shop/api/deals/?${queryParams.toString()}`
         const res = await customFetch(apiUrl)
         const data = await res.json()
 

@@ -64,11 +64,9 @@ export default function LaptopSlider() {
                 </div>
 
                 {/* Button at the bottom */}
-                <Link href="/store">
                   <button className="mt-3 px-3 py-2 bg-gray-900 hover:bg-black font-semibold transition-colors">
                     Shop Now
                   </button>
-                </Link>
               </div>
             </div>
           </Link>
