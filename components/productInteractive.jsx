@@ -190,9 +190,9 @@ export default function ProductInteractive({ product }) {
             <div className="text-3xl text-orange-500 font-bold">
               RS. {product.price.toFixed(2)}
             </div>
-            {product.deal_price && (
+            {product.before_deal_price && (
             <strike className="text-2xl text-yellow-600 font-bold">
-              RS. {product.deal_price?.toFixed(2)}
+              RS. {product.before_deal_price?.toFixed(2)}
             </strike>
             )}
             {product.old_price && (
