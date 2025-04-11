@@ -12,6 +12,8 @@ import { addToCart, sendCartToServer } from "@/redux/cartSlice";
 import customFetch from "@/utils/customFetch";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { getLocalCart, setLocalCart } from "@/utils/localCart"
+
 
 export default function ProductInteractive({ product }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -41,6 +43,17 @@ export default function ProductInteractive({ product }) {
 
     if (isLoggedIn) {
       dispatch(sendCartToServer(cartItem));
+    }
+    else{
+      const localCart = getLocalCart()
+      const existingIndex = localCart.findIndex((item) => item.product_id === product.product_id)
+      if (existingIndex !== -1) {
+        // Increase quantity if already exists
+        localCart[existingIndex].quantity += 1
+      } else {
+        localCart.push(cartItem)
+      }
+      setLocalCart(localCart)
     }
     setIsCartOpen(true);
   };
