@@ -11,6 +11,7 @@ import customFetch from "@/utils/customFetch";
 import { fetchCartFromServer } from "@/redux/cartSlice";
 import NavBar from "@/components/navbar";
 import { resetCheckout } from "@/redux/checkoutSlice";
+import BlackNavBar from "@/components/blackNavbar";
 
 export default function PaymentPage() {
   const dispatch = useDispatch();
@@ -81,7 +82,7 @@ export default function PaymentPage() {
   if (loading) {
     return (
       <div className="bg-black h-screen">
-        <NavBar />
+        <BlackNavBar />
         <div className="flex justify-center items-center h-[calc(100vh-200px)]">
           <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
         </div>
