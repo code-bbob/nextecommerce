@@ -12,6 +12,7 @@ import { fetchCartFromServer } from "@/redux/cartSlice";
 import NavBar from "@/components/navbar";
 import { resetCheckout } from "@/redux/checkoutSlice";
 import BlackNavBar from "@/components/blackNavbar";
+import toast from "react-hot-toast";
 
 export default function PaymentPage() {
   const dispatch = useDispatch();
@@ -59,7 +60,7 @@ export default function PaymentPage() {
         payment_amount: total,
       };
 
-      await customFetch(`cart/api/delivery/`, {
+      const res = await customFetch(`cart/api/delivery/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(deliveryPayload),
@@ -67,6 +68,9 @@ export default function PaymentPage() {
 
       await dispatch(fetchCartFromServer());
       await dispatch(resetCheckout());
+      if (res.status == 200) {
+        toast.success("Order placed successfully!");
+      }
       router.push(`/`);
     } catch (err) {
       console.error(err);
