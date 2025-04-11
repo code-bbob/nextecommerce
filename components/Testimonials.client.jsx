@@ -18,7 +18,7 @@ export default function Testimonials() {
             "I couldn't believe the prices – the quality is incredible.
             I've never shopped anywhere else!"
           </p>
-          <p className="mt-4 font-bold">– Alex M.</p>
+          <p className="mt-4 font-bold">– Rubina S.</p>
         </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -30,7 +30,7 @@ export default function Testimonials() {
             "The best deals I've ever seen. Fast, reliable, and unbeatable value.
             Highly recommended!"
           </p>
-          <p className="mt-4 font-bold">– Jamie L.</p>
+          <p className="mt-4 font-bold">– Nabin K.</p>
         </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -41,7 +41,7 @@ export default function Testimonials() {
           <p className="text-xl italic">
             "A game changer in digital shopping. I always find exactly what I need at the best price."
           </p>
-          <p className="mt-4 font-bold">– Morgan S.</p>
+          <p className="mt-4 font-bold">– Bikash T.</p>
         </motion.div>
       </div>
     </section>

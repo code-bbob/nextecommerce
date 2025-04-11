@@ -37,9 +37,38 @@ export default function BlackNavBar({ color = "black" }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [countdown, setCountdown] = useState("");
 
   // Debounced search query
   const debouncedQuery = useDebounce(query, 500);
+
+  // Countdown Timer Logic
+  useEffect(() => {
+    const targetDate = new Date("2025-04-14T23:59:59+05:45").getTime();
+
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference < 0) {
+        clearInterval(interval);
+        setCountdown("Offer Expired!");
+      } else {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        setCountdown(
+          `${days}d ${hours}h ${minutes}m ${seconds}s`
+        );
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Ensure client-side hydration
   useEffect(() => {
@@ -298,11 +327,12 @@ export default function BlackNavBar({ color = "black" }) {
 
             {/* Weekly Deals + Store Link */}
             <div className="hidden md:flex items-center space-x-4 font-semibold">
-              <Link href="/deals" className="flex items-center space-x-1">
+              <Link href="/deals" className="flex items-center hover:scale-105 space-x-1">
                 <Zap className="h-5 w-5 text-orange-400" />
                 <div>
-                  <p className="text-orange-400">NEW YEAR</p>
-                  <p className="text-white text-center">DEALS</p>
+                  <p className="text-orange-400">NEW YEAR 2082</p>
+                  {/* <p className="text-white text-center">DEALS</p> */}
+                  {countdown && <p className="text-sm"><span className="text-orange-400">Deals: </span>{countdown}</p>}
                 </div>
               </Link>
               <Link href="/store" className="hover:text-gray-200">

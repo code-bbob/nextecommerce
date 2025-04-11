@@ -32,7 +32,7 @@ const GoogleCallback = () => {
     }
   }, [dispatch, router]);
 
-  return <div>Redirecting...</div>;
+  return <div className="bg-gradient-to-b  from-black via-gray-900 to-black bg-fixed min-h-screen text-white text-center">Redirecting...</div>;
 };
 
 export default GoogleCallback;
