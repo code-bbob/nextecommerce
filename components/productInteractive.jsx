@@ -93,7 +93,7 @@ export default function ProductInteractive({ product }) {
     <div>
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
       <main className="mx-auto w-full px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-12">
           {/* Product Images */}
           <div className="space-y-4">
             <div className="md:hidden space-y-4">
@@ -102,16 +102,32 @@ export default function ProductInteractive({ product }) {
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 to-violet-500" />
                 <span className="font-medium">{product.brandName}</span>
               </div>
-          <h1 className="text-3xl font-bold bg-clip-text text-white/70">
+          <h1 className="text-xl font-bold bg-clip-text text-white/70">
+          
                 {product.name}
               </h1>
+              <div className="flex items-center space-x-2">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-4 h-4 ${
+                      i < Math.round(product.ratings.stats.avg_rating)
+                        ? "text-yellow-600 fill-yellow-600"
+                        : "text-gray-600 fill-gray-600"
+                    }`}
+                  />
+                ))}
+                <span className="text-sm text-gray-400">
+                  ({product.ratings.stats.avg_rating.toFixed(1)})
+                </span>
+              </div>
             </div>
-            <div className="relative w-full h-96 rounded-lg overflow-hidden border border-gray-800 bg-inherit backdrop-blur-sm p-4">
+            <div className="relative w-auto h-auto min-h-60 md:min-h-96 rounded-lg overflow-hidden border border-gray-800 bg-inherit backdrop-blur-sm p-4">
               <Image
                 src={selectedImage || "/placeholder.svg"}
                 alt={product.name}
                 fill
-                className="object-contain mr-4"
+                className="object-contain md:object- mr-4"
               />
             </div>
             <div className="grid grid-cols-4 gap-4">
@@ -174,8 +190,8 @@ export default function ProductInteractive({ product }) {
           </div>
 
           {/* Product Details */}
-          <div className="space-y-6">
-            <div className="space-y-2">
+          <div className="space-y-2 md:space-y-6">
+            <div className="space-y-2 hidden md:block">
               <div className="flex items-center space-x-2">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 to-violet-500" />
                 <span className="font-medium">{product.brandName}</span>
@@ -200,16 +216,16 @@ export default function ProductInteractive({ product }) {
               </div>
             </div>
             <div className="flex gap-3">
-            <div className="text-3xl text-orange-500 font-bold">
+            <div className="text-xl md:text-3xl text-orange-500 font-bold">
               RS. {product.price.toFixed(2)}
             </div>
             {product.before_deal_price && (
-            <strike className="text-2xl text-yellow-600 font-bold">
+            <strike className="text-xl md:text-2xl text-yellow-600 font-bold">
               RS. {product.before_deal_price?.toFixed(2)}
             </strike>
             )}
             {product.old_price && (
-            <strike className="text-2xl text-grey-600 font-bold">
+            <strike className="text-xl md:text-2xl text-grey-600 font-bold">
               RS. {product.old_price?.toFixed(2)}
             </strike>
               )}
