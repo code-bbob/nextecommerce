@@ -35,7 +35,7 @@ export default function HeroCarousel() {
   const router = useRouter();
 
   return (
-    <section className="mt-8 ">
+    <section className="mt-8 h-[85vh] ">
       <Swiper
         modules={[Navigation, Autoplay]}
         navigation

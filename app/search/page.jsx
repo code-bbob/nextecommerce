@@ -141,7 +141,7 @@ function Search() {
       <CatBar/>
       <div className="flex-grow flex md:flex-row flex-col">
         {/* Desktop Sidebar */}
-        <aside className="hidden md:block md:w-64">
+        <aside className="hidden md:block md:w-60 lg:w-72">
           <div className="sticky top-0 h-screen overflow-y-auto">
             <FilterSidebar
               setOrdering={setOrdering}

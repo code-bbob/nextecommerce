@@ -88,7 +88,7 @@ function StorePage() {
       <CatBar/>
       <div className="flex-grow flex md:flex-row flex-col">
         {/* Desktop Sidebar */}
-        <aside className="hidden md:block md:w-60">
+        <aside className="hidden md:block md:w-60 lg:w-72">
           <div className="sticky top-20 h-screen overflow-y-auto">
             <Suspense fallback={<div className="text-white p-4">Loading filters...</div>}>
               <FilterSidebar

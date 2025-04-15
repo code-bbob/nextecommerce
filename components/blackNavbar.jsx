@@ -260,7 +260,7 @@ export default function BlackNavBar({ color = "black" }) {
 
       {/* Main Nav Bar */}
       <header className={`bg-${color} text-white sticky p-2 top-0 z-40 shadow-2xl`}>
-        <div className="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
+        <div className="mx-auto px-4 h-16 flex items-center justify-between">
           {/* Left side: Logo + Mobile Menu Button */}
           <div className="flex items-center space-x-3">
             {/* Mobile Menu Toggle */}

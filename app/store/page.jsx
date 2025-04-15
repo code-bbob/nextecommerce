@@ -93,7 +93,7 @@ function StorePage() {
       {/* Main Layout */}
       <div className="flex-grow flex md:flex-row flex-col">
         {/* Sidebar (Desktop) */}
-        <aside className="hidden md:block md:w-60 bg-gray-800 border-r border-gray-700">
+        <aside className="hidden md:block md:w-60 lg:w-72 bg-gray-800 border-r border-gray-700">
           <div className="sticky top-20 h-screen overflow-y-auto">
             <Suspense fallback={<div className="p-4">Loading filters...</div>}>
               <FilterSidebar

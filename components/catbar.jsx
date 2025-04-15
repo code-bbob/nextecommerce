@@ -143,7 +143,7 @@ export default function CatBar() {
         onMouseEnter={() => setActiveCategory(activeCategory)}
         onMouseLeave={() => setActiveCategory(null)}
       >
-        <div className="max-w-7xl mx-0 p-6">
+        <div className="   mx-0 p-6">
           {data && data.length ? (
             <div className="grid grid-cols-4 gap-6">
               {data.map((brandObj, idx) => (
@@ -200,7 +200,7 @@ export default function CatBar() {
       
       <header className="shadow-md hidden md:block bg-gradient-to-br from-gray-800 via-gray-700 to-black text-white py-2">
         <div className="relative">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="mx-auto flex items-center justify-between">
             <nav className=" md:flex ml-10 font-bold items-center space-x-10 w-full">
               {["laptop", "smartphone", "accessories", "gadgets"].map((cat) => (
                 <Link
