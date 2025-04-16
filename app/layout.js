@@ -47,7 +47,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.className}>
-      <body>
+      <body className="bg-gradient-to-b from-black via-gray-900 to-black bg-fixed min-h-screen">
         <Providers>
         <CartInitializer />
           {children}
