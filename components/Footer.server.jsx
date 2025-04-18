@@ -4,19 +4,19 @@ export default function Footer() {
         <p>&copy; {new Date().getFullYear()} Bibhab Basnet. All rights reserved.</p>
         <div className="mt-4 flex justify-center space-x-6">
           <a
-            href="https://twitter.com/digitech"
+            href="#"
             className="hover:text-white transition-colors duration-300"
           >
             Twitter
           </a>
           <a
-            href="https://facebook.com/digitech"
+            href="https://www.facebook.com/profile.php?id=100084059293096"
             className="hover:text-white transition-colors duration-300"
           >
             Facebook
           </a>
           <a
-            href="https://instagram.com/digitech"
+            href="https://instagram.com/dgtech_nepal"
             className="hover:text-white transition-colors duration-300"
           >
             Instagram

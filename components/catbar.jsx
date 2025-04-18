@@ -44,7 +44,7 @@ export default function CatBar() {
   // Pre-fetch category data on mount
   useEffect(() => {
     async function fetchCategories() {
-      const categories = ["laptop", "smartphone", "accessories", "gadgets"];
+      const categories = ["laptop", "smartphone","keyboard","headphone", "accessories", "gadgets"];
       const dataMap = {};
       await Promise.all(
         categories.map(async (category) => {
@@ -202,7 +202,7 @@ export default function CatBar() {
         <div className="relative">
           <div className="mx-auto flex items-center justify-between">
             <nav className=" md:flex ml-10 font-bold items-center space-x-10 w-full">
-              {["laptop", "smartphone", "accessories", "gadgets"].map((cat) => (
+              {["laptop", "smartphone","keyboard","headphone", "accessories", "gadgets"].map((cat) => (
                 <Link
                   key={cat}
                   href={`/${cat}`}

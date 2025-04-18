@@ -15,7 +15,7 @@ export async function generateMetadata() {
   return {
     title: 'Digitech Enterprises |EMI with Authorized, Authentic & Trusted Tech Store in Nepal',
     description: 'Discover Nepal’s leading tech store at Digitech Enterprises. We offer emi on genuine products, expert support, company warranties, and unbeatable deals on laptops, smartphones, and more. Experience quality service, the latest technology trends, and innovative gadgets at your fingertips.',
-    keywords: 'tech store Nepal, laptops Nepal, smartphones Nepal, electronics Nepal, genuine tech products, tech deals, trusted tech store, tech support Nepal, authorized laptop, digital gadgets, Nepal technology trends, laptop price in nepal, smartphone price in nepal',
+    keywords: 'Digitech Enterprises, Digitech Nepal, Laptops on EMI, Mobile phones in EMI'
   }
 }
 
