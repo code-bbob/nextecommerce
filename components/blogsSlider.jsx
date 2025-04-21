@@ -31,7 +31,7 @@ export default function BlogSlider() {
       <h2 className="text-3xl font-bold mb-6 text-center">Latest Blogs</h2>
 
       {/* Main grid container */}
-      <div className="md:grid md:grid-cols-7 md:grid-rows-2 gap-4 px-4 max-w-7xl mx-auto">
+      <div className="md:grid md:grid-cols-7 md:grid-rows-2 gap-4 px-4 max-w-7xl ">
         {blogs.slice(0, 5).map((item, index) => {
           let layoutClasses = "";
           if (index === 0) {
@@ -49,7 +49,7 @@ export default function BlogSlider() {
           return (
             <div
               key={item.id}
-              className={`bg-gradient-to-b from-black via-gray-700 to-gray-900 rounded-lg p-4 shadow-lg transition-transform duration-300 ${layoutClasses}`}
+              className={`bg-gradient-to-b from-black via-gray-700 to-gray-900 rounded-lg p-4 shadow-lg transition-transform hover:scale-105 duration-300 ${layoutClasses}`}
               style={{ maxWidth: '100%' }}
               onClick={() =>{router.push(`/blog/${item.id}`)}}
             >

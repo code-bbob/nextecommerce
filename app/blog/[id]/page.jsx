@@ -35,7 +35,7 @@ export default async function SingleBlog({ params }) {
       <div className="mx-auto flex flex-wrap py-6">
         <section className="w-full md:w-2/3 flex flex-col ">
           <article className="flex flex-col px-10 shadow my-4">
-            <a href="#" className="hover:opacity-75">
+            <a href="#" className="">
               <img className="w-100 h-auto" src={blog[0].image} alt={blog[0].title} />
             </a>
             <div className="bg-gray-900 text-white flex flex-col justify-start p-6">
@@ -52,11 +52,11 @@ export default async function SingleBlog({ params }) {
                 </a>
                 , Published on {blog[0].date}
               </p>
-              <div dangerouslySetInnerHTML={{ __html: blog[0].content || ""}} />
+              <div className="break-words" dangerouslySetInnerHTML={{ __html: blog[0].content || ""}} />
             </div>
           </article>
 
-          <div className="w-full flex flex-col text-center md:text-left md:flex-row shadow bg-gray-900 text-white mt-10 mb-10 p-6">
+          {/* <div className="w-full flex flex-col text-center md:text-left md:flex-row shadow bg-gray-900 text-white mt-10 mb-10 p-6">
             <div className="w-full md:w-1/5 flex justify-center md:justify-start pb-4">
               <img
                 src="https://source.unsplash.com/collection/1346951/150x150?sig=1"
@@ -81,9 +81,9 @@ export default async function SingleBlog({ params }) {
                 </a>
               </div>
             </div>
-          </div>
+          </div> */}
         </section>
-        <Plugins />
+        {/* <Plugins /> */}
       </div>
       <Footer/>
     </div>

@@ -3,7 +3,7 @@ export default function Plugins() {
     <>
             <aside className="w-full md:w-1/3 flex flex-col items-center px-3">
 
-<div className="w-full bg-white shadow flex flex-col my-4 p-6">
+<div className="w-full bg-gray-600 shadow flex flex-col my-4 p-6">
         <p className="text-xl font-semibold pb-5 mx-auto ">Instagram</p>
         <div className="grid grid-cols-3 gap-3">
             <img className="hover:opacity-75" src="https://pbs.twimg.com/profile_images/1634235947674943489/zdJeuso-_400x400.jpg"/>

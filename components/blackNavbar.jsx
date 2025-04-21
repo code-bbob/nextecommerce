@@ -44,7 +44,7 @@ export default function BlackNavBar({ color = "black" }) {
 
   // Countdown Timer Logic
   useEffect(() => {
-    const targetDate = new Date("2025-04-20T23:59:59+05:45").getTime();
+    const targetDate = new Date("2025-04-30T23:59:59+05:45").getTime();
 
     const interval = setInterval(() => {
       const now = new Date().getTime();

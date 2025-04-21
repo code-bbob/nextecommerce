@@ -13,16 +13,16 @@ const heroProducts = [
   {
     name: "MacBook Air M2",
     img: "/images/bibhabok.png",
-    price: "Rs. 99,999",
+    price: "Rs. 125,000",
     rating: 4.9,
-    specs: ["8-core CPU", "10-core GPU", "Up to 24GB memory"],
+    specs: ["8 GB RAM", "256 GB CPU", "Apple M2 Chip", "13.6-inch Retina Display"],
   },
   {
-    name: "iPhone 16 Pro Max",
+    name: "iPhone 16   ",
     img: "/images/iphone.png",
-    price: "Rs. 10,999",
+    price: "Rs. 130200.00",
     rating: 4.8,
-    specs: ["A18 Bionic", "48MP camera", "Titanium design"],
+    specs: ["A18 Bionic", "48MP camera", "OLED Display","8GB RAM | 128GB Storage"],
   },
 ]
 
