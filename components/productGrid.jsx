@@ -44,7 +44,7 @@ const ProductCardSkeleton = () => {
   )
 }
 
-export default function ProductGrid({ products, isLoading }) {
+export default function ProductGrid({ products, isLoading, gridCols = 5 }) {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const dispatch = useDispatch()
   const isLoggedIn = useSelector((state) => state.access.isAuthenticated)
@@ -89,9 +89,14 @@ export default function ProductGrid({ products, isLoading }) {
     }
   }
 
+  // Determine the grid columns class based on gridCols prop
+  const gridColumnsClass = gridCols === 4
+    ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-4"
+    : "grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
+
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
+      <div className={`grid ${gridColumnsClass} gap-2 md:gap-3`}>
         {Array(8)
           .fill()
           .map((_, index) => (
@@ -102,7 +107,7 @@ export default function ProductGrid({ products, isLoading }) {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
+    <div className={`grid ${gridColumnsClass} gap-2 md:gap-3`}>
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
       {products?.map((product) => (
         <motion.div

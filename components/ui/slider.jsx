@@ -30,13 +30,13 @@ const Slider = React.forwardRef(({ className, onValueChange, ...props }, ref) =>
         <SliderPrimitive.Thumb className="block h-4 w-4 rounded-full border border-primary/50 bg-background shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50" />
       </SliderPrimitive.Root>
       
-      <div className="flex justify-between mt-2">
+      {/* <div className="flex justify-between mt-2">
         <span className="text-xs font-bold ">0 </span>
         <span className="text-xs font-bold">5 </span>
       </div>
       <div className="mt-2 text-sm font-bold">
     Chosen value: {currentValue[0]}
-  </div>
+  </div> */}
     </div>
     
   )
