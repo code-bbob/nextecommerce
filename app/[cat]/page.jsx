@@ -86,29 +86,43 @@ function StorePage() {
     <div className="flex flex-col min-h-screen bg-gray-700 font-sans">
       <BlackNavBar color="inherit" />
       <CatBar/>
-      <div className="flex-grow flex md:flex-row flex-col">
-        {/* Desktop Sidebar */}
-        <aside className="hidden md:block md:w-60 lg:w-72">
-          <div className="sticky top-20 h-screen overflow-y-auto">
-            <Suspense fallback={<div className="text-white p-4">Loading filters...</div>}>
-              <FilterSidebar
-                setOrdering={setOrdering}
-                setRating={setRating}
-                setMinRating={setMinRating}
-                setMinPrice={setMinPrice}
-                setMaxPrice={setMaxPrice}
-                setBrandName={setBrandName}
-                isSidebarOpen={isSidebarOpen}
-                setIsSidebarOpen={setIsSidebarOpen}
-              />
-            </Suspense>
-          </div>
-        </aside>
 
+      {/* Filter Toggle Button */}
+      
+      <div 
+          className="fixed left-0 top-0 w-6 h-full z-10"
+          onMouseEnter={() => setIsSidebarOpen(true)}
+        />
+      {/* Main Layout */}
+      <div className="flex-grow flex md:flex-row flex-col">
+      {!isSidebarOpen && (
+                  <ChevronRight className=" fixed top-1/2 h-5 w-5" />
+        
+)}
+
+        {/* Sidebar */}
+        {isSidebarOpen && (
+          <aside className={`${isSidebarOpen ? 'block' : 'hidden'} md:w-60 lg:w-72 border-gray-700 transition-all duration-300`}>
+          <div className="sticky top-20 h-screen overflow-y-auto">
+              <Suspense fallback={<div className="p-4">Loading filters...</div>}>
+                <FilterSidebar
+                  setOrdering={setOrdering}
+                  setRating={setRating}
+                  setMinRating={setMinRating}
+                  setMinPrice={setMinPrice}
+                  setMaxPrice={setMaxPrice}
+                  setBrandName={setBrandName}
+                  isSidebarOpen={isSidebarOpen}
+                  setIsSidebarOpen={setIsSidebarOpen}
+                />
+              </Suspense>
+            </div>
+          </aside>
+        )}
         {/* Main Content */}
         <main className="flex-1 p-4 md:p-8">
           <Suspense fallback={<div className="text-white">Loading products...</div>}>
-            <ProductGrid products={products} isLoading={isLoading} />
+            <ProductGrid products={products} isLoading={isLoading} gridCols={isSidebarOpen ? 4 : 5} />
           </Suspense>
 
           {/* Pagination Controls */}
