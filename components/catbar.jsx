@@ -110,11 +110,11 @@ export default function CatBar() {
   const renderSuggestions = () => {
     if (!suggestions.length) return null;
     return (
-      <div className="absolute mt-1 w-full bg-black text-white rounded shadow-lg z-10 max-h-60 overflow-y-auto">
+      <div className="absolute mt-1 w-full bg-card/95 backdrop-blur-md text-foreground rounded-lg shadow-modern border border-border z-10 max-h-60 overflow-y-auto">
         {suggestions.map((item) => (
           <div
             key={item.id}
-            className="flex items-center gap-3 px-4 py-2 hover:bg-gray-200 cursor-pointer"
+            className="flex items-center gap-3 px-4 py-2 hover:bg-accent cursor-pointer transition-colors duration-200"
             onClick={() => {
               router.push(`/product/${item.id}`);
               setQuery("");
@@ -132,7 +132,7 @@ export default function CatBar() {
             </div>
             <div className="flex flex-col">
               <span className="font-medium">{item.name}</span>
-              <span className="text-sm text-gray-600">${item.price}</span>
+              <span className="text-sm text-muted-foreground">RS. {item.price}</span>
             </div>
           </div>
         ))}
@@ -146,7 +146,7 @@ export default function CatBar() {
     const data = preFetchedCategories[activeCategory];
     return (
       <div
-        className="absolute left-0 top-full w-full bg-gray-900 text-white z-50"
+        className="absolute left-0 top-full w-full bg-card/95 backdrop-blur-md text-foreground z-40 border-t border-border/30 shadow-modern"
         onMouseEnter={() => setActiveCategory(activeCategory)}
         onMouseLeave={() => setActiveCategory(null)}
       >
@@ -154,10 +154,10 @@ export default function CatBar() {
           {data && data.length ? (
             <div className="grid grid-cols-4 gap-6">
               {data.map((brandObj, idx) => (
-                <div key={idx} className="border-r pr-4">
+                <div key={idx} className="border-r border-border/30 pr-4">
                   <h3
                     onClick={() => router.push(`/${activeCategory}/${brandObj.brand}`)}
-                    className="font-bold mb-2 cursor-pointer hover:text-red-500"
+                    className="font-bold mb-2 cursor-pointer hover:text-primary transition-colors duration-200"
                   >
                     {brandObj.brand}
                   </h3>
@@ -167,7 +167,7 @@ export default function CatBar() {
       {brandObj.series?.map((series) => (
         <li
           key={series.id}
-          className="hover:underline cursor-pointer"
+          className="hover:underline cursor-pointer text-muted-foreground hover:text-primary transition-colors duration-200"
           onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${series.id}`)}
         >
           {series.name}
@@ -179,7 +179,7 @@ export default function CatBar() {
       {brandObj.subcategories?.map((subcategory) => (
         <li
           key={subcategory.id} // Ensure that the key is unique
-          className="hover:underline cursor-pointer"
+          className="hover:underline cursor-pointer text-muted-foreground hover:text-primary transition-colors duration-200"
           onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${subcategory.id}`)} //adjust the route as required.
         >
           {subcategory.name}
@@ -187,7 +187,7 @@ export default function CatBar() {
       ))}
     </>
   ) : (
-    <div className="text-gray-500">No series or subcategories available</div>
+    <div className="text-muted-foreground">No series or subcategories available</div>
   )}
 </ul>
                 </div>
@@ -205,7 +205,7 @@ export default function CatBar() {
   return (
     <>
       
-      <header className="shadow-md hidden md:block bg-gradient-to-br from-gray-800 via-gray-700 to-black text-white py-2">
+      <header className="shadow-modern hidden md:block bg-gradient-to-r from-card/95 via-background to-card/95 backdrop-blur-md text-foreground py-2 border-b border-border/30 sticky top-16 z-30">
         <div className="relative">
           <div className="mx-auto flex items-center justify-between">
             <nav className=" md:flex ml-10 font-bold items-center space-x-10 w-full">
@@ -213,7 +213,7 @@ export default function CatBar() {
                 <Link
                   key={cat}
                   href={`/${cat}`}
-                  className="cursor-pointer"
+                  className="cursor-pointer hover:text-primary transition-colors duration-200"
                   onMouseEnter={() => setActiveCategory(cat)}
                   onMouseLeave={() => setActiveCategory(null)}
                 >

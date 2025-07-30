@@ -52,13 +52,13 @@ export default function BrandLogos() {
 
   return (
     <div className="w-full max-w-7xl mx-auto md:px-4 py-12">
-      <div className="text-center font-bold text-2xl mb-6">Authorized Distributor</div>
+      <div className="text-center font-bold text-2xl mb-6 text-foreground">Authorized Distributor</div>
 
       {/* Carousel */}
       <div className="relative flex items-center">
         <button
           onClick={prevPage}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black text-white rounded-full p-2"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-card/80 backdrop-blur-sm border border-border text-foreground hover:bg-accent rounded-full p-2 transition-all duration-200"
           aria-label="Previous brands"
         >
           <ChevronLeft className="h-6 w-6" />
@@ -69,7 +69,7 @@ export default function BrandLogos() {
             <Link
               key={brand.name}
               href={`/search?q=${brand.name.toLowerCase()}`}
-              className={`flex flex-col items-center justify-center p-1 sm:p-2 ${
+              className={`flex flex-col items-center justify-center p-1 sm:p-2 hover:bg-accent/50 rounded-lg transition-colors duration-200 ${
                 itemsPerPage === 3 ? "w-1/3" : itemsPerPage === 4 ? "w-1/4" : "w-1/6"
               }`}
             >
@@ -81,14 +81,14 @@ export default function BrandLogos() {
                   objectFit="contain"
                 />
               </div>
-              <span className="text-xs sm:text-sm md:text-l mt-1 font-medium text-white">{brand.name}</span>
+              <span className="text-xs sm:text-sm md:text-l mt-1 font-medium text-foreground">{brand.name}</span>
             </Link>
           ))}
         </div>
 
         <button
           onClick={nextPage}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black text-white rounded-full p-2"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-card/80 backdrop-blur-sm border border-border text-foreground hover:bg-accent rounded-full p-2 transition-all duration-200"
           aria-label="Next brands"
         >
           <ChevronRight className="h-6 w-6" />
@@ -100,7 +100,7 @@ export default function BrandLogos() {
         {Array.from({ length: totalPages }).map((_, index) => (
           <button
             key={`bottom-${index}`}
-            className={cn("w-6 h-2 mx-1 rounded-full", index === currentPage ? "bg-red-600" : "bg-gray-200")}
+            className={cn("w-6 h-2 mx-1 rounded-full transition-colors duration-200", index === currentPage ? "bg-primary" : "bg-muted")}
             onClick={() => setCurrentPage(index)}
             aria-label={`Go to page ${index + 1}`}
           />

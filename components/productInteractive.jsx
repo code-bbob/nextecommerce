@@ -152,10 +152,10 @@ export default function ProductInteractive({ product }) {
             <div className="md:hidden space-y-4">
 
           <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 to-violet-500" />
-                <span className="font-medium">{product.brandName}</span>
+                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-primary to-primary/60" />
+                <span className="font-medium text-foreground">{product.brandName}</span>
               </div>
-          <h1 className="text-xl font-bold bg-clip-text text-white/70">
+          <h1 className="text-xl font-bold text-foreground">
           
                 {product.name}
               </h1>
@@ -194,7 +194,7 @@ export default function ProductInteractive({ product }) {
               />
               
               {/* Zoom indicator */}
-              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/50 text-white p-2 rounded-full">
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-card/80 backdrop-blur-sm text-foreground p-2 rounded-full border border-border shadow-sm">
                 <Search className="w-4 h-4" />
                 <span className="sr-only">
                   {isMobile ? 'Tap to enlarge' : 'Hover to zoom'}
@@ -224,9 +224,9 @@ export default function ProductInteractive({ product }) {
                     key={i}
                     className={`relative aspect-square rounded-lg overflow-hidden border ${
                       selectedImage === cdnImageUrl
-                        ? "border-pink-500"
-                        : "border-gray-800"
-                    } bg-black/50 backdrop-blur-sm hover:border-pink-500 cursor-pointer transition-colors`}
+                        ? "border-primary shadow-md"
+                        : "border-border"
+                    } bg-card/50 backdrop-blur-sm hover:border-primary cursor-pointer transition-all duration-200 hover:shadow-md`}
                     onMouseEnter={() => setSelectedImage(cdnImageUrl)}
                   >
                     <Image
@@ -247,26 +247,26 @@ export default function ProductInteractive({ product }) {
               <h2 className="text-2xl font-bold mb-4 text-gray-300 text-center">
                 Product Attributes
               </h2>
-              <div className="overflow-hidden rounded-lg shadow-lg">
-                <table className="min-w-full ">
-                  <thead className="bg-black/50">
+              <div className="overflow-hidden rounded-lg shadow-modern border border-border">
+                <table className="min-w-full bg-card">
+                  <thead className="bg-muted/50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
                         Key
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
                         Value
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-border">
                     {product.attributes.map((attr, index) => (
                       attr.value && (
-                      <tr key={index} className="hover:bg-gray-700">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm ">
+                      <tr key={index} className="hover:bg-accent/50 transition-colors duration-200">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground font-medium">
                           {attr.attribute}
                         </td>
-                        <td className="px-6 py-4  text-sm">
+                        <td className="px-6 py-4 text-sm text-foreground">
                           {attr.value}
                         </td>
                       </tr>
@@ -284,10 +284,10 @@ export default function ProductInteractive({ product }) {
           <div className="space-y-2 md:space-y-6">
             <div className="space-y-2 hidden md:block">
               <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 to-violet-500" />
-                <span className="font-medium">{product.brandName}</span>
+                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-primary to-primary/60" />
+                <span className="font-medium text-foreground">{product.brandName}</span>
               </div>
-              <h1 className="text-3xl font-bold bg-clip-text text-white/70">
+              <h1 className="text-3xl font-bold text-foreground">
                 {product.name}
               </h1>
               <div className="flex items-center space-x-2">
@@ -296,27 +296,27 @@ export default function ProductInteractive({ product }) {
                     key={i}
                     className={`w-4 h-4 ${
                       i < Math.round(product.ratings.stats.avg_rating)
-                        ? "text-yellow-600 fill-yellow-600"
-                        : "text-gray-600 fill-gray-600"
+                        ? "text-yellow-500 fill-yellow-500"
+                        : "text-muted-foreground fill-muted-foreground"
                     }`}
                   />
                 ))}
-                <span className="text-sm text-gray-400">
+                <span className="text-sm text-muted-foreground">
                   ({product.ratings.stats.avg_rating.toFixed(1)})
                 </span>
               </div>
             </div>
             <div className="flex gap-3">
-            <div className="text-xl md:text-3xl text-orange-500 font-bold">
+            <div className="text-xl md:text-3xl text-primary font-bold">
               RS. {product.price.toFixed(2)}
             </div>
             {product.before_deal_price && (
-            <strike className="text-xl md:text-2xl text-yellow-600 font-bold">
+            <strike className="text-xl md:text-2xl text-amber-600 font-bold">
               RS. {product.before_deal_price?.toFixed(2)}
             </strike>
             )}
             {product.old_price && (
-            <strike className="text-xl md:text-2xl text-grey-600 font-bold">
+            <strike className="text-xl md:text-2xl text-muted-foreground font-bold">
               RS. {product.old_price?.toFixed(2)}
             </strike>
               )}
@@ -328,20 +328,20 @@ export default function ProductInteractive({ product }) {
                 <p className="text-gray-300 font-bold">
                   Category: {product.category}
                 </p>
-                <p className="text-gray-300 font-bold">Series: {product.series}</p>
+                <p className="text-muted-foreground font-bold">Series: {product.series}</p>
               </div>
             </div>
 
-            <div className="flex space-x-2 bg-gray-600 rounded p-4 md:space-x-4">
+            <div className="flex space-x-2 bg-card/50 border border-border rounded-lg p-4 md:space-x-4 shadow-sm">
               <Button
-                className="flex-1 bg-black text-md hover:scale-105"
+                className="flex-1 bg-secondary text-secondary-foreground hover:bg-secondary/90 btn-futuristic shadow-sm hover:shadow-md transition-all duration-200"
                 size="lg"
                 onClick={() => router.push("/product/emi/" + product.product_id)}
               >
-                Apply Emi
+                Apply EMI
               </Button>
               <Button
-                className="flex-1 bg-red-500 text-md hover:bg-red-700 hover:scale-105"
+                className="flex-1 bg-primary hover:bg-primary/90 btn-futuristic shadow-sm hover:shadow-md transition-all duration-200"
                 size="lg"
                 onClick={handleAddToCart}
               >
@@ -349,19 +349,19 @@ export default function ProductInteractive({ product }) {
               </Button>
               <Button
                 variant="outline"
-                className="border-gray-800 hidden md:block   hover:text-white transition-colors"
+                className="border-border hidden md:block hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
               >
                 <Heart
                   size={64}
-                  className="text-red-500 hover:text-black"
+                  className="text-destructive hover:text-destructive/80"
                   fill="currentColor"
                 />
               </Button>
             </div>
 
-            <div className="flex items-center text-sm">
+            <div className="flex items-center text-sm text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-lg p-3">
               <Truck className="w-4 h-4 mr-2" />
-              Free delivery on orders over RS. 150
+              <span className="font-medium">Free delivery on orders over RS. 150</span>
             </div>
 
             {product.attributes.length > 0 && (
@@ -369,14 +369,14 @@ export default function ProductInteractive({ product }) {
               <h2 className="text-2xl font-bold mb-4 text-red-500">
                 Product Attributes
               </h2>
-              <div className="overflow-hidden rounded-lg shadow-lg">
-                <table className="min-w-full ">
-                  <thead className="bg-black/50">
+              <div className="overflow-hidden rounded-lg shadow-modern border border-border">
+                <table className="min-w-full bg-card">
+                  <thead className="bg-muted/50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
                         Key
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
                         Value
                       </th>
                     </tr>
@@ -403,22 +403,22 @@ export default function ProductInteractive({ product }) {
 
             {/* Tabs for additional information */}
             <Tabs defaultValue="details" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 bg-black/50 border text-white border-gray-800">
+              <TabsList className="grid w-full grid-cols-3 bg-muted/50 border border-border text-foreground">
                 <TabsTrigger
                   value="details"
-                  className="data-[state=active]:bg-gray-700 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200"
                 >
                   Details
                 </TabsTrigger>
                 <TabsTrigger
                   value="reviews"
-                  className="data-[state=active]:bg-gray-700 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200"
                 >
                   Reviews
                 </TabsTrigger>
                 <TabsTrigger
                   value="discussion"
-                  className="data-[state=active]:bg-gray-700 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200"
                 >
                   Discussion
                 </TabsTrigger>

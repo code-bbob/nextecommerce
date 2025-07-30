@@ -83,7 +83,7 @@ function StorePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-700 font-sans">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans">
       <BlackNavBar color="inherit" />
       <CatBar/>
 
@@ -96,7 +96,7 @@ function StorePage() {
       {/* Main Layout */}
       <div className="flex-grow flex md:flex-row flex-col">
       {!isSidebarOpen && (
-                  <ChevronRight className=" fixed top-1/2 h-5 w-5" />
+                  <ChevronRight className="fixed top-1/2 h-5 w-5 text-primary hover:text-primary/80 transition-colors" />
         
 )}
 
@@ -121,7 +121,7 @@ function StorePage() {
         )}
         {/* Main Content */}
         <main className="flex-1 p-4 md:p-8">
-          <Suspense fallback={<div className="text-white">Loading products...</div>}>
+          <Suspense fallback={<div className="text-muted-foreground">Loading products...</div>}>
             <ProductGrid products={products} isLoading={isLoading} gridCols={isSidebarOpen ? 4 : 5} />
           </Suspense>
 
@@ -130,15 +130,17 @@ function StorePage() {
             <Button 
               onClick={() => handlePageChange(currentPage - 1)} 
               disabled={!pagination.previous || currentPage === 1}
+              className="btn-futuristic bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <ChevronLeft className="mr-2" /> Previous
             </Button>
-            <span className="text-white">
+            <span className="text-foreground font-medium bg-card/80 px-4 py-2 rounded-lg border border-border/30 shadow-sm">
               {currentPage} of {pagination.total_pages}
             </span>
             <Button 
               onClick={() => handlePageChange(currentPage + 1)} 
               disabled={!pagination.next || currentPage === pagination.total_pages}
+              className="btn-futuristic bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
             >
               Next <ChevronRight className="ml-2" />
             </Button>

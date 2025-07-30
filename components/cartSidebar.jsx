@@ -91,27 +91,27 @@ export default function CartSidebar({ isOpen, onClose }) {
   return (
     <>
       <Toaster position="top-center" reverseOrder={false}/>
-      {isOpen && <div className="fixed bg-black bg-opacity-50 z-40" onClick={onClose}></div>}
+      {isOpen && <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40" onClick={onClose}></div>}
 
       <div
         ref={sidebarRef}
-        className={`fixed top-0 right-0 w-80 md:w-96 h-screen bg-black text-white shadow-lg transform transition-transform duration-300 z-50 flex flex-col
+        className={`fixed top-0 right-0 w-80 md:w-96 h-screen bg-card/95 backdrop-blur-md text-foreground shadow-modern border-l border-border transform transition-transform duration-300 z-50 flex flex-col
           ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h2 className="text-xl font-bold">My Cart</h2>
-          <button onClick={onClose} aria-label="Close Cart Sidebar">
-            <X className="text-white h-5 w-5" />
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <h2 className="text-xl font-bold text-foreground">My Cart</h2>
+          <button onClick={onClose} aria-label="Close Cart Sidebar" className="hover:text-primary transition-colors duration-200">
+            <X className="text-foreground h-5 w-5" />
           </button>
         </div>
 
         <div className="flex-grow overflow-y-auto">
           <div className="p-4 flex flex-col gap-4">
             {items.length === 0 ? (
-              <p className="text-gray-300">Your cart is empty.</p>
+              <p className="text-muted-foreground">Your cart is empty.</p>
             ) : (
               items.map((item) => (
-                <div key={item.product_id} className="flex items-center gap-4">
+                <div key={item.product_id} className="flex items-center gap-4 p-3 bg-card/50 rounded-lg border border-border/30 hover:bg-accent/50 transition-colors duration-200">
                   <div className="relative w-16 h-16 flex-shrink-0">
                     <Image
                       src={getCDNImageUrl(item.image) || "/placeholder.svg"}
@@ -121,21 +121,21 @@ export default function CartSidebar({ isOpen, onClose }) {
                       sizes="64px"
                     />
                   </div>
-                  <div className="flex-1">
-                    <p className="font-semibold text-sm">{item.name}</p>
-                    <p className="text-sm">RS. {item.price?.toFixed(2)}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm text-foreground truncate">{item.name}</p>
+                    <p className="text-sm text-primary font-medium">RS. {item.price?.toFixed(2)}</p>
                     <div className="flex items-center mt-1 space-x-2">
                       <button
                         onClick={() => handleUpdateQuantity(item.product_id, -1)}
-                        className="text-gray-400 hover:text-white"
+                        className="text-muted-foreground hover:text-primary transition-colors duration-200"
                         aria-label="Decrease quantity"
                       >
                         <Minus className="h-4 w-4" />
                       </button>
-                      <span className="text-sm">{item.quantity}</span>
+                      <span className="text-sm font-medium text-foreground bg-muted px-2 py-1 rounded">{item.quantity}</span>
                       <button
                         onClick={() => handleUpdateQuantity(item.product_id, 1)}
-                        className="text-gray-400 hover:text-white"
+                        className="text-muted-foreground hover:text-primary transition-colors duration-200"
                         aria-label="Increase quantity"
                       >
                         <Plus className="h-4 w-4" />
@@ -143,7 +143,7 @@ export default function CartSidebar({ isOpen, onClose }) {
                       {/* Delete icon for remove from cart */}
                       <button
                         onClick={() => handleRemoveItem(item.product_id)}
-                        className="text-red-500 hover:text-red-400"
+                        className="text-destructive hover:text-destructive/80 transition-colors duration-200"
                         aria-label="Remove item"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -158,18 +158,18 @@ export default function CartSidebar({ isOpen, onClose }) {
 
         <div className="p-4 border-t border-gray-700">
           <div className="flex justify-between mb-2">
-            <span className="text-gray-300">Subtotal</span>
-            <span className="font-semibold">RS. {subtotal.toFixed(2)}</span>
+            <span className="text-muted-foreground">Subtotal</span>
+            <span className="font-semibold text-foreground">RS. {subtotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between mb-2">
-            <span className="text-gray-300">Taxes</span>
-            <span className="text-gray-400">Calculated at Checkout</span>
+            <span className="text-muted-foreground">Taxes</span>
+            <span className="text-muted-foreground">Calculated at Checkout</span>
           </div>
           <div className="flex justify-between mb-2">
-            <span className="text-gray-300">Shipping</span>
-            <span className="text-gray-400">Calculated at Checkout</span>
+            <span className="text-muted-foreground">Shipping</span>
+            <span className="text-muted-foreground">Calculated at Checkout</span>
           </div>
-          <Button variant="default" disabled={items.length===0} onClick = {()=>handleCheckout()} className="w-full mt-4 bg-gray-200 text-black hover:bg-gray-300 font-semibold">
+          <Button variant="default" disabled={items.length===0} onClick = {()=>handleCheckout()} className="w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-futuristic shadow-md hover:shadow-lg transition-all duration-200">
             Proceed to Checkout
           </Button>
         </div>

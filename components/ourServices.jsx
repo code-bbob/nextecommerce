@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 
 export default function OurServices() {
   return (
-    <section className="mt-5 bg-gray-800 p-8 rounded-xl shadow-2xl">
-      <h2 className="text-4xl font-bold text-center mb-8">
+    <section className="mt-5 bg-card/80 backdrop-blur-md p-8 rounded-xl shadow-modern border border-border">
+      <h2 className="text-4xl font-bold text-center mb-8 text-foreground">
         Our Services
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -14,7 +14,7 @@ export default function OurServices() {
           transition={{ delay: 0.3, duration: 0.8 }}
           className="text-center"
         >
-          <p className="text-xl italic">
+          <p className="text-xl italic text-muted-foreground">
             Authentic and Warranty Laptops, Smartphones and Accessories at the best prices.
           </p>
           {/* <p className="mt-4 font-bold">– Alex M.</p> */}
@@ -25,7 +25,7 @@ export default function OurServices() {
           transition={{ delay: 0.5, duration: 0.8 }}
           className="text-center"
         >
-          <p className="text-xl italic">
+          <p className="text-xl italic text-muted-foreground">
             Quick and Best quality repairs and customer service with over 10 years of experience.
           </p>
           {/* <p className="mt-4 font-bold">– Jamie L.</p> */}
@@ -36,7 +36,7 @@ export default function OurServices() {
           transition={{ delay: 0.7, duration: 0.8 }}
           className="text-center"
         >
-          <p className="text-xl italic">
+          <p className="text-xl italic text-muted-foreground">
             Easy and Free Returns on goods purchased from us. We value your satisfaction.
           </p>
           {/* <p className="mt-4 font-bold">– Morgan S.</p> */}

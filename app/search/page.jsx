@@ -136,7 +136,7 @@ function Search() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-700 font-sans">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans">
       <BlackNavBar color="inherit"/>
       <CatBar/>
 
@@ -173,11 +173,11 @@ function Search() {
         
         {/* Mobile Sidebar (modal-style) */}
         {isSidebarOpen && (
-          <div className="md:hidden fixed inset-0 z-50 bg-black/80 p-4 overflow-y-auto">
-            <div className="bg-gray-200 p-4">
+          <div className="md:hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-sm p-4 overflow-y-auto">
+            <div className="bg-card border border-border rounded-lg p-4 shadow-modern">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-black">Filters</h2>
-                <Button variant="ghost" className="text-black" onClick={() => setIsSidebarOpen(false)}>
+                <h2 className="text-xl font-semibold text-foreground">Filters</h2>
+                <Button variant="ghost" className="text-foreground hover:bg-accent" onClick={() => setIsSidebarOpen(false)}>
                   <X />
                 </Button>
               </div>
@@ -197,12 +197,12 @@ function Search() {
         
         <main className="flex-1 p-4 md:p-8">
           <div className="flex justify-between md:justify-center items-center mb-6">
-            <h1 className="text-md md:text-xl font-bold text-white capitalize">
+            <h1 className="text-md md:text-xl font-bold text-foreground capitalize">
               {searchQuery ? `Items matching "${searchQuery}"` : "Products"}
             </h1>
             <Button 
               variant="outline" 
-              className="md:hidden bg-white text-black" 
+              className="md:hidden bg-card text-foreground border-border hover:bg-accent" 
               onClick={() => setIsSidebarOpen(true)}
             >
               <Filter className="mr-2 h-4 w-4" />
@@ -219,15 +219,17 @@ function Search() {
             <Button 
               onClick={() => handlePageChange(currentPage - 1)} 
               disabled={!pagination.previous || currentPage === 1}
+              className="btn-futuristic bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <ChevronLeft className="mr-2" /> Previous
             </Button>
-            <span className="text-white">
+            <span className="text-foreground font-medium bg-card/80 px-4 py-2 rounded-lg border border-border/30 shadow-sm">
               {currentPage} of {pagination.total_pages}
             </span>
             <Button 
               onClick={() => handlePageChange(currentPage + 1)} 
               disabled={!pagination.next || currentPage === pagination.total_pages}
+              className="btn-futuristic bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
             >
               Next <ChevronRight className="ml-2" />
             </Button>

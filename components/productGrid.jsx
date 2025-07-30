@@ -16,29 +16,29 @@ import { getCDNImageUrl } from "@/utils/imageUtils"
 // Skeleton component for product cards
 const ProductCardSkeleton = () => {
   return (
-    <div className="flex flex-col bg-gradient-to-b border-2 border-gray-900 from-black via-gray-800 to-gray-900 text-white rounded-lg overflow-hidden shadow-lg animate-pulse">
+    <div className="flex flex-col bg-card border border-border rounded-lg overflow-hidden shadow-modern card-modern animate-pulse">
       {/* Image Skeleton */}
-      <div className="relative h-40 sm:h-48 bg-gray-700"></div>
+      <div className="relative h-40 sm:h-48 bg-muted"></div>
 
       {/* Content Skeleton */}
       <div className="p-3 sm:p-4 flex flex-col flex-grow">
         {/* Title Skeleton */}
-        <div className="h-4 bg-gray-700 rounded mb-2 w-3/4"></div>
-        <div className="h-4 bg-gray-700 rounded mb-2 w-1/2"></div>
+        <div className="h-4 bg-muted rounded mb-2 w-3/4"></div>
+        <div className="h-4 bg-muted rounded mb-2 w-1/2"></div>
 
         {/* Rating Skeleton */}
         <div className="flex items-center mb-2">
-          <div className="h-3 w-3 sm:h-4 sm:w-4 bg-gray-700 rounded-full mr-1"></div>
-          <div className="h-3 w-6 bg-gray-700 rounded"></div>
+          <div className="h-3 w-3 sm:h-4 sm:w-4 bg-muted rounded-full mr-1"></div>
+          <div className="h-3 w-6 bg-muted rounded"></div>
         </div>
 
         {/* Price Skeleton */}
-        <div className="h-5 w-24 bg-gray-700 rounded mb-2"></div>
+        <div className="h-5 w-24 bg-muted rounded mb-2"></div>
 
         {/* Bottom section */}
         <div className="mt-auto">
-          <div className="h-4 w-20 bg-gray-700 rounded mt-2 mb-2"></div>
-          <div className="h-8 w-full bg-gray-700 rounded"></div>
+          <div className="h-4 w-20 bg-muted rounded mt-2 mb-2"></div>
+          <div className="h-8 w-full bg-muted rounded"></div>
         </div>
       </div>
     </div>
@@ -113,7 +113,7 @@ export default function ProductGrid({ products, isLoading, gridCols = 5 }) {
       {products?.map((product) => (
         <motion.div
           key={product.product_id}
-          className="flex flex-col bg-gradient-to-b border-2 border-gray-900 from-black via-gray-800 to-gray-900 text-white rounded-lg overflow-hidden shadow-lg relative"
+          className="flex flex-col bg-card border border-border rounded-lg overflow-hidden shadow-modern card-modern hover:shadow-futuristic text-foreground relative group transition-all duration-300"
           whileHover={{ y: -5 }}
           transition={{ duration: 0.3 }}
           onClick={() => router.push(`/product/${product.product_id}`)}
@@ -124,33 +124,33 @@ export default function ProductGrid({ products, isLoading, gridCols = 5 }) {
               {/* Ribbon main part */}
               <div className="relative">
                 {/* Ribbon background */}
-                <div className="bg-gradient-to-r from-red-700 to-red-600 text-white font-bold py-1 px-8 text-xs shadow-md flex items-center justify-center">
+                <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-bold py-1 px-8 text-xs shadow-md flex items-center justify-center">
                   New Year Deal
                 </div>
 
                 {/* Top triangle cutout */}
-                <div className="absolute -top-3 left-0 w-0 h-0 border-b-[12px] border-l-[6px] border-l-transparent border-b-red-900"></div>
+                <div className="absolute -top-3 left-0 w-0 h-0 border-b-[12px] border-l-[6px] border-l-transparent border-b-primary/80"></div>
 
                 {/* Bottom triangle cutout */}
-                <div className="absolute -bottom-3 left-0 w-0 h-0 border-t-[12px] border-l-[6px] border-l-transparent border-t-red-900"></div>
+                <div className="absolute -bottom-3 left-0 w-0 h-0 border-t-[12px] border-l-[6px] border-l-transparent border-t-primary/80"></div>
 
                 {/* Right side shadow effect */}
-                <div className="absolute top-0 -right-3 w-0 h-0 border-t-[14px] border-b-[14px] border-l-[12px] border-l-red-500 border-t-transparent border-b-transparent"></div>
+                <div className="absolute top-0 -right-3 w-0 h-0 border-t-[14px] border-b-[14px] border-l-[12px] border-l-primary/60 border-t-transparent border-b-transparent"></div>
               </div>
             </div>
           )}
 
           {/* Image Container */}
-          <div className="relative h-40 sm:h-48 overflow-hidden">
+          <div className="relative h-40 sm:h-48 overflow-hidden bg-muted/30">
             <Image
               src={getCDNImageUrl(product.images[0]?.image) || "/placeholder.svg"}
               alt={product.name}
               fill
               style={{ objectFit: "cover" }}
-              className="transition-transform duration-300 hover:scale-110"
+              className="transition-transform duration-300 group-hover:scale-110"
               sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
             />
-            <Badge className="absolute top-2 right-2 font-bold bg-red-800 z-20">
+            <Badge className="absolute top-2 right-2 font-bold bg-primary text-primary-foreground z-20 shadow-sm">
               {product.category?.toLocaleUpperCase()}
             </Badge>
           </div>
@@ -158,32 +158,32 @@ export default function ProductGrid({ products, isLoading, gridCols = 5 }) {
           {/* Content Container */}
           <div className="p-3 sm:p-4 flex flex-col flex-grow">
             {/* Product Title */}
-            <h3 className="text-base mb-2 line-clamp-3">{product.name}</h3>
+            <h3 className="text-base mb-2 line-clamp-3 font-medium text-foreground">{product.name}</h3>
 
             {/* Rating */}
             <div className="flex items-center mb-2">
-              <Star className="text-yellow-400 mr-1 h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="text-xs sm:text-sm">{product.ratings.stats.avg_rating.toFixed(1)}</span>
+              <Star className="text-yellow-500 mr-1 h-3 w-3 sm:h-4 sm:w-4 fill-current" />
+              <span className="text-xs sm:text-sm text-muted-foreground">{product.ratings.stats.avg_rating.toFixed(1)}</span>
             </div>
 
             {/* Old Price / New Price */}
             <div>
               {product.old_price && (
-                <strike className="text-lg sm:text-lg font-bold mb-3 mr-5 sm:mb-4">RS. {product.old_price}</strike>
+                <strike className="text-lg sm:text-lg font-bold mb-3 mr-5 sm:mb-4 text-muted-foreground">RS. {product.old_price}</strike>
               )}
               {
-                (product.deal && product.before_deal_price)?<strike className="text-lg sm:text-lg font-bold text-yellow-600 mb-2">RS. {product.before_deal_price}</strike>:<p className="text-lg sm:text-lg font-bold text-yellow-600 mb-2">RS. {product.price}</p>
+                (product.deal && product.before_deal_price)?<strike className="text-lg sm:text-lg font-bold text-amber-600 mb-2">RS. {product.before_deal_price}</strike>:<p className="text-lg sm:text-lg font-bold text-primary mb-2">RS. {product.price}</p>
               }
-              {product.deal && product.before_deal_price && <p className="text-lg sm:text-lg font-bold text-green-600 mb-2">RS. {product.price}</p> }
+              {product.deal && product.before_deal_price && <p className="text-lg sm:text-lg font-bold text-emerald-600 mb-2">RS. {product.price}</p> }
             </div>
 
             {/* Use mt-auto on the bottom section to push it to the bottom */}
             <div className="mt-auto">
-              <div className="text-xs mt-2 h-8">Free Shipping</div>
+              <div className="text-xs mt-2 h-8 text-emerald-600 font-medium">✓ Free Shipping</div>
               <Button
                 size="sm"
                 onClick={(e) => handleAddToCart(e, product)}
-                className="text-xs sm:text-sm bg-red-800 hover:bg-red-600 text-white"
+                className="text-xs sm:text-sm bg-primary hover:bg-primary/90 text-primary-foreground btn-futuristic w-full shadow-sm hover:shadow-md transition-all duration-200"
               >
                 <ShoppingCart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                 Add to cart
@@ -194,7 +194,10 @@ export default function ProductGrid({ products, isLoading, gridCols = 5 }) {
       ))}
 
       {products?.length === 0 && !isLoading && (
-        <div className="text-white text-center col-span-2 md:col-span-3 lg:col-span-4">No products found</div>
+        <div className="text-muted-foreground text-center col-span-2 md:col-span-3 lg:col-span-4 p-8">
+          <div className="text-lg font-medium">No products found</div>
+          <div className="text-sm mt-1">Try adjusting your filters or search terms</div>
+        </div>
       )}
     </div>
   )

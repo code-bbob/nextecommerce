@@ -86,7 +86,7 @@ function StorePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-700 text-gray-100">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground">
       {/* NavBar */}
       <BlackNavBar color="inherit" />
 
@@ -102,15 +102,15 @@ function StorePage() {
       {/* Main Layout */}
       <div className="flex-grow flex md:flex-row flex-col">
       {!isSidebarOpen && (
-                  <ChevronRight className=" fixed top-1/2 h-5 w-5" />
+                  <ChevronRight className="fixed top-1/2 h-5 w-5 text-primary hover:text-primary/80 transition-colors" />
         
 )}
 
         {/* Sidebar */}
         {isSidebarOpen && (
-          <aside className={`${isSidebarOpen ? 'block' : 'hidden'} md:w-60 lg:w-72 border-gray-700 transition-all duration-300`}>
-          <div className="sticky top-20 h-screen overflow-y-auto">
-              <Suspense fallback={<div className="p-4">Loading filters...</div>}>
+          <aside className={`${isSidebarOpen ? 'block' : 'hidden'} md:w-60 lg:w-72 glass card-modern border-r border-border/30 transition-all duration-300`}>
+          <div className="sticky top-20 h-screen overflow-y-auto no-scrollbar">
+              <Suspense fallback={<div className="p-4 text-muted-foreground">Loading filters...</div>}>
                 <FilterSidebar
                   setOrdering={setOrdering}
                   setRating={setRating}
@@ -127,22 +127,24 @@ function StorePage() {
         )}
         {/* Main Content */}
         <main className="flex-1 p-4 md:p-8">
-          <Suspense fallback={<div>Loading products...</div>}>
+          <Suspense fallback={<div className="text-muted-foreground">Loading products...</div>}>
             <ProductGrid products={products} isLoading={isLoading} gridCols={isSidebarOpen ? 4 : 5} />
           </Suspense>
           <div className="flex justify-center items-center mt-8 space-x-4">
             <Button 
               onClick={() => handlePageChange(currentPage - 1)} 
               disabled={!pagination.previous || currentPage === 1}
+              className="btn-futuristic bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <ChevronLeft className="mr-2" /> Previous
             </Button>
-            <span className="text-white">
+            <span className="text-foreground font-medium bg-card/80 px-4 py-2 rounded-lg border border-border/30 shadow-sm">
               {currentPage} of {pagination.total_pages}
             </span>
             <Button 
               onClick={() => handlePageChange(currentPage + 1)} 
               disabled={!pagination.next || currentPage === pagination.total_pages}
+              className="btn-futuristic bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
             >
               Next <ChevronRight className="ml-2" />
             </Button>
@@ -156,7 +158,9 @@ function StorePage() {
 
 export default function PageWrapper() {
   return (
-    <Suspense fallback={<div className="bg-gray-800">Loading page...</div>}>
+    <Suspense fallback={<div className="bg-gradient-to-br from-slate-50 via-white to-blue-50 min-h-screen flex items-center justify-center">
+      <div className="text-foreground">Loading page...</div>
+    </div>}>
       <StorePage />
     </Suspense>
   )

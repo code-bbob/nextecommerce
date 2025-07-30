@@ -74,13 +74,13 @@ export default function FilterSidebar({
   }
 
   return (
-    <div className="p-4 h-full w-full no-scrollbar bg-gray-900 text-gray-100 shadow-sm">
+    <div className="p-4 h-full w-full no-scrollbar bg-card/50 text-foreground shadow-sm">
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center space-x-2">
-          <Sliders className="h-5 w-5 text-indigo-400" />
-          <h2 className="text-xl font-bold text-white">Filters</h2>
+          <Sliders className="h-5 w-5 text-primary" />
+          <h2 className="text-xl font-bold text-foreground">Filters</h2>
           {activeFilters > 0 && (
-            <span className="bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full">{activeFilters}</span>
+            <span className="bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-full shadow-sm">{activeFilters}</span>
           )}
         </div>
         <Button variant="ghost" className="text-indigo-400 hover:bg-white" onClick={() => setIsSidebarOpen(false)}>
@@ -90,9 +90,9 @@ export default function FilterSidebar({
 
       {/* Sort by Price */}
       <div className="mb-3">
-        <h3 className="text-sm font-semibold mb-1 text-indigo-300">Sort by Price</h3>
+        <h3 className="text-sm font-semibold mb-1 text-primary">Sort by Price</h3>
         <Select onValueChange={handleOrderChange}>
-          <SelectTrigger className="w-full bg-gray-800 border border-gray-700 text-gray-100 focus:ring-indigo-500 focus:border-indigo-500">
+          <SelectTrigger className="w-full bg-input border border-border text-foreground focus:ring-primary/50 focus:border-primary">
             <SelectValue placeholder="Select option" />
           </SelectTrigger>
           <SelectContent>
@@ -104,9 +104,9 @@ export default function FilterSidebar({
 
       {/* Sort by Rating */}
       <div className="mb-3">
-        <h3 className="text-sm font-semibold mb-1 text-indigo-300">Sort by Rating</h3>
+        <h3 className="text-sm font-semibold mb-1 text-primary">Sort by Rating</h3>
         <Select onValueChange={handleRatingChange}>
-          <SelectTrigger className="w-full bg-gray-800 border border-gray-700 text-gray-100 focus:ring-indigo-500 focus:border-indigo-500">
+          <SelectTrigger className="w-full bg-input border border-border text-foreground focus:ring-primary/50 focus:border-primary">
             <SelectValue placeholder="Select option" />
           </SelectTrigger>
           <SelectContent>
@@ -119,15 +119,15 @@ export default function FilterSidebar({
       {/* Minimum Rating */}
       <div className="mb-3">
         <div className="flex justify-between items-center mb-2">
-          <h3 className="text-sm font-semibold text-indigo-300">Minimum Rating</h3>
-          <span className="text-white font-bold">{tempMinRating} ★</span>
+          <h3 className="text-sm font-semibold text-primary">Minimum Rating</h3>
+          <span className="text-foreground font-bold">{tempMinRating} ★</span>
         </div>
         <Slider
           defaultValue={[0]}
           max={5}
           step={1}
           onValueChange={handleSlideRatingChange}
-          className="text-indigo-500"
+          className="text-primary"
         />
         <div className="flex justify-between text-xs text-gray-400 mt-1">
           <span>0</span>
@@ -144,28 +144,28 @@ export default function FilterSidebar({
         <h3 className="text-sm font-semibold mb-1 text-indigo-300">Price Range</h3>
         <div className="flex space-x-2">
           <div className="w-full">
-            <label className="text-xs text-gray-400 mb-1 block">Min Price</label>
+            <label className="text-xs text-muted-foreground mb-1 block">Min Price</label>
             <input
               type="number"
               value={tempMinPrice}
               placeholder="0"
-              className="w-full rounded-md border border-gray-700 bg-gray-800 text-gray-100 px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full rounded-md border border-border bg-input text-foreground px-3 py-2 focus:ring-primary/50 focus:border-primary transition-colors duration-200"
               onChange={(e) => setTempMinPrice(e.target.value)}
             />
           </div>
           <div className="w-full">
-            <label className="text-xs text-gray-400 mb-1 block">Max Price</label>
+            <label className="text-xs text-muted-foreground mb-1 block">Max Price</label>
             <input
               type="number"
               value={tempMaxPrice}
               placeholder="1000"
-              className="w-full rounded-md border border-gray-700 bg-gray-800 text-gray-100 px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full rounded-md border border-border bg-input text-foreground px-3 py-2 focus:ring-primary/50 focus:border-primary transition-colors duration-200"
               onChange={(e) => setTempMaxPrice(e.target.value)}
             />
           </div>
         </div>
         <Button
-          className="bg-indigo-600 hover:bg-indigo-700 text-white mt-3 w-full transition-colors duration-200"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground mt-3 w-full transition-colors duration-200 btn-futuristic shadow-sm hover:shadow-md"
           onClick={applyFilters}
         >
           Apply Price Range
@@ -174,18 +174,18 @@ export default function FilterSidebar({
 
       {/* Brand Name */}
       <div className="mb-3">
-        <h3 className="text-sm font-semibold mb-2 text-indigo-300">Brand Name</h3>
+        <h3 className="text-sm font-semibold mb-2 text-primary">Brand Name</h3>
         <form className="flex gap-2" onSubmit={(e) => handleBrandFilter(e, tempBrandName)}>
           <input
             type="text"
             value={tempBrandName}
             placeholder="Search by brand..."
-            className="w-full rounded-md border border-gray-700 bg-gray-800 text-gray-100 px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full rounded-md border border-border bg-input text-foreground px-3 py-2 focus:ring-primary/50 focus:border-primary transition-colors duration-200"
             onChange={(e) => setTempBrandName(e.target.value)}
           />
           <Button
             type="submit"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white min-w-16 transition-colors duration-200"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground min-w-16 transition-colors duration-200 btn-futuristic shadow-sm hover:shadow-md"
           >
             Apply
           </Button>
@@ -194,7 +194,7 @@ export default function FilterSidebar({
 
       {/* Reset Filters */}
       <Button
-        className="w-full bg-gray-700 hover:bg-gray-600 text-white transition-colors duration-200"
+        className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground transition-colors duration-200 shadow-sm hover:shadow-md"
         onClick={resetFilters}
       >
         Reset All Filters

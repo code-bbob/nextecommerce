@@ -22,8 +22,8 @@ export async function generateMetadata() {
 export default function Page() {
   return (
     <>
-      <div className="bg-gradient-to-b from-black via-gray-900 to-black bg-fixed min-h-screen text-white">
-        <BlackNavBar color="black"/>
+      <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-slate-50 min-h-screen">
+        <BlackNavBar color="white"/>
         <main className="container mx-auto px-6">
           <HeroCarousel />
           <CountdownTimer />

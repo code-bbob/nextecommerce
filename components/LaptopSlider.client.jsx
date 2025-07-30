@@ -39,9 +39,9 @@ export default function LaptopGrid() {
   const displayedProducts = isMobile ? products.slice(0, 8) : products;
 
   return (
-    <section className=" text-black py-12">
+    <section className="py-12">
       <div className="">
-        <h2 className="text-xl font-bold mb-4 text-center text-white">TOP SELLING PRODUCTS</h2>
+        <h2 className="text-xl font-bold mb-4 text-center text-foreground">TOP SELLING PRODUCTS</h2>
 
         <div className="grid grid-cols-2 lg:grid-cols-3">
           {displayedProducts.map((product) => (
@@ -50,13 +50,13 @@ export default function LaptopGrid() {
               //if is mobile, add margin1 using tailwind css
               className={`${
                 isMobile ? "m-1" : "m-0 "
-              } border border-gray-700 bg-gray-800 text-white hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:scale-[1.03] relative cursor-pointer`}
+              } border border-border bg-card/80 backdrop-blur-sm text-foreground hover:shadow-modern transition-all duration-300 transform hover:scale-[1.03] relative cursor-pointer`}
               onClick={() => router.push(`/product/${product.product_id}`)}
               >
               {/* MOBILE LAYOUT */}
               <div className="block lg:hidden">
                 {product.images?.[0]?.image ? (
-                  <div className="relative w-full h-40 bg-white">
+                  <div className="relative w-full h-40 bg-background">
                     <Image
                       src={getCDNImageUrl(product.images[0].image)}
                       alt={product.name}
@@ -66,25 +66,25 @@ export default function LaptopGrid() {
                     />
                   </div>
                 ) : (
-                  <div className="h-40 w-full bg-gray-700 flex items-center justify-center">
-                    <span className="text-gray-400">No image</span>
+                  <div className="h-40 w-full bg-muted flex items-center justify-center">
+                    <span className="text-muted-foreground">No image</span>
                   </div>
                 )}
 
                 <div className="p-4">
                   {product.is_new && (
-                    <span className="bg-green-500 text-white text-xs px-2 py-1 rounded w-fit mb-2 inline-block">NEW</span>
+                    <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded w-fit mb-2 inline-block">NEW</span>
                   )}
                   <h3 className="font-medium text-base mb-2 line-clamp-2">
                     {product.name || "Product Name"}
                   </h3>
-                  <div className="flex text-yellow-400 mb-3">
+                  <div className="flex text-primary mb-3">
                     {[...Array(5)].map((_, i) => (
                       <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20">
                         <path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z" />
                       </svg>
                     ))}
-                    <span className="text-gray-400 text-xs ml-1">
+                    <span className="text-muted-foreground text-xs ml-1">
                       ({product.rating_count || Math.floor(Math.random() * 5) + 1})
                     </span>
                   </div>
@@ -92,7 +92,7 @@ export default function LaptopGrid() {
                     RS {product.price?.toLocaleString() || "99,999.00"}
                   </div>
                   {product.old_price && product.old_price > product.price && (
-                    <div className="text-gray-400 line-through text-sm">
+                    <div className="text-muted-foreground line-through text-sm">
                       RS {product.old_price?.toLocaleString() || "109,999.00"}
                     </div>
                   )}
@@ -114,26 +114,26 @@ export default function LaptopGrid() {
                         />
                       </div>
                     ) : (
-                      <div className="h-40 w-40 bg-gray-700 flex items-center justify-center rounded">
-                        <span className="text-gray-400">No image</span>
+                      <div className="h-40 w-40 bg-muted flex items-center justify-center rounded">
+                        <span className="text-muted-foreground">No image</span>
                       </div>
                     )}
                   </div>
 
                   <div className="w-1/2 flex flex-col h-full">
                     {product.is_new && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded w-fit mb-2">NEW</span>
+                      <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded w-fit mb-2">NEW</span>
                     )}
                     <h3 className="font-medium text-base mb-2 line-clamp-2">
                       {product.name || "Product Name"}
                     </h3>
-                    <div className="flex text-yellow-400 mb-3">
+                    <div className="flex text-primary mb-3">
                       {[...Array(5)].map((_, i) => (
                         <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20">
                           <path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z" />
                         </svg>
                       ))}
-                      <span className="text-gray-400 text-xs ml-1">
+                      <span className="text-muted-foreground text-xs ml-1">
                         ({product.rating_count || Math.floor(Math.random() * 5) + 1})
                       </span>
                     </div>
@@ -142,7 +142,7 @@ export default function LaptopGrid() {
                         RS {product.price?.toLocaleString() || "99,999.00"}
                       </div>
                       {product.old_price && product.old_price > product.price && (
-                        <div className="text-gray-400 line-through text-sm">
+                        <div className="text-muted-foreground line-through text-sm">
                           RS {product.old_price?.toLocaleString() || "109,999.00"}
                         </div>
                       )}
@@ -154,7 +154,7 @@ export default function LaptopGrid() {
               {/* Discount Badge */}
               {product.old_price && product.old_price > product.price && (
                 <div className="absolute hidden md:block bottom-4 right-4">
-                  <div className="bg-orange-500 text-white text-xs font-semibold py-1 px-2 rounded">
+                  <div className="bg-primary text-primary-foreground text-xs font-semibold py-1 px-2 rounded">
                     SAVE {Math.round(((product.old_price - product.price) / product.old_price) * 100)}%
                   </div>
                 </div>

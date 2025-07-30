@@ -136,7 +136,7 @@ export default async function ProductPage({ params }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-800 text-white font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans">
       <BlackNavBar color="inherit"/>
       {/* Pass product data to a client component for interactivity */}
       <ProductInteractive product={product} />

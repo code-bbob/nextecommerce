@@ -155,13 +155,13 @@ export default function BlackNavBar({ color = "black" }) {
     if (!suggestions.length || !showSuggestions) return null;
     return (
       <div
-        className="absolute left-0 right-0 top-full mt-1 bg-gray-900 text-white rounded-md shadow-lg z-50 max-h-60 overflow-y-auto border border-gray-700"
+        className="absolute left-0 right-0 top-full mt-1 bg-card/95 backdrop-blur-md text-foreground rounded-lg shadow-modern border border-border z-50 max-h-60 overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {suggestions.map((item) => (
           <div
             key={item.id}
-            className="flex items-center gap-3 px-4 py-2 hover:bg-gray-700 cursor-pointer border-b border-gray-700 last:border-b-0"
+            className="flex items-center gap-3 px-4 py-2 hover:bg-accent cursor-pointer border-b border-border/50 last:border-b-0 transition-colors duration-200"
             onClick={() => handleSuggestionClick(item.id)}
           >
             <div className="relative w-10 h-10 flex-shrink-0">
@@ -175,7 +175,7 @@ export default function BlackNavBar({ color = "black" }) {
             </div>
             <div className="flex flex-col overflow-hidden">
               <span className="font-medium truncate">{item.name}</span>
-              <span className="text-sm text-gray-300">Rs. {item.price}</span>
+              <span className="text-sm text-muted-foreground">Rs. {item.price}</span>
             </div>
           </div>
         ))}
@@ -189,7 +189,7 @@ export default function BlackNavBar({ color = "black" }) {
       {searchOpen && (
         <>
           <div
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40"
+            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40"
             onClick={() => {
               setSearchOpen(false);
               setShowSuggestions(false);
@@ -227,11 +227,11 @@ export default function BlackNavBar({ color = "black" }) {
 
             {/* Mobile search suggestions */}
             {showSuggestions && suggestions.length > 0 && (
-              <div className="mt-2 bg-gray-900 text-white rounded-md shadow-lg overflow-hidden border border-gray-700">
+              <div className="mt-2 bg-card/95 backdrop-blur-md text-foreground rounded-lg shadow-modern overflow-hidden border border-border">
                 {suggestions.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-800 cursor-pointer border-b border-gray-700 last:border-b-0"
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-accent cursor-pointer border-b border-border/50 last:border-b-0 transition-colors duration-200"
                     onClick={() => handleSuggestionClick(item.id)}
                   >
                     <div className="relative w-12 h-12 flex-shrink-0">
@@ -253,7 +253,7 @@ export default function BlackNavBar({ color = "black" }) {
             )}
 
             {isLoading && (
-              <div className="mt-2 p-3 bg-gray-900 text-white rounded-md shadow-lg text-center">
+              <div className="mt-2 p-3 bg-card/95 backdrop-blur-md text-foreground rounded-lg shadow-modern text-center border border-border">
                 Loading results...
               </div>
             )}
@@ -262,14 +262,14 @@ export default function BlackNavBar({ color = "black" }) {
       )}
 
       {/* Main Nav Bar */}
-      <header className={`bg-${color} text-white sticky p-2 top-0 z-40 shadow-2xl`}>
+      <header className="bg-card/90 backdrop-blur-md text-foreground sticky p-2 top-0 z-40 shadow-modern border-b border-border/30">
         <div className="mx-auto px-4 h-16 flex items-center justify-between">
           {/* Left side: Logo + Mobile Menu Button */}
           <div className="flex items-center space-x-3">
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsSidePanelOpen(true)}
-              className="md:hidden p-1 text-white hover:text-gray-200 focus:outline-none"
+              className="md:hidden p-1 text-foreground hover:text-primary focus:outline-none transition-colors duration-200"
               aria-label="Toggle navigation"
             >
               <Menu className="h-6 w-6" />
@@ -278,7 +278,7 @@ export default function BlackNavBar({ color = "black" }) {
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src="/images/digi.png"
+                src="/images/digiblack.png"
                 alt="logo"
                 width={100}
                 height={50}
@@ -299,12 +299,12 @@ export default function BlackNavBar({ color = "black" }) {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search products..."
-                className="w-full bg-gray-900 border border-gray-600 rounded-full px-4 py-2 text-white placeholder-gray-400 focus:outline-none"
+                className="w-full bg-input border border-border rounded-full px-4 py-2 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-200"
                 onFocus={() => setShowSuggestions(true)}
               />
               <button
                 type="submit"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors duration-200"
               >
                 <Search className="h-5 w-5" />
               </button>
@@ -330,25 +330,25 @@ export default function BlackNavBar({ color = "black" }) {
 
             {/* Weekly Deals + Store Link */}
             <div className="hidden md:flex items-center space-x-4 font-semibold">
-              <Link href="/deals" className="flex items-center hover:scale-105 space-x-1">
-                <Zap className="h-5 w-5 text-orange-400" />
+              <Link href="/deals" className="flex items-center hover:scale-105 space-x-1 transition-transform duration-200">
+                <Zap className="h-5 w-5 text-orange-500" />
                 <div>
-                  <p className="text-orange-400">NEW YEAR 2082</p>
-                  {/* <p className="text-white text-center">DEALS</p> */}
-                  {countdown && <p className="text-sm"><span className="text-orange-400">Deals: </span>{countdown}</p>}
+                  <p className="text-orange-500">NEW YEAR 2082</p>
+                  {/* <p className="text-foreground text-center">DEALS</p> */}
+                  {countdown && <p className="text-sm"><span className="text-orange-500">Deals: </span>{countdown}</p>}
                 </div>
               </Link>
-              <Link href="/store" className="hover:text-gray-200">
+              <Link href="/store" className="hover:text-primary transition-colors duration-200">
                 Store
               </Link>
-              <Link href="/blog" className="hover:text-gray-200">
+              <Link href="/blog" className="hover:text-primary transition-colors duration-200">
                 Blogs
               </Link>
               {/* Logout (if logged in) */}
               {hasHydrated && isLoggedIn && (
                 <button
                   onClick={handleLogout}
-                  className="hover:text-gray-200 focus:outline-none"
+                  className="hover:text-destructive focus:outline-none transition-colors duration-200"
                 >
                   Logout
                 </button>
@@ -358,12 +358,12 @@ export default function BlackNavBar({ color = "black" }) {
             {/* Cart Button */}
             <button
               onClick={handleOpenCart}
-              className="relative flex items-center justify-center hover:text-gray-200 focus:outline-none"
+              className="relative flex items-center justify-center hover:text-primary focus:outline-none transition-colors duration-200"
               aria-label="Open Cart"
             >
               <ShoppingCart className="h-6 w-6" />
               {itemCount > 0 && (
-                <span className="absolute -top-2 -right-3 bg-red-600 text-white text-xs rounded-full px-1">
+                <span className="absolute -top-2 -right-3 bg-destructive text-destructive-foreground text-xs rounded-full px-1 shadow-sm">
                   {itemCount}
                 </span>
               )}
@@ -379,13 +379,13 @@ export default function BlackNavBar({ color = "black" }) {
           <>
             {/* Backdrop */}
             <div
-              className="fixed inset-0 bg-black/50 z-40"
+              className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40"
               onClick={() => setIsSidePanelOpen(false)}
             />
             {/* Side Navigation */}
-            <div className="fixed left-0 top-0 h-full w-3/4 max-w-xs bg-black text-white p-6 z-50 transform transition-transform duration-300">
+            <div className="fixed left-0 top-0 h-full w-3/4 max-w-xs bg-card/95 backdrop-blur-md text-foreground p-6 z-50 transform transition-transform duration-300 border-r border-border shadow-modern">
               <button
-                className="mb-6 hover:text-gray-300"
+                className="mb-6 hover:text-primary transition-colors duration-200"
                 onClick={() => setIsSidePanelOpen(false)}
                 aria-label="Close menu"
               >
@@ -394,49 +394,49 @@ export default function BlackNavBar({ color = "black" }) {
               <nav className="flex flex-col space-y-4 text-lg">
                 <Link
                   href="/store"
-                  className="hover:text-gray-300"
+                  className="hover:text-primary transition-colors duration-200"
                   onClick={() => setIsSidePanelOpen(false)}
                 >
                   Store
                 </Link>
                 <Link
                   href="/blog"
-                  className="hover:text-gray-300"
+                  className="hover:text-primary transition-colors duration-200"
                   onClick={() => setIsSidePanelOpen(false)}
                 >
                   Blogs
                 </Link>
                 <Link
                   href="/laptop"
-                  className="hover:text-gray-300"
+                  className="hover:text-primary transition-colors duration-200"
                   onClick={() => setIsSidePanelOpen(false)}
                 >
                   Laptops
                 </Link>
                 <Link
                   href="/smartphone"
-                  className="hover:text-gray-300"
+                  className="hover:text-primary transition-colors duration-200"
                   onClick={() => setIsSidePanelOpen(false)}
                 >
                   Smartphones
                 </Link>
                 <Link
                   href="/accessories"
-                  className="hover:text-gray-300"
+                  className="hover:text-primary transition-colors duration-200"
                   onClick={() => setIsSidePanelOpen(false)}
                 >
                   Accessories
                 </Link>
                 <Link
                   href="/gadgets"
-                  className="hover:text-gray-300"
+                  className="hover:text-primary transition-colors duration-200"
                   onClick={() => setIsSidePanelOpen(false)}
                 >
                   Gadgets
                 </Link>
                 <Link
                   href="/cpc"
-                  className="hover:text-gray-300"
+                  className="hover:text-primary transition-colors duration-200"
                   onClick={() => setIsSidePanelOpen(false)}
                 >
                   Custom PC
