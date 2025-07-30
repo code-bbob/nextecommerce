@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Heart, X, Star, Truck } from "lucide-react";
+import { Heart, X, Star, Truck, Search } from "lucide-react";
 import CartSidebar from "@/components/cartSidebar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,16 +12,35 @@ import { addToCart, sendCartToServer } from "@/redux/cartSlice";
 import customFetch from "@/utils/customFetch";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { getLocalCart, setLocalCart } from "@/utils/localCart"
+import { getLocalCart, setLocalCart } from "@/utils/localCart";
+import { getCDNImageUrl, preloadImages } from "@/utils/imageUtils";
+import { useEffect } from "react";
 
 
 export default function ProductInteractive({ product }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(
-    product.images[0]?.image || "/placeholder.svg"
+    getCDNImageUrl(product.images[0]?.image) || "/placeholder.svg"
   );
   const [modalImage, setModalImage] = useState(null);
   const router = useRouter();
+
+  // Amazon-style zoom states
+  const [showZoom, setShowZoom] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Local state for discussion comments
   const [comments, setComments] = useState(product.comments || []);
@@ -30,11 +49,19 @@ export default function ProductInteractive({ product }) {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.access.isAuthenticated);
 
+  // Preload all product images for instant switching - super fast UX
+  useEffect(() => {
+    if (product.images && product.images.length > 0) {
+      const imageUrls = product.images.map(img => img.image);
+      preloadImages(imageUrls);
+    }
+  }, [product.images]);
+
   const handleAddToCart = () => {
     const cartItem = {
       product_id: product.product_id,
       price: product.price,
-      image: product.images[0]?.image,
+      image: getCDNImageUrl(product.images[0]?.image),
       name: product.name,
       quantity: 1,
     };
@@ -89,11 +116,37 @@ export default function ProductInteractive({ product }) {
     }
   };
 
+  // Amazon-style zoom handlers (desktop only)
+  const handleMouseEnter = () => {
+    if (!isMobile) {
+      setShowZoom(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!isMobile) {
+      setShowZoom(false);
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    if (isMobile) return;
+    
+    const element = e.currentTarget;
+    const { top, left, width, height } = element.getBoundingClientRect();
+    
+    // Calculate mouse position relative to the image (0-100%)
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    
+    setZoomPosition({ x, y });
+  };
+
   return (
     <div>
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
       <main className="mx-auto w-full px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-12">
+        <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
           {/* Product Images */}
           <div className="space-y-4">
             <div className="md:hidden space-y-4">
@@ -122,33 +175,71 @@ export default function ProductInteractive({ product }) {
                 </span>
               </div>
             </div>
-            <div className="relative w-auto h-auto min-h-60 md:min-h-96 rounded-lg overflow-hidden border border-gray-800 bg-inherit backdrop-blur-sm p-4">
+            <div 
+              className={`relative w-auto h-auto min-h-60 md:min-h-96 rounded-lg overflow-hidden border border-gray-800 bg-inherit backdrop-blur-sm p-4 group ${
+                isMobile ? 'cursor-pointer' : 'cursor-crosshair'
+              }`}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onMouseMove={handleMouseMove}
+              onClick={isMobile ? () => setModalImage(selectedImage) : undefined}
+            >
               <Image
                 src={selectedImage || "/placeholder.svg"}
                 alt={product.name}
                 fill
                 className="object-contain md:object- mr-4"
+                priority={true} // Load main image immediately for fast LCP
+                sizes="(max-width: 768px) 100vw, 50vw" // Responsive sizing for performance
               />
+              
+              {/* Zoom indicator */}
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/50 text-white p-2 rounded-full">
+                <Search className="w-4 h-4" />
+                <span className="sr-only">
+                  {isMobile ? 'Tap to enlarge' : 'Hover to zoom'}
+                </span>
+              </div>
+              
+              {/* Amazon-style Lens Overlay */}
+              {showZoom && !isMobile && (
+                <div
+                  className="absolute pointer-events-none border border-gray-900 bg-white bg-opacity-20 backdrop-blur-sm transition-all duration-75 ease-out shadow-lg"
+                  style={{
+                    width: '120px',
+                    height: '120px',
+                    left: `${Math.max(10, Math.min(zoomPosition.x, 90))}%`,
+                    top: `${Math.max(10, Math.min(zoomPosition.y, 90))}%`,
+                    transform: 'translate(-50%, -50%)',
+                    borderRadius: '6px',
+                  }}
+                />
+              )}
             </div>
             <div className="grid grid-cols-4 gap-4">
-              {product.images.map((img, i) => (
-                <div
-                  key={i}
-                  className={`relative aspect-square rounded-lg overflow-hidden border ${
-                    selectedImage === img.image
-                      ? "border-pink-500"
-                      : "border-gray-800"
-                  } bg-black/50 backdrop-blur-sm hover:border-pink-500 cursor-pointer transition-colors`}
-                  onMouseEnter={() => setSelectedImage(img.image)}
-                >
-                  <Image
-                    src={img.image || "/placeholder.svg"}
-                    alt={`${product.name} - Image ${i + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
+              {product.images.map((img, i) => {
+                const cdnImageUrl = getCDNImageUrl(img.image);
+                return (
+                  <div
+                    key={i}
+                    className={`relative aspect-square rounded-lg overflow-hidden border ${
+                      selectedImage === cdnImageUrl
+                        ? "border-pink-500"
+                        : "border-gray-800"
+                    } bg-black/50 backdrop-blur-sm hover:border-pink-500 cursor-pointer transition-colors`}
+                    onMouseEnter={() => setSelectedImage(cdnImageUrl)}
+                  >
+                    <Image
+                      src={cdnImageUrl || "/placeholder.svg"}
+                      alt={`${product.name} - Image ${i + 1}`}
+                      fill
+                      className="object-cover"
+                      loading={i < 4 ? "eager" : "lazy"} // Load first 4 thumbnails immediately, rest lazily
+                      sizes="(max-width: 768px) 25vw, 12vw" // Optimized sizing for thumbnails
+                    />
+                  </div>
+                );
+              })}
             </div>
              {/* Cool Attributes Table */}
              {product.attributes.length > 0 && (
@@ -548,6 +639,35 @@ export default function ProductInteractive({ product }) {
             </Tabs>
 
           </div>
+
+          {/* Amazon-style Zoom Window (Desktop only) - Modal Overlay */}
+          {showZoom && !isMobile && (
+            <div className="fixed inset-0 pointer-events-none z-50">
+              <div className="absolute right-0 top-0 h-full w-1/2 bg-black bg-opacity-20 backdrop-blur-sm">
+                <div className="flex items-center justify-center h-full p-8">
+                  <div className="w-full max-w-lg h-96 border-2 border-gray-600 rounded-lg overflow-hidden bg-white shadow-2xl pointer-events-auto">
+                    <div
+                      className="w-full h-full transition-all duration-75 ease-out"
+                      style={{
+                        backgroundImage: `url(${selectedImage})`,
+                        backgroundSize: '400%',
+                        backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                        backgroundRepeat: 'no-repeat',
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-auto">
+                  <p className="text-white text-sm font-medium drop-shadow-lg">
+                    🔍 Zoomed View
+                  </p>
+                  <p className="text-gray-300 text-xs drop-shadow-lg">
+                    Move mouse over image to zoom
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         {/* Modal for enlarged image */}
         {modalImage && (

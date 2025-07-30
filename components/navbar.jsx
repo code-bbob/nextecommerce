@@ -9,6 +9,7 @@ import CartSidebar from "@/components/cartSidebar";
 import { logout } from "@/redux/accessSlice";
 import customFetch from "@/utils/customFetch";
 import { Zap } from "lucide-react";
+import { getCDNImageUrl } from "@/utils/imageUtils";
 
 function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -108,10 +109,11 @@ export default function NavBar() {
           >
             <div className="w-10 h-10 relative">
               <Image
-                src={item.image}
+                src={getCDNImageUrl(item.image)}
                 alt={item.name}
                 fill
                 className="object-cover rounded"
+                sizes="40px"
               />
             </div>
             <div className="flex flex-col">

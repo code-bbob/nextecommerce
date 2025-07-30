@@ -2,10 +2,13 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { getCDNImageUrl } from "@/utils/imageUtils";
 
 export default function LaptopGrid() {
   const [products, setProducts] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchLaptops() {
@@ -47,18 +50,19 @@ export default function LaptopGrid() {
               //if is mobile, add margin1 using tailwind css
               className={`${
                 isMobile ? "m-1" : "m-0 "
-              } border border-gray-700 bg-gray-800 text-white hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:scale-[1.03] relative`}
-
+              } border border-gray-700 bg-gray-800 text-white hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:scale-[1.03] relative cursor-pointer`}
+              onClick={() => router.push(`/product/${product.product_id}`)}
               >
               {/* MOBILE LAYOUT */}
               <div className="block lg:hidden">
                 {product.images?.[0]?.image ? (
                   <div className="relative w-full h-40 bg-white">
                     <Image
-                      src={product.images[0].image}
+                      src={getCDNImageUrl(product.images[0].image)}
                       alt={product.name}
                       fill
                       className="object-contain"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
                     />
                   </div>
                 ) : (
@@ -102,10 +106,11 @@ export default function LaptopGrid() {
                     {product.images?.[0]?.image ? (
                       <div className="relative h-40 w-40">
                         <Image
-                          src={product.images[0].image}
+                          src={getCDNImageUrl(product.images[0].image)}
                           alt={product.name}
                           fill
                           style={{ objectFit: "contain" }}
+                          sizes="160px"
                         />
                       </div>
                     ) : (

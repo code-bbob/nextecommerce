@@ -12,6 +12,7 @@ import {
   updateSubtotal,
   updateDiscount,
 } from "@/redux/checkoutSlice";
+import { getCDNImageUrl } from "@/utils/imageUtils";
 
 const CouponInput = memo(function CouponInput({ subtotal, shippingCost, onApplyCoupon }) {
   const [couponCode, setCouponCode] = useState("");
@@ -129,10 +130,11 @@ export function OrderSummary() {
                   {item.quantity}
                 </div>
                 <Image
-                  src={item.image || "/placeholder.svg"}
+                  src={getCDNImageUrl(item.image) || "/placeholder.svg"}
                   alt={item.name}
                   fill
                   className="object-cover rounded"
+                  sizes="64px"
                 />
               </div>
               <div className="flex-1">

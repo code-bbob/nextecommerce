@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import Image from "next/image";
 import { Card } from "./ui/card";
 import customFetch from "@/utils/customFetch";
+import { getCDNImageUrl } from "@/utils/imageUtils";
 
 const OtherForm = ({ product }) => {
   const totalPrice = product?.price;
@@ -12,7 +13,7 @@ const OtherForm = ({ product }) => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedImage, setSelectedImage] = useState(
-    product.images[0]?.image || "/placeholder.svg"
+    getCDNImageUrl(product.images[0]?.image) || "/placeholder.svg"
   );
 
   // Applicant state
@@ -177,24 +178,28 @@ const OtherForm = ({ product }) => {
             />
           </div>
           <div className="grid grid-cols-4 gap-4">
-            {product.images.map((img, i) => (
-              <div
-                key={i}
-                className={`relative aspect-square rounded-lg overflow-hidden border ${
-                  selectedImage === img.image
-                    ? "border-pink-500"
-                    : "border-gray-800"
-                } bg-black/50 backdrop-blur-sm hover:border-pink-500 cursor-pointer transition-colors`}
-                onMouseEnter={() => setSelectedImage(img.image)}
-              >
-                <Image
-                  src={img.image || "/placeholder.svg"}
-                  alt={`${product.name} - Image ${i + 1}`}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            ))}
+            {product.images.map((img, i) => {
+              const cdnImageUrl = getCDNImageUrl(img.image);
+              return (
+                <div
+                  key={i}
+                  className={`relative aspect-square rounded-lg overflow-hidden border ${
+                    selectedImage === cdnImageUrl
+                      ? "border-pink-500"
+                      : "border-gray-800"
+                  } bg-black/50 backdrop-blur-sm hover:border-pink-500 cursor-pointer transition-colors`}
+                  onMouseEnter={() => setSelectedImage(cdnImageUrl)}
+                >
+                  <Image
+                    src={cdnImageUrl || "/placeholder.svg"}
+                    alt={`${product.name} - Image ${i + 1}`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 25vw, 12vw"
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
         {/* Step 1: EMI & Downpayment Details */}

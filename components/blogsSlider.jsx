@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Router } from "next/router";
+import { getCDNImageUrl } from "@/utils/imageUtils";
 
 export default function BlogSlider() {
   const router = useRouter();
@@ -60,10 +61,11 @@ export default function BlogSlider() {
               {item.image && (
                 <div className="relative w-full h-40 md:h-48 lg:h-56 rounded-md overflow-hidden">
                   <Image
-                    src={item.image}
+                    src={getCDNImageUrl(item.image)}
                     alt={item.title}
                     fill
                     className="object-cover object-center"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
               )}

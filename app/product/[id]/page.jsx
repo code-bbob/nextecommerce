@@ -5,6 +5,7 @@ import NavBar from "@/components/navbar";
 import ProductInteractive from "@/components/productInteractive";
 import { notFound } from "next/navigation";
 import Script from "next/script";
+import { getCDNImageUrl } from "@/utils/imageUtils";
 
 // Generate dynamic metadata based on the product data
 export async function generateMetadata({ params }) {
@@ -40,7 +41,7 @@ export async function generateMetadata({ params }) {
         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/product/${id}`,
         images: [
           {
-            url: product.images[0]?.image,
+            url: getCDNImageUrl(product.images[0]?.image),
             width: 800,
             height: 600,
             alt: product.name,
@@ -51,7 +52,7 @@ export async function generateMetadata({ params }) {
         card: "summary_large_image",
         title: product.name,
         description: product.meta_description || product.description,
-        images: [product.images[0]?.image],
+        images: [getCDNImageUrl(product.images[0]?.image)],
       },
     };
   } catch (error) {
@@ -122,7 +123,7 @@ export default async function ProductPage({ params }) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    image: product.images[0]?.image,
+    image: getCDNImageUrl(product.images[0]?.image),
     description: product.meta_description || product.description,
     sku: product.sku,
     offers: {

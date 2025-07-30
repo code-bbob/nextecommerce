@@ -11,6 +11,7 @@ import { addToCart, sendCartToServer } from "@/redux/cartSlice"
 import CartSidebar from "@/components/cartSidebar"
 import { getLocalCart, setLocalCart } from "@/utils/localCart"
 import { useRouter } from "next/navigation"
+import { getCDNImageUrl } from "@/utils/imageUtils"
 
 // Skeleton component for product cards
 const ProductCardSkeleton = () => {
@@ -64,7 +65,7 @@ export default function ProductGrid({ products, isLoading, gridCols = 5 }) {
     const cartItem = {
       product_id: product.product_id,
       price: product.price,
-      image: product.images[0]?.image,
+      image: getCDNImageUrl(product.images[0]?.image),
       name: product.name,
       quantity: 1,
     }
@@ -142,11 +143,12 @@ export default function ProductGrid({ products, isLoading, gridCols = 5 }) {
           {/* Image Container */}
           <div className="relative h-40 sm:h-48 overflow-hidden">
             <Image
-              src={product.images[0]?.image || "/placeholder.svg"}
+              src={getCDNImageUrl(product.images[0]?.image) || "/placeholder.svg"}
               alt={product.name}
               fill
               style={{ objectFit: "cover" }}
               className="transition-transform duration-300 hover:scale-110"
+              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
             />
             <Badge className="absolute top-2 right-2 font-bold bg-red-800 z-20">
               {product.category?.toLocaleUpperCase()}

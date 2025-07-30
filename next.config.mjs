@@ -1,14 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
+      unoptimized: true, // Disable Next.js image optimization to save costs
       remotePatterns: [
         {
-          protocol: 'https', // Or 'http' if needed
-          hostname: 'digitech-ecommerce.blr1.digitaloceanspaces.com', // Replace with your image host
-          port: '', // Leave empty if default port
-          pathname: '/**', // Or specify a specific path
+          protocol: 'https',
+          hostname: 'digitech-ecommerce.blr1.cdn.digitaloceanspaces.com',
+          port: '',
+          pathname: '/**',
         },
       ],
+      // No custom loader needed when unoptimized is true
     },
   };
 

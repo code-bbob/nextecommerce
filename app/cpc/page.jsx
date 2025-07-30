@@ -4,6 +4,7 @@ import { Cpu, HardDrive, CpuIcon as Gpu, Server, Database, Wind, Box, Zap, Chevr
 import Footer from "@/components/Footer.server";
 import BlackNavBar from "@/components/blackNavbar";
 import { Button } from "@/components/ui/button";
+import { getCDNImageUrl } from "@/utils/imageUtils";
 
 export const metadata = {
   title: 'Best Custom PC in Nepal. Best price Custom PC in Nepal. Cheapest Custom PC in Nepal',
@@ -210,11 +211,12 @@ export default function Home() {
                   className="group relative w-72 h-80 flex-shrink-0 overflow-hidden rounded-2xl shadow-xl backdrop-blur-sm border border-white/5"
                 >
                   <Image
-                    src={item.image || "/placeholder.svg"}
+                    src={getCDNImageUrl(item.image) || "/placeholder.svg"}
                     alt={item.name}
                     fill
                     style={{ objectFit: 'cover' }} 
                     className="transition-transform duration-300 group-hover:scale-110"
+                    sizes="288px"
                   />
                   <div
                     className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-60 transition-opacity duration-300`}

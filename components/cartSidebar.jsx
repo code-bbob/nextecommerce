@@ -11,6 +11,7 @@ import { getLocalCart,setLocalCart } from "@/utils/localCart";
 import { toast, Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { fetchCartFromServer } from "@/redux/cartSlice";
+import { getCDNImageUrl } from "@/utils/imageUtils";
 
 export default function CartSidebar({ isOpen, onClose }) {
   const dispatch = useDispatch();
@@ -113,10 +114,11 @@ export default function CartSidebar({ isOpen, onClose }) {
                 <div key={item.product_id} className="flex items-center gap-4">
                   <div className="relative w-16 h-16 flex-shrink-0">
                     <Image
-                      src={item.image || "/placeholder.svg"}
+                      src={getCDNImageUrl(item.image) || "/placeholder.svg"}
                       alt={item.name}
                       fill
                       className="object-cover rounded"
+                      sizes="64px"
                     />
                   </div>
                   <div className="flex-1">

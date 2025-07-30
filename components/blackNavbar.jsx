@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import CartSidebar from "@/components/cartSidebar";
 import { logout } from "@/redux/accessSlice";
 import customFetch from "@/utils/customFetch";
+import { getCDNImageUrl } from "@/utils/imageUtils";
 
 // Debounce hook to limit search requests
 function useDebounce(value, delay) {
@@ -165,10 +166,11 @@ export default function BlackNavBar({ color = "black" }) {
           >
             <div className="relative w-10 h-10 flex-shrink-0">
               <Image
-                src={item.image}
+                src={getCDNImageUrl(item.image)}
                 alt={item.name}
                 fill
                 className="object-cover rounded"
+                sizes="40px"
               />
             </div>
             <div className="flex flex-col overflow-hidden">
@@ -234,10 +236,11 @@ export default function BlackNavBar({ color = "black" }) {
                   >
                     <div className="relative w-12 h-12 flex-shrink-0">
                       <Image
-                        src={item.image}
+                        src={getCDNImageUrl(item.image)}
                         alt={item.name}
                         fill
                         className="object-cover rounded"
+                        sizes="48px"
                       />
                     </div>
                     <div className="flex flex-col overflow-hidden">
