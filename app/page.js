@@ -1,5 +1,5 @@
 import NavBar from "@/components/navbar";
-import HeroCarousel from "@/components/HeroCarousel.client";
+import HeroSection from "@/components/HeroSection.client";
 import CountdownTimer from "@/components/CountdownTimer.client";
 import FeaturedProducts from "@/components/FeaturedProducts.client";
 import Testimonials from "@/components/Testimonials.client";
@@ -25,7 +25,7 @@ export default function Page() {
       <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-slate-50 min-h-screen">
         <BlackNavBar color="white"/>
         <main className="container mx-auto px-6">
-          <HeroCarousel />
+          <HeroSection />
           <CountdownTimer />
           <FeaturedProducts />
           <Testimonials />
