@@ -19,9 +19,9 @@ export default function MosaicHero() {
         {/* Left copy */}
         <div className="space-y-6">
           <h1 className="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight">
-            Elevate your setup
+            Dashain Offer 2082 is Here!!
             <span className="block bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent">
-              with future‑ready tech
+              Up to 20% OFF 
             </span>
           </h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-xl">
@@ -30,7 +30,7 @@ export default function MosaicHero() {
           <div className="flex flex-wrap gap-3">
             <a href="#laptops">
               <button className="bg-gray-900 text-white hover:bg-black px-6 py-3 rounded-xl font-semibold">
-                Shop Laptops
+                Shop Now
               </button>
             </a>
             <a href="#curated">

@@ -110,7 +110,7 @@ export default function CatBar() {
   const renderSuggestions = () => {
     if (!suggestions.length) return null;
     return (
-      <div className="absolute mt-1 w-full bg-card/95 backdrop-blur-md text-foreground rounded-lg shadow-modern border border-border z-10 max-h-60 overflow-y-auto">
+      <div className="absolute  mt-1 w-full bg-card/95 backdrop-blur-md text-foreground rounded-lg shadow-modern border border-border z-10 max-h-60 overflow-y-auto">
         {suggestions.map((item) => (
           <div
             key={item.id}
@@ -205,7 +205,7 @@ export default function CatBar() {
   return (
     <>
       
-      <header className="shadow-modern hidden md:block bg-gradient-to-r from-card/95 via-background to-card/95 backdrop-blur-md text-foreground py-2 border-b border-border/30 sticky top-16 z-30">
+      <header className="shadow-modern hidden md:block bg-black text-white backdrop-blur-md text-foreground py-2 border-b border-border/30 sticky top-16 z-30">
         <div className="relative">
           <div className="mx-auto flex items-center justify-between">
             <nav className=" md:flex ml-10 font-bold items-center space-x-10 w-full">
