@@ -27,7 +27,7 @@ export default function Testimonials() {
   ];
 
   return (
-    <section className="py-16 relative overflow-hidden">
+  <section className="py-10 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 rounded-3xl -z-10"></div>
       <div className="absolute top-10 left-10 w-40 h-40 bg-primary/10 rounded-full blur-[80px] -z-10"></div>

@@ -1,14 +1,11 @@
-import NavBar from "@/components/navbar";
-import HeroSection from "@/components/HeroSection.client";
-import CountdownTimer from "@/components/CountdownTimer.client";
-import FeaturedProducts from "@/components/FeaturedProducts.client";
 import Testimonials from "@/components/Testimonials.client";
-import Footer from "@/components/Footer.server";
 import BlackNavBar from "@/components/blackNavbar";
-import LaptopSlider from "@/components/LaptopSlider.client";
 import OurServices from "@/components/ourServices";
-import BlogSlider from "@/components/blogsSlider";
 import BrandLogos from "@/components/BrandLogos";
+import MosaicHero from "@/components/MosaicHero";
+import MinimalProductGrid from "@/components/MinimalProductGrid";
+import TopLaptops from "@/components/TopLaptops.client";
+import LaptopSlider from "@/components/LaptopSlider.client";
 
 
 export async function generateMetadata() {
@@ -24,17 +21,15 @@ export default function Page() {
     <>
       <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-slate-50 min-h-screen">
         <BlackNavBar color="white"/>
-        <main className="container mx-auto px-6">
-          <HeroSection />
-          <CountdownTimer />
-          <FeaturedProducts />
-          <Testimonials />
-          <LaptopSlider/>
+  <main className="mx-auto max-w-screen-2xl px-3 sm:px-6 lg:px-10 pb-14">
+          <MosaicHero />
+          {/* <TopLaptops /> */}
+          <MinimalProductGrid />
+          <LaptopSlider />
           <BrandLogos/>
+          <Testimonials />
           <OurServices/>
-          <BlogSlider/>
         </main>
-        <Footer />
       </div>
     </>
   );

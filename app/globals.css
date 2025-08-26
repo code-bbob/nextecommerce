@@ -117,7 +117,8 @@
     overflow-x: hidden; /* Prevent horizontal scroll */
   }
   html {
-    overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  scroll-behavior: smooth; /* Smooth anchor scrolling */
   }
 }
 

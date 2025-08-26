@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 export default function CountdownTimer() {
   const calculateTimeLeft = () => {
@@ -62,9 +63,11 @@ export default function CountdownTimer() {
 
         {timeLeft && Object.keys(timeLeft).length > 0 && (
           <div className="flex justify-center">
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer">
-              Shop Now • Save Up to 50%
-            </div>
+            <Link href="/deals" className="inline-block">
+              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer">
+                Shop Now • Save Up to 50%
+              </div>
+            </Link>
           </div>
         )}
       </div>
