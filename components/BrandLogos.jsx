@@ -64,7 +64,7 @@ export default function BrandLogos() {
           <ChevronLeft className="h-6 w-6" />
         </button>
 
-        <div className="flex justify-center items-center w-full px-2 sm:px-4 md:px-12">
+        <div className="flex justify-center items-center w-full px-2 bg-black text-white sm:px-4 md:px-12">
           {visibleBrands.map((brand) => (
             <Link
               key={brand.name}
@@ -81,7 +81,7 @@ export default function BrandLogos() {
                   objectFit="contain"
                 />
               </div>
-              <span className="text-xs sm:text-sm md:text-l mt-1 font-medium text-foreground">{brand.name}</span>
+              <span className="text-xs sm:text-sm md:text-l mt-1 font-medium ">{brand.name}</span>
             </Link>
           ))}
         </div>

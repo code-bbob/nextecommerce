@@ -8,6 +8,7 @@ import DealsOfDay from "@/components/DealsOfDay.client";
 import TopLaptops from "@/components/TopLaptops.client";
 import LaptopSlider from "@/components/LaptopSlider.client";
 import CatBar from "@/components/catbar";
+import BlogSlider from "@/components/blogsSlider";
 
 
 export async function generateMetadata() {
@@ -29,10 +30,11 @@ export default function Page() {
           {/* <TopLaptops /> */}
           <LaptopSlider />
           <DealsOfDay />
-          <MinimalProductGrid />
-          <BrandLogos/>
           <Testimonials />
+          <BrandLogos/>
+          <MinimalProductGrid />
           <OurServices/>
+          <BlogSlider/>
         </main>
       </div>
     </>
