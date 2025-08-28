@@ -151,7 +151,7 @@ function StorePage() {
           </div>  
         </main>
       </div>
-      <Footer/>
+    <Footer/>
     </div>
   )
 }

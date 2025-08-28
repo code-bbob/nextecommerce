@@ -6,6 +6,7 @@ import ProductInteractive from "@/components/productInteractive";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import { getCDNImageUrl } from "@/utils/imageUtils";
+import CatBar from "@/components/catbar";
 
 // Generate dynamic metadata based on the product data
 export async function generateMetadata({ params }) {
@@ -138,6 +139,7 @@ export default async function ProductPage({ params }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans">
       <BlackNavBar color="inherit"/>
+      <CatBar />
       {/* Pass product data to a client component for interactivity */}
       <ProductInteractive product={product} />
       {/* JSON-LD Structured Data for SEO */}

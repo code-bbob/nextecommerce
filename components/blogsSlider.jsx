@@ -29,7 +29,11 @@ export default function BlogSlider() {
 
   return (
     <section className="py-10">
-      <h2 className="text-3xl font-bold mb-6 text-center text-foreground">Latest Blogs</h2>
+      <h2 className="text-3xl font-bold text-center text-foreground">Latest Blogs</h2>
+      <div className="flex items-end justify-center mt-1 mb-2 gap-4">
+        <Link href="/blog" className="text-sm font-semibold text-blue-600 hover:text-blue-700">See all →</Link>
+      </div>
+
 
       {/* Main grid container */}
       <div className="md:grid md:grid-cols-7 md:grid-rows-2 gap-4 px-4 max-w-7xl ">
@@ -81,13 +85,6 @@ export default function BlogSlider() {
         })}
       </div>
 
-      <div className="flex items-center justify-center mt-6">
-        <Link href="/store">
-          <button className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-semibold transition-colors duration-200">
-            See More
-          </button>
-        </Link>
-      </div>
     </section>
   );
 }

@@ -52,7 +52,7 @@ export default function BrandLogos() {
 
   return (
     <div className="w-full mx-auto ">
-      <div className="text-center font-bold text-2xl mb-6 text-foreground">Authorized Distributor</div>
+      <div className="text-center font-bold text-3xl mb-6 text-foreground">Authorized Distributor</div>
 
       {/* Carousel */}
       <div className="relative flex items-center">
