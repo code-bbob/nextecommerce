@@ -51,7 +51,7 @@ export default function BrandLogos() {
   const visibleBrands = brands.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   return (
-    <div className="w-full max-w-7xl mx-auto md:px-4 py-12">
+    <div className="w-full mx-auto ">
       <div className="text-center font-bold text-2xl mb-6 text-foreground">Authorized Distributor</div>
 
       {/* Carousel */}
@@ -64,7 +64,7 @@ export default function BrandLogos() {
           <ChevronLeft className="h-6 w-6" />
         </button>
 
-        <div className="flex justify-center items-center w-full px-2 bg-black text-white sm:px-4 md:px-12">
+        <div className="flex justify-center items-center w-full px-2   sm:px-4 md:px-12">
           {visibleBrands.map((brand) => (
             <Link
               key={brand.name}
@@ -96,7 +96,7 @@ export default function BrandLogos() {
       </div>
 
       {/* Bottom pagination dots */}
-      <div className="flex justify-center mt-12">
+      {/* <div className="flex justify-center mt-12">
         {Array.from({ length: totalPages }).map((_, index) => (
           <button
             key={`bottom-${index}`}
@@ -105,7 +105,7 @@ export default function BrandLogos() {
             aria-label={`Go to page ${index + 1}`}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }

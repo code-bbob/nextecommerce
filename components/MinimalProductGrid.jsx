@@ -42,18 +42,18 @@ export default function MinimalProductGrid() {
   }, []);
 
   return (
-    <section id="curated" className="py-14">
-      <div className="mb-6 flex items-end justify-between gap-4">
-        <h2 className="text-2xl md:text-3xl font-extrabold justify-center text-gray-900">Trending now</h2>
+    <section id="curated" className="mb-3">
+        <h2 className="text-2xl md:text-2xl text-center font-bold   text-gray-900">TRENDING NOW</h2>
+      <div className="flex items-end justify-center mt-1 mb-2 gap-4">
         <Link href="/store" className="text-sm font-semibold text-blue-600 hover:text-blue-700">Shop all →</Link>
       </div>
 
       {/* Edge fades for hinting scroll */}
       <div className="relative">
         
-        <div className="flex snap-x snap-mandatory overflow-x-auto gap-2 sm:gap-2 pb-2 -mx-3 sm:-mx-6 lg:-mx-10 px-3 sm:px-6 lg:px-10">
+        <div className="flex overflow-x-auto pb-2 -mx-3 sm:-mx-6 lg:-mx-10 px-3 sm:px-6 lg:px-10">
           {(loading ? Array.from({ length: 8 }) : items).map((p, i) => (
-            <article key={(p && p.id) || i} className="snap-start w-[220px] sm:w-[260px] md:w-[280px] shrink-0 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+            <article key={(p && p.id) || i} className="snap-start w-[220px] sm:w-[260px] md:w-[280px] shrink-0  border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
               {loading ? (
                 <div className="animate-pulse">
                   <div className="h-44 sm:h-52 md:h-56 bg-gray-100 rounded-t-2xl" />

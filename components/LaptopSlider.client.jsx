@@ -39,9 +39,9 @@ export default function LaptopGrid() {
   const displayedProducts = isMobile ? products.slice(0, 8) : products;
 
   return (
-    <section className="py-12">
+    <section className="py-3">
       <div className="">
-        <h2 className="text-xl font-bold mb-4 text-center text-foreground">TOP SELLING PRODUCTS</h2>
+        <h2 className="text-xl font-bold mt-4 mb-4 text-center text-foreground">TOP SELLING PRODUCTS</h2>
 
         <div className="grid grid-cols-2 lg:grid-cols-3">
           {displayedProducts.map((product) => (

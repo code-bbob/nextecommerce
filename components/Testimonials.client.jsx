@@ -27,20 +27,20 @@ export default function Testimonials() {
   ];
 
   return (
-  <section className="py-10 relative overflow-hidden">
+  <section className=" relative mt-2 overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 rounded-3xl -z-10"></div>
       <div className="absolute top-10 left-10 w-40 h-40 bg-primary/10 rounded-full blur-[80px] -z-10"></div>
       <div className="absolute bottom-10 right-10 w-40 h-40 bg-accent/10 rounded-full blur-[80px] -z-10"></div>
 
-      <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+      {/* <div className="text-center mb-4">
+        <h2 className="text-3xl font-bold font-mono text-foreground mb-1">
           What Our Customers Say
         </h2>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-xl font-mono text-muted-foreground mx-auto">
           Don't just take our word for it - hear from our satisfied customers
         </p>
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {testimonials.map((testimonial, index) => (
@@ -51,9 +51,9 @@ export default function Testimonials() {
             transition={{ delay: 0.2 + index * 0.1, duration: 0.6 }}
             className="group"
           >
-            <div className="bg-card/60 backdrop-blur-xl border border-border/50 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 h-full">
+            <div className="bg-gradient-to-br from-slate-900 via-slate-700 text-white to-slate-900 backdrop-blur-xl border border-border/50 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 h-full">
               {/* Quote icon */}
-              <div className="text-4xl text-primary/20 mb-4">"</div>
+              <div className="text-4xl  mb-4">"</div>
               
               {/* Rating */}
               <div className="flex items-center gap-1 mb-4">
@@ -63,18 +63,18 @@ export default function Testimonials() {
               </div>
 
               {/* Testimonial content */}
-              <p className="text-muted-foreground text-lg italic mb-6 leading-relaxed">
+              <p className=" text-lg italic mb-6 leading-relaxed">
                 {testimonial.content}
               </p>
 
               {/* Customer info */}
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center text-2xl">
+                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl">
                   {testimonial.avatar}
                 </div>
                 <div>
-                  <div className="font-bold text-foreground">{testimonial.name}</div>
-                  <div className="text-sm text-muted-foreground">{testimonial.role}</div>
+                  <div className="font-bold ">{testimonial.name}</div>
+                  <div className="text-sm ">{testimonial.role}</div>
                 </div>
               </div>
 

@@ -4,11 +4,14 @@ import OurServices from "@/components/ourServices";
 import BrandLogos from "@/components/BrandLogos";
 import MosaicHero from "@/components/MosaicHero";
 import MinimalProductGrid from "@/components/MinimalProductGrid";
+import ShopByCategory from "@/components/ShopByCategory";
 import DealsOfDay from "@/components/DealsOfDay.client";
 import TopLaptops from "@/components/TopLaptops.client";
 import LaptopSlider from "@/components/LaptopSlider.client";
 import CatBar from "@/components/catbar";
 import BlogSlider from "@/components/blogsSlider";
+import FirstBanners from "@/components/firstBanners";
+import SecondBanners from "@/components/secondBanners";
 
 
 export async function generateMetadata() {
@@ -27,12 +30,15 @@ export default function Page() {
         <CatBar/>
   <main className="mx-auto max-w-screen-2xl px-3 sm:px-6 lg:px-10 pb-14">
           <MosaicHero />
+          <ShopByCategory />
           {/* <TopLaptops /> */}
           <LaptopSlider />
+          <FirstBanners />
           <DealsOfDay />
-          <Testimonials />
-          <BrandLogos/>
+          <SecondBanners />
           <MinimalProductGrid />
+          <BrandLogos />
+          <Testimonials />
           <OurServices/>
           <BlogSlider/>
         </main>
