@@ -102,9 +102,11 @@ function StorePage() {
 
         {/* Sidebar */}
         {isSidebarOpen && (
-          <aside className={`${isSidebarOpen ? 'block' : 'hidden'} md:w-60 lg:w-72 border-gray-700 transition-all duration-300`}>
-          <div className="sticky top-20 h-screen overflow-y-auto">
-              <Suspense fallback={<div className="p-4">Loading filters...</div>}>
+          <aside
+            className={`${isSidebarOpen ? 'block' : 'hidden'} md:w-60 sticky top-0 lg:w-72 glass card-modern border-r border-border/30 transition-all duration-300`}
+          >
+            <div className="overflow-y-auto no-scrollbar">
+              <Suspense fallback={<div className="p-4 text-muted-foreground">Loading filters...</div>}>
                 <FilterSidebar
                   setOrdering={setOrdering}
                   setRating={setRating}

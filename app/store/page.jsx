@@ -110,7 +110,7 @@ function StorePage() {
           <aside
             className={`${
               isSidebarOpen ? "block" : "hidden"
-            } md:w-60 sticky top-0 h-screen lg:w-72 glass card-modern border-r border-border/30 transition-all duration-300`}
+            } md:w-60 sticky top-0 lg:w-72 glass card-modern border-r border-border/30 transition-all duration-300`}
           >
             <div className=" overflow-y-auto no-scrollbar">
               <Suspense

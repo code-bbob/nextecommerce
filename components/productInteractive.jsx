@@ -244,7 +244,7 @@ export default function ProductInteractive({ product }) {
              {/* Cool Attributes Table */}
              {product.attributes.length > 0 && (
              <div className="mt-8 hidden md:block">
-              <h2 className="text-2xl font-bold mb-4 text-gray-300 text-center">
+              <h2 className="text-2xl font-bold mb-4 text-primary text-center">
                 Product Attributes
               </h2>
               <div className="overflow-hidden rounded-lg shadow-modern border border-border">
@@ -619,7 +619,7 @@ export default function ProductInteractive({ product }) {
                   </div>
                 ))}
                 {/* Comment Form */}
-                <div className="bg-gray-900 rounded-lg p-4">
+                <div className=" rounded-lg p-4">
                   <form
                     onSubmit={handleCommentSubmit}
                     className="flex flex-col"
@@ -627,7 +627,7 @@ export default function ProductInteractive({ product }) {
                     <textarea
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
-                      className="w-full p-2 rounded border border-gray-700 bg-gray-900 text-white"
+                      className="w-full p-2 rounded border  text-white"
                       placeholder="Write your comment..."
                     />
                     <Button type="submit" className="mt-2 bg-red-700 hover:bg-red-700">

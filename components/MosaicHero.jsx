@@ -17,7 +17,7 @@ export default function MosaicHero() {
   <section id="hero" className="pt-6 md:pt-10 pb-6">
       <div className="grid lg:grid-cols-2 gap-10 items-center">
         {/* Left copy */}
-        <div className="space-y-6">
+        <div className=" order-2 md:order-1 space-y-6">
           <h1 className="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight">
             Dashain Offer 2082 is Here!!
             <span className="block bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent">
@@ -28,7 +28,7 @@ export default function MosaicHero() {
             Premium laptops, phones, audio, and gaming gear. Clean design, fast checkout, and genuine warranty.
           </p>
           <div className="flex flex-wrap gap-3">
-            <a href="#laptops">
+            <a href="store">
               <button className="bg-gray-900 text-white hover:bg-black px-6 py-3 rounded-xl font-semibold">
                 Shop Now
               </button>
@@ -47,7 +47,7 @@ export default function MosaicHero() {
         </div>
 
         {/* Right mosaic */}
-  <div className="grid grid-cols-3 grid-rows-3 gap-4 h-[520px] md:h-[520px]">
+  <div className="order-1 md:order-2 grid grid-cols-3 grid-rows-3 gap-4 h-[520px] md:h-[520px]">
           {tiles.map((t, i) => (
             <motion.div
               key={i}

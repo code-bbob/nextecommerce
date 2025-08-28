@@ -206,7 +206,7 @@ export default function CatBar() {
   return (
     <>
       
-  <header className="shadow-modern hidden md:block bg-black text-white py-2 border-b border-gray-200 sticky top-20 z-40">
+      <header className="shadow-modern hidden md:block bg-black text-white py-2 border-b border-gray-200 sticky top-16 z-30">
         <div className="relative">
           <div className="mx-auto flex items-center justify-between">
             <nav className="md:flex ml-10 font-bold items-center space-x-6 w-full flex-wrap gap-y-2">
