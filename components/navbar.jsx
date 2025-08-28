@@ -158,7 +158,7 @@ export default function NavBar() {
         </>
       )}
 
-      <header className="sticky top-0 z-10 shadow-md bg-white border py-4 pr-4">
+      <header className="fixed top-0 w-full z-10 shadow-md bg-white border py-4 pr-4">
         <div className="relative">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex">

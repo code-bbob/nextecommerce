@@ -87,7 +87,7 @@ const Login = () => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-500 to-slate-800 p-4">
+    <div className="h-screen flex items-center justify-center bg-white p-4">
       <Toaster position="top-center" reverseOrder={false} />
       <motion.div
         initial={{ opacity: 0, y: 20 }}

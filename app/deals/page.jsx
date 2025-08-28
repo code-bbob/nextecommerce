@@ -83,7 +83,7 @@ function StorePage() {
 
   console.log(products)
   return (
-    <div className="flex flex-col min-h-screen bg-gray-700 text-gray-100">
+    <div className="flex flex-col min-h-screen bg-white text-gray-100">
       {/* NavBar */}
       <BlackNavBar color="inherit" />
 

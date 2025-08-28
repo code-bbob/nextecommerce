@@ -140,58 +140,59 @@ export default function CatBar() {
     );
   };
 
+  const chunk = (arr, size) =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+      arr.slice(i * size, i * size + size)
+    );
+
   // Render the full-width mega menu based on activeCategory
   const renderMegaMenu = () => {
     if (!activeCategory) return null;
     const data = preFetchedCategories[activeCategory];
     return (
       <div
-        className="absolute left-0 top-full w-full bg-card/95 backdrop-blur-md text-foreground z-40 border-t border-border/30 shadow-modern"
+        className="absolute left-0 top-full w-full bg-white text-black z-40 border-t border-gray-200 shadow-lg"
         onMouseEnter={() => setActiveCategory(activeCategory)}
         onMouseLeave={() => setActiveCategory(null)}
       >
-        <div className="   mx-0 p-6">
+        <div className="mx-auto p-6">
           {data && data.length ? (
-            <div className="grid grid-cols-4 gap-6">
-              {data.map((brandObj, idx) => (
-                <div key={idx} className="border-r border-border/30 pr-4">
-                  <h3
-                    onClick={() => router.push(`/${activeCategory}/${brandObj.brand}`)}
-                    className="font-bold mb-2 cursor-pointer hover:text-primary transition-colors duration-200"
-                  >
-                    {brandObj.brand}
-                  </h3>
-                  <ul className="space-y-1">
-  {brandObj.series?.length > 0 ? (
-    <>
-      {brandObj.series?.map((series) => (
-        <li
-          key={series.id}
-          className="hover:underline cursor-pointer text-muted-foreground hover:text-primary transition-colors duration-200"
-          onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${series.id}`)}
-        >
-          {series.name}
-        </li>
-      ))}
-    </>
-  ) : brandObj.subcategories?.length > 0 ? ( //Check for subcategories
-    <>
-      {brandObj.subcategories?.map((subcategory) => (
-        <li
-          key={subcategory.id} // Ensure that the key is unique
-          className="hover:underline cursor-pointer text-muted-foreground hover:text-primary transition-colors duration-200"
-          onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${subcategory.id}`)} //adjust the route as required.
-        >
-          {subcategory.name}
-        </li>
-      ))}
-    </>
-  ) : (
-    <div className="text-muted-foreground">No series or subcategories available</div>
-  )}
-</ul>
-                </div>
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              {data.map((brandObj, idx) => {
+                const items = brandObj.series?.length > 0 ? brandObj.series : brandObj.subcategories;
+                const hasManyItems = items && items.length > 10;
+                const itemChunks = hasManyItems ? chunk(items, Math.ceil(items.length / 2)) : [items];
+
+                return (
+                  <div key={idx} className="border-r border-gray-200 pr-4 last:border-r-0">
+                    <h3
+                      onClick={() => router.push(`/${activeCategory}/${brandObj.brand}`)}
+                      className="font-bold mb-2 cursor-pointer hover:text-blue-600 transition-colors duration-200"
+                    >
+                      {brandObj.brand}
+                    </h3>
+                    {items && items.length > 0 ? (
+                      <div className={hasManyItems ? "grid grid-cols-2 gap-x-4" : ""}>
+                        {itemChunks.map((chunk, chunkIndex) => (
+                          <ul key={chunkIndex} className="space-y-1">
+                            {chunk.map((item) => (
+                              <li
+                                key={item.id}
+                                className="hover:underline cursor-pointer text-gray-600 hover:text-blue-600 transition-colors duration-200 text-sm"
+                                onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${item.id}`)}
+                              >
+                                {item.name}
+                              </li>
+                            ))}
+                          </ul>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-sm text-gray-500">No series or subcategories available</div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           ) : (
             <p className="text-center">No data found for {activeCategory}</p>
@@ -205,10 +206,10 @@ export default function CatBar() {
   return (
     <>
       
-      <header className="shadow-modern hidden md:block bg-black text-white backdrop-blur-md text-foreground py-2 border-b border-border/30 sticky top-16 z-30">
+  <header className="shadow-modern hidden md:block bg-black text-white py-2 border-b border-gray-200 sticky top-20 z-40">
         <div className="relative">
           <div className="mx-auto flex items-center justify-between">
-            <nav className=" md:flex ml-10 font-bold items-center space-x-10 w-full">
+            <nav className="md:flex ml-10 font-bold items-center space-x-6 w-full flex-wrap gap-y-2">
               {["laptop", "smartphone","keyboard","headphone", "accessories", "gadgets"].map((cat) => (
                 <Link
                   key={cat}

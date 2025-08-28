@@ -84,7 +84,7 @@ function BrandStorePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-700 font-sans">
+    <div className="flex flex-col min-h-screen font-sans">
       <BlackNavBar color="inherit"/>
       <CatBar />
 

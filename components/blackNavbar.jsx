@@ -45,7 +45,7 @@ export default function BlackNavBar({ color = "black" }) {
 
   // Countdown Timer Logic
   useEffect(() => {
-    const targetDate = new Date("2025-04-30T23:59:59+05:45").getTime();
+    const targetDate = new Date("2025-10-10T23:59:59+05:45").getTime();
 
     const interval = setInterval(() => {
       const now = new Date().getTime();
@@ -261,8 +261,8 @@ export default function BlackNavBar({ color = "black" }) {
         </>
       )}
 
-      {/* Main Nav Bar */}
-      <header className="bg-card/90 backdrop-blur-md text-foreground sticky p-2 top-0 z-40 shadow-modern border-b border-border/30">
+  {/* Main Nav Bar - fixed to top */}
+  <header className="fixed inset-x-0 top-0 bg-card/90 backdrop-blur-md text-foreground p-2 z-50 shadow-modern border-b border-border/30">
         <div className="mx-auto px-4 h-16 flex items-center justify-between">
           {/* Left side: Logo + Mobile Menu Button */}
           <div className="flex items-center space-x-3">
@@ -333,7 +333,7 @@ export default function BlackNavBar({ color = "black" }) {
               <Link href="/deals" className="flex items-center hover:scale-105 space-x-1 transition-transform duration-200">
                 <Zap className="h-5 w-5 text-orange-500" />
                 <div>
-                  <p className="text-orange-500">NEW YEAR 2082</p>
+                  <p className="text-orange-500">Dashain Tihar 2082</p>
                   {/* <p className="text-foreground text-center">DEALS</p> */}
                   {countdown && <p className="text-sm"><span className="text-orange-500">Deals: </span>{countdown}</p>}
                 </div>
@@ -456,7 +456,9 @@ export default function BlackNavBar({ color = "black" }) {
             </div>
           </>
         )}
-      </header>
+  </header>
+  {/* Spacer to prevent layout shift under fixed navbar (matches header height) */}
+  <div className="h-20"></div>
     </>
   );
 }

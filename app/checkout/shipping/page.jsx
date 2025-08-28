@@ -100,8 +100,8 @@ export default function ShippingPage() {
                     key={method.id}
                     className="flex items-center justify-between border border-gray-800 rounded-lg p-4 cursor-pointer hover:border-gray-700"
                   >
-                    <div className="flex items-center space-x-3">
                       <RadioGroupItem className="text-white border-white" value={method.id} id={method.id} />
+                    <div className="flex items-center space-x-3">
                       <Label htmlFor={method.id} className="cursor-pointer">
                         <div>
                           <p>{method.name}</p>

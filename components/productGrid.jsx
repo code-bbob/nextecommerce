@@ -194,7 +194,7 @@ export default function ProductGrid({ products, isLoading, gridCols = 5 }) {
       ))}
 
       {products?.length === 0 && !isLoading && (
-        <div className="text-muted-foreground text-center col-span-2 md:col-span-3 lg:col-span-4 p-8">
+        <div className="text-muted-foreground text-center col-span-2 md:col-span-3 lg:col-span-4">
           <div className="text-lg font-medium">No products found</div>
           <div className="text-sm mt-1">Try adjusting your filters or search terms</div>
         </div>

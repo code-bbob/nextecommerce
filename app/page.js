@@ -29,7 +29,7 @@ export async function generateMetadata() {
 export default function Page() {
   return (
     <>
-      <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-slate-50 min-h-screen">
+      <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-slate-50 min-h-screen relative">
         <BlackNavBar color="white" />
         <CatBar />
         <main className="mx-auto max-w-screen-2xl px-3 sm:px-6 lg:px-10 pb-14">

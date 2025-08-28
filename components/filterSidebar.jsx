@@ -74,7 +74,7 @@ export default function FilterSidebar({
   }
 
   return (
-    <div className="p-4 h-full w-full no-scrollbar bg-card/50 text-foreground shadow-sm">
+    <div className="p-4 w-full no-scrollbar bg-card/50 text-foreground shadow-sm ">
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center space-x-2">
           <Sliders className="h-5 w-5 text-primary" />
@@ -90,7 +90,7 @@ export default function FilterSidebar({
 
       {/* Sort by Price */}
       <div className="mb-3">
-        <h3 className="text-sm font-semibold mb-1 text-primary">Sort by Price</h3>
+        <h3 className="text-sm font-bold mb-1 ">Sort by Price</h3>
         <Select onValueChange={handleOrderChange}>
           <SelectTrigger className="w-full bg-input border border-border text-foreground focus:ring-primary/50 focus:border-primary">
             <SelectValue placeholder="Select option" />
@@ -104,7 +104,7 @@ export default function FilterSidebar({
 
       {/* Sort by Rating */}
       <div className="mb-3">
-        <h3 className="text-sm font-semibold mb-1 text-primary">Sort by Rating</h3>
+        <h3 className="text-sm mb-1 font-bold">Sort by Rating</h3>
         <Select onValueChange={handleRatingChange}>
           <SelectTrigger className="w-full bg-input border border-border text-foreground focus:ring-primary/50 focus:border-primary">
             <SelectValue placeholder="Select option" />
@@ -119,7 +119,7 @@ export default function FilterSidebar({
       {/* Minimum Rating */}
       <div className="mb-3">
         <div className="flex justify-between items-center mb-2">
-          <h3 className="text-sm font-semibold text-primary">Minimum Rating</h3>
+          <h3 className="text-sm font-bold ">Minimum Rating</h3>
           <span className="text-foreground font-bold">{tempMinRating} ★</span>
         </div>
         <Slider
@@ -141,10 +141,10 @@ export default function FilterSidebar({
 
       {/* Price Range */}
       <div className="mb-3">
-        <h3 className="text-sm font-semibold mb-1 text-indigo-300">Price Range</h3>
+        <h3 className="text-sm font-bold mb-1 text-primary">Price Range</h3>
         <div className="flex space-x-2">
           <div className="w-full">
-            <label className="text-xs text-muted-foreground mb-1 block">Min Price</label>
+            <label className="text-xs text-black font-bold mb-1 block">Min Price</label>
             <input
               type="number"
               value={tempMinPrice}
@@ -154,7 +154,7 @@ export default function FilterSidebar({
             />
           </div>
           <div className="w-full">
-            <label className="text-xs text-muted-foreground mb-1 block">Max Price</label>
+            <label className="text-xs font-bold mb-1 block">Max Price</label>
             <input
               type="number"
               value={tempMaxPrice}
@@ -174,7 +174,7 @@ export default function FilterSidebar({
 
       {/* Brand Name */}
       <div className="mb-3">
-        <h3 className="text-sm font-semibold mb-2 text-primary">Brand Name</h3>
+        <h3 className="text-sm font-bold mb-2 ">Brand Name</h3>
         <form className="flex gap-2" onSubmit={(e) => handleBrandFilter(e, tempBrandName)}>
           <input
             type="text"
