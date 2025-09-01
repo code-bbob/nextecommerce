@@ -336,7 +336,7 @@ export default function ProductInteractive({ product }) {
               <Button
                 className="flex-1 bg-secondary text-secondary-foreground hover:bg-secondary/90 btn-futuristic shadow-sm hover:shadow-md transition-all duration-200"
                 size="lg"
-                onClick={() => router.push("/product/emi/" + product.product_id)}
+                // onClick={() => router.push("/product/emi/" + product.product_id)}
               >
                 Apply EMI
               </Button>
@@ -424,7 +424,7 @@ export default function ProductInteractive({ product }) {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="details" className="text-white/70 space-y-4 mt-4">
+              <TabsContent value="details" className=" space-y-4 mt-4">
                 <div
                   dangerouslySetInnerHTML={{ __html: product.description }}
                 />

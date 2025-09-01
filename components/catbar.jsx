@@ -221,7 +221,7 @@ export default function CatBar() {
                   {cat.charAt(0).toUpperCase() + cat.slice(1)}
                 </Link>
               ))}
-              <Link href="/cpc" className="cursor-pointer">
+              <Link href="/custom-pc-in-nepal" className="cursor-pointer">
                 Custom PC
               </Link>
               

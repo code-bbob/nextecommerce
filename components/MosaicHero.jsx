@@ -1,62 +1,175 @@
 "use client";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { Gift, Timer, BadgePercent, Truck, ShieldCheck, RefreshCcw, Sparkles, Clipboard } from "lucide-react";
 
 const tiles = [
-  { src: "https://www.notebookcheck.net/fileadmin/Notebooks/Sonstiges/bestmultimedialaptop.jpg", alt: "Latest iPhone", span: "col-span-2 row-span-2" },
-  { src: "https://dubsnatch.com/cdn/shop/files/bluetooth-on-ear-gradient-pastel-headphones-mic-stereo-dubsnatch_1200x.jpg?v=1684453587", alt: "MacBook Pro", span: "col-span-1 row-span-1" },
-  { src: "https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-16e/White/Apple-iPhone-16e-White-thumbnail.png", alt: "AirPods Max", span: "col-span-1 row-span-2" },
-  { src: "https://media.wired.com/photos/65b0438c22aa647640de5c75/3:2/w_2560%2Cc_limit/Mechanical-Keyboard-Guide-Gear-GettyImages-1313504623.jpg", alt: "Gaming GPU", span: "col-span-2 row-span-1" },
-//   { src: "/images/pc.png", alt: "Custom PC", span: "col-span-1 row-span-2" },
-//   { src: "/images/macs.jpeg", alt: "Apple Ecosystem", span: "col-span-2 row-span-1" },
+  {
+    src: "https://www.notebookcheck.net/fileadmin/Notebooks/Sonstiges/bestmultimedialaptop.jpg",
+    alt: "Laptops",
+    span: "col-span-2 row-span-2",
+    label: "Laptops",
+    href: "/laptop",
+  },
+  {
+    src: "https://dubsnatch.com/cdn/shop/files/bluetooth-on-ear-gradient-pastel-headphones-mic-stereo-dubsnatch_1200x.jpg?v=1684453587",
+    alt: "Audio",
+    span: "col-span-1 row-span-1",
+    label: "Audio",
+    href: "/accessories",
+  },
+  {
+    src: "/images/smartphone.png",
+    alt: "Phones",
+    span: "col-span-1 row-span-2",
+    label: "Phones",
+    href: "/smartphone",
+  },
+  {
+    src: "https://media.wired.com/photos/65b0438c22aa647640de5c75/3:2/w_2560%2Cc_limit/Mechanical-Keyboard-Guide-Gear-GettyImages-1313504623.jpg",
+    alt: "Gaming",
+    span: "col-span-2 row-span-1",
+    label: "Gaming",
+    href: "/gadgets",
+  },
 ];
 
 export default function MosaicHero() {
+
+  const [countdown, setCountdown] = useState("");
+  const couponCode = "FESTIVE50";
+  const [showClipboard, setShowClipboard] = useState(false);
+  const [toast, setToast] = useState("");
+
+  useEffect(() => {
+    const target = new Date("2025-10-10T23:59:59+05:45").getTime();
+    const id = setInterval(() => {
+      const now = Date.now();
+      const diff = Math.max(0, target - now);
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((diff % (1000 * 60)) / 1000);
+      setCountdown(`${d}d ${h}h ${m}m ${s}s`);
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const copyCoupon = async () => {
+    try {
+      await navigator.clipboard.writeText(couponCode);
+      setToast("Coupon copied!");
+      setTimeout(() => setToast(""), 1800);
+    } catch (_) {
+      setToast("Failed to copy");
+      setTimeout(() => setToast(""), 1800);
+    }
+  };
+
   return (
-  <section id="hero" className="pt-6 md:pt-10 pb-6">
-      <div className="grid lg:grid-cols-2 gap-10 items-center">
+    <section id="hero" className="relative pb-8">
+      {/* Festive background accents */}
+      
+
+      <div className="grid lg:grid-cols-2 gap-10 ">
         {/* Left copy */}
-        <div className=" order-2 md:order-1 space-y-6">
-          <h1 className="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight">
-            Dashain Offer 2082 is Here!!
-            <span className="block bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent">
-              Up to 20% OFF 
+        <div className="order-2 relative md:order-1 space-y-6">
+          
+          <div aria-hidden className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-pink-300/20 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-amber-300/20 blur-3xl" />
+          <div className="inline-flex absolute top-10 right-0 gap-2 rounded-full border border-amber-300/50 bg-amber-50 px-3 py-1 text-amber-700 text-sm">
+            {/* <Sparkles className="h-4 w-4" /> Dashain • Tihar Festive Sale */}
+          </div>
+          <h1 className="text-5xl font-extrabold leading-tight tracking-tight">
+            Celebrate Savings This Dashain Tihar 2082
+            <span className="block bg-gradient-to-r from-rose-600 via-amber-600 to-sky-700 bg-clip-text text-transparent">
+              Up to 20% OFF
             </span>
           </h1>
+                    {/* Countdown + Coupon strip */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+            
+            <div 
+              className="flex items-center gap-2 rounded-xl border border-dashed border-amber-300 bg-amber-50 px-3 py-2 text-amber-800 relative"
+            >
+              <BadgePercent className="h-4 w-4" />
+              <span className="font-semibold">Use code</span>
+              <code className="bg-amber-100 px-2 py-0.5 rounded">{couponCode}</code>
+              <button 
+                onClick={copyCoupon} 
+                className="ml-1 text-amber-700 hover:text-amber-900 flex items-center"
+                style={{ position: "relative" }}
+                aria-label="Copy coupon code"
+              >
+                 <Clipboard className="h-5 w-5" /> 
+              </button>
+              {toast && (
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black text-white px-4 py-2 rounded shadow-lg text-sm animate-fadein z-50">
+                  {toast}
+                </div>
+              )}
+            </div>
+            <div className="inline-flex items-center gap-2 rounded-xl bg-white text-black px-4 py-2 shadow">
+              <Timer className="h-4 w-4 text-amber-400" />
+              <span className="font-semibold">Ends in:</span>
+              <span className="tabular-nums">{countdown}</span>
+            </div>
+          </div>
           <p className="text-base md:text-lg text-muted-foreground max-w-xl">
-            Premium laptops, phones, audio, and gaming gear. Clean design, fast checkout, and genuine warranty.
+            Enjoy exclusive festive discounts on laptops, phones, audio, and gaming gear. Genuine warranty, express delivery, and easy checkout.
           </p>
+
+          {/* CTAs */}
           <div className="flex flex-wrap gap-3">
-            <a href="store">
-              <button className="bg-gray-900 text-white hover:bg-black px-6 py-3 rounded-xl font-semibold">
-                Shop Now
-              </button>
-            </a>
-            <a href="#curated">
-              <button className="border border-gray-300 bg-white text-gray-900 hover:bg-gray-50 px-6 py-3 rounded-xl font-semibold">
-                Discover Picks
-              </button>
+            <Link href="/store" className="inline-flex items-center gap-2 bg-gray-900 text-white hover:bg-black px-6 py-3 rounded-xl font-semibold shadow">
+              <Gift className="h-5 w-5 text-amber-400" /> Shop Now
+            </Link>
+            <a href="#curated" className="inline-flex items-center gap-2 border border-gray-300 bg-white text-gray-900 hover:bg-gray-50 px-6 py-3 rounded-xl font-semibold">
+              Discover Picks
             </a>
           </div>
-          <div className="flex items-center gap-6 pt-2 text-sm text-muted-foreground">
-            <span>0% EMI</span>
-            <span>Authorized Brands</span>
-            <span>Express Delivery</span>
+
+          {/* Trust badges */}
+          <div className="grid grid-cols-3 max-w-xl pt-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 p-2">
+              <Truck className="h-4 w-4 text-emerald-500" /> Express Delivery
+            </div>
+            <div className="flex items-center gap-2 p-2">
+              <ShieldCheck className="h-4 w-4 text-blue-600" /> Genuine Warranty
+            </div>
+            <div className="flex items-center gap-2 p-2">
+              <RefreshCcw className="h-4 w-4 text-purple-600" /> Easy Returns
+            </div>
           </div>
         </div>
 
         {/* Right mosaic */}
-  <div className="order-1 md:order-2 grid grid-cols-3 grid-rows-3 gap-4 h-[520px] md:h-[520px]">
+        <div className="order-1 md:order-2 grid grid-cols-3 grid-rows-3 gap-4 h-[520px] md:h-[520px] mt-5">
           {tiles.map((t, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 250, damping: 20 }}
-              className={`relative ${t.span} rounded-2xl border border-gray-200 bg-white/70 backdrop-blur-xl shadow-xl overflow-hidden`}
-            >
-              <Image src={t.src} alt={t.alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
-            </motion.div>
+            <Link key={i} href={t.href} className={`relative ${t.span}`}>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 250, damping: 20 }}
+                className={`relative h-full w-full rounded-2xl border border-gray-200 bg-white/70 backdrop-blur-xl shadow-xl overflow-hidden`}
+              >
+                <Image
+                  src={t.src}
+                  alt={t.alt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+                {/* overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                {/* label chip */}
+                <div className="absolute top-3 left-3 inline-flex items-center gap-2 rounded-full bg-white/90 backdrop-blur px-3 py-1 text-sm font-medium shadow border border-gray-200">
+                  <span className="h-2 w-2 rounded-full bg-amber-500" />
+                  {t.label}
+                </div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </div>

@@ -170,7 +170,7 @@ export default function BlackNavBar({ color = "black" }) {
   const renderSuggestions = () => {
     if (!showSuggestions || suggestions.length === 0) return null;
     return (
-      <div className="absolute left-0 right-0 mt-2 bg-card/95 backdrop-blur-md text-foreground rounded-lg shadow-modern overflow-hidden border border-border z-50">
+      <div className="absolute left-0 right-0 mt-2 bg-white text-foreground rounded-lg shadow-modern overflow-hidden border border-border z-50">
         {suggestions.map((item) => (
           <div
             key={item.id}
@@ -188,7 +188,12 @@ export default function BlackNavBar({ color = "black" }) {
             </div>
             <div className="flex flex-col overflow-hidden">
               <span className="font-medium truncate">{item.name}</span>
-              <span className="text-sm text-gray-300">Rs. {item.price}</span>
+              <div className="flex gap-3">
+
+              <span className="text-sm text-black line-through">Rs. {item.before_deal_price}</span>
+              <span className="text-sm  font-bold text-green-500">Rs. {item.price}</span>
+              </div>
+
             </div>
           </div>
         ))}
@@ -266,7 +271,7 @@ export default function BlackNavBar({ color = "black" }) {
             </button>
 
             {/* Weekly Deals + Store Link */}
-            <div className="hidden md:flex items-center space-x-4 font-semibold">
+            <div className="hidden md:flex items-center space-x-6 font-semibold">
               <Link href="/deals" className="flex items-center hover:scale-105 space-x-1 transition-transform duration-200">
                 <Zap className="h-5 w-5 text-orange-500" />
                 <div>
@@ -280,6 +285,9 @@ export default function BlackNavBar({ color = "black" }) {
               </Link>
               <Link href="/blog" className="hover:text-primary transition-colors duration-200">
                 Blogs
+              </Link>
+              <Link href="/auth/login" className="hover:text-primary transition-colors duration-200">
+                Login
               </Link>
               {/* Logout (if logged in) */}
               {hasHydrated && isLoggedIn && (
@@ -355,7 +363,7 @@ export default function BlackNavBar({ color = "black" }) {
                 <div className="px-5 py-4 border-b border-gray-200">
                   <p className="text-xs font-semibold text-gray-500 mb-2">Shop by category</p>
                   <div className="flex gap-2 overflow-x-auto no-scrollbar">
-                    {["laptop","smartphone","keyboard","headphone","accessories","gadgets","cpc"].map((c) => (
+                    {["laptop","smartphone","keyboard","headphone","accessories","gadgets","custom-pc-in-nepal"].map((c) => (
                       <Link key={c} href={`/${c === 'cpc' ? 'cpc' : c}`} onClick={() => setIsSidePanelOpen(false)} className="shrink-0 px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-50 text-sm">
                         {c === 'cpc' ? 'Custom PC' : c.charAt(0).toUpperCase()+c.slice(1)}
                       </Link>
@@ -372,7 +380,7 @@ export default function BlackNavBar({ color = "black" }) {
                     { href: "/smartphone", label: "Smartphones" },
                     { href: "/accessories", label: "Accessories" },
                     { href: "/gadgets", label: "Gadgets" },
-                    { href: "/cpc", label: "Custom PC" },
+                    { href: "/custom-pc-in-nepal", label: "Custom PC" },
                   ].map((link) => (
                     <Link
                       key={link.href}
