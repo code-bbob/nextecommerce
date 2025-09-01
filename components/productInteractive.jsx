@@ -155,10 +155,10 @@ export default function ProductInteractive({ product }) {
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-primary to-primary/60" />
                 <span className="font-medium text-foreground">{product.brandName}</span>
               </div>
-          <h1 className="text-xl font-bold text-foreground">
+      <h2 className="text-xl font-bold text-foreground">
           
                 {product.name}
-              </h1>
+        </h2>
               <div className="flex items-center space-x-2">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -287,9 +287,9 @@ export default function ProductInteractive({ product }) {
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-primary to-primary/60" />
                 <span className="font-medium text-foreground">{product.brandName}</span>
               </div>
-              <h1 className="text-3xl font-bold text-foreground">
+              <h2 className="text-3xl font-bold text-foreground">
                 {product.name}
-              </h1>
+              </h2>
               <div className="flex items-center space-x-2">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -350,6 +350,7 @@ export default function ProductInteractive({ product }) {
               <Button
                 variant="outline"
                 className="border-border hidden md:block hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
+                aria-label="Add to wishlist"
               >
                 <Heart
                   size={64}

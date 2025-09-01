@@ -12,6 +12,8 @@ import { Filter, ChevronLeft, ChevronRight, X } from "lucide-react"
 import BlackNavBar from "@/components/blackNavbar"
 import CatBar from "@/components/catbar"
 
+// Metadata is handled in app/[cat]/[brand]/[series]/layout.jsx
+
 function StorePage() {
   const searchParams = useSearchParams()
   const params = useParams()

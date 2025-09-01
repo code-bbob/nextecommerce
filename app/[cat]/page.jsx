@@ -1,14 +1,13 @@
 "use client"
 
 import { Suspense, useState, useEffect } from "react"
-import NavBar from "@/components/navbar"
 import ProductGrid from "@/components/productGrid"
 import FilterSidebar from "@/components/filterSidebar"
 import customFetch from "@/utils/customFetch"
 import Footer from "@/components/Footer.server"
 import { useSearchParams, useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Filter, ChevronLeft, ChevronRight, X } from "lucide-react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import CatBar from "@/components/catbar"
 import BlackNavBar from "@/components/blackNavbar"
 
@@ -17,8 +16,8 @@ function StorePage() {
   const params = useParams()
   const router = useRouter()
   const cat = params.cat
-  const currentPage = parseInt(searchParams.get('page') || '1', 18)
-  
+  const currentPage = parseInt(searchParams.get('page') || '1', 10)
+
   const [products, setProducts] = useState([])
   const [ordering, setOrdering] = useState("")
   const [rating, setRating] = useState("")
@@ -42,7 +41,7 @@ function StorePage() {
         setIsLoading(true)
         const queryParams = new URLSearchParams()
         if (ordering) queryParams.append('ordering', ordering)
-        if (rating) queryParams.append('rating', rating) // Adjusted to use 'rating'
+        if (rating) queryParams.append('rating', rating)
         if (minRating) queryParams.append('min_rating', minRating)
         if (minPrice) queryParams.append('min_price', minPrice)
         if (maxPrice) queryParams.append('max_price', maxPrice)
@@ -85,20 +84,19 @@ function StorePage() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans">
       <BlackNavBar color="inherit" />
-      <CatBar/>
+      <CatBar />
 
-      {/* Filter Toggle Button */}
-      
-      <div 
-          className="fixed left-0 top-0 w-6 h-full z-10"
-          onMouseEnter={() => setIsSidebarOpen(true)}
-        />
+      {/* Hover strip to open sidebar */}
+      <div
+        className="fixed left-0 top-0 w-6 h-full z-10"
+        onMouseEnter={() => setIsSidebarOpen(true)}
+      />
+
       {/* Main Layout */}
       <div className="flex-grow flex md:flex-row flex-col">
-      {!isSidebarOpen && (
-                  <ChevronRight className="fixed top-1/2 h-5 w-5 text-primary hover:text-primary/80 transition-colors" />
-        
-)}
+        {!isSidebarOpen && (
+          <ChevronRight className="fixed top-1/2 h-5 w-5 text-primary hover:text-primary/80 transition-colors" />
+        )}
 
         {/* Sidebar */}
         {isSidebarOpen && (
@@ -121,6 +119,7 @@ function StorePage() {
             </div>
           </aside>
         )}
+
         {/* Main Content */}
         <main className="flex-1 p-4 md:p-8">
           <Suspense fallback={<div className="text-muted-foreground">Loading products...</div>}>
@@ -129,8 +128,8 @@ function StorePage() {
 
           {/* Pagination Controls */}
           <div className="flex justify-center items-center mt-8 space-x-4">
-            <Button 
-              onClick={() => handlePageChange(currentPage - 1)} 
+            <Button
+              onClick={() => handlePageChange(currentPage - 1)}
               disabled={!pagination.previous || currentPage === 1}
               className="btn-futuristic bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
             >
@@ -139,8 +138,8 @@ function StorePage() {
             <span className="text-foreground font-medium bg-card/80 px-4 py-2 rounded-lg border border-border/30 shadow-sm">
               {currentPage} of {pagination.total_pages}
             </span>
-            <Button 
-              onClick={() => handlePageChange(currentPage + 1)} 
+            <Button
+              onClick={() => handlePageChange(currentPage + 1)}
               disabled={!pagination.next || currentPage === pagination.total_pages}
               className="btn-futuristic bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
             >
@@ -149,12 +148,12 @@ function StorePage() {
           </div>
         </main>
       </div>
+
       <Footer />
     </div>
   )
 }
 
-// 🔹 Wrap the component inside Suspense when exporting
 export default function PageWrapper() {
   return (
     <Suspense fallback={<div className="text-white">Loading page...</div>}>
