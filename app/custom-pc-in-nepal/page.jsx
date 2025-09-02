@@ -15,7 +15,7 @@ export const metadata = {
 export default function Home() {
   return (
     <div className="bg-gradient-to-b from-black via-gray-900 to-black font-sans">
-      <BlackNavBar />
+      <BlackNavBar color="black" />
       
       {/* Hero Section - Updated to match carousel theme */}
       <section className="relative min-h-[90vh] overflow-hidden">

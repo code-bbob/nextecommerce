@@ -2,16 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 
 const categories = [
-  { name: "Laptops", href: "/laptops", image: "/images/newhp.png" },
-  { name: "Smartphones", href: "/smartphones", image: "/images/iphone.jpg" },
-  { name: "Accessories", href: "/accessories", image: "/images/case.jpg" },
-  { name: "Monitors", href: "/monitors", image: "/images/heromac.png" },
-  { name: "Headphone", href: "/headphone", image: "/images/airpodmax.jpg" },
-  { name: "Gadget", href: "/gadgets", image: "/images/track.jpg" },
-  { name: "Custom PC", href: "/custom-pc", image: "/images/cpu.jpg" },
-  { name: "Gaming", href: "/gaming", image: "/images/gpu.png" },
-  { name: "Cooling", href: "/cooling", image: "/images/cooling.jpg" },
-  { name: "Motherboard", href: "/motherboard", image: "/images/motherboard.jpg" },
+  { name: "Laptops", href: "/laptop", image: "/images/laptop.webp" },
+  { name: "Smartphones", href: "/smartphone", image: "/images/smartphone.jpg" },
+  { name: "Keyboards", href: "/keyboard", image: "/images/keyboard.webp" },
+  { name: "Monitors", href: "/monitor", image: "/images/monitor.webp" },
+  { name: "Headphones", href: "/headphone", image: "/images/headphone.webp" },
+  { name: "Gadgets", href: "/gadgets", image: "/images/gadget.jpg" },
+  { name: "Smartwatches", href: "/smartwatch", image: "/images/smartwatch.jpg" },
+  { name: "Printers", href: "/printers", image: "/images/printer.webp" },
+  { name: "Accessories", href: "/accessories", image: "/images/accessories.jpg" },
+  { name: "Custom PC", href: "/custom-pc", image: "/images/case.jpg" },
 ];
 
 export default function ShopByCategory() {
@@ -29,7 +29,7 @@ export default function ShopByCategory() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-5 md:gap-6">
           {categories.map((category, index) => (
             <Link
-              href={`/cat${category.href}`}
+              href={`${category.href}`}
               key={category.name}
               className="group text-center transition-transform duration-300 ease-in-out hover:!transform-none"
             >

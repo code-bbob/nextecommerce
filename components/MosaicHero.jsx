@@ -7,18 +7,18 @@ import { Gift, Timer, BadgePercent, Truck, ShieldCheck, RefreshCcw, Sparkles, Cl
 
 const tiles = [
   {
-    src: "https://www.notebookcheck.net/fileadmin/Notebooks/Sonstiges/bestmultimedialaptop.jpg",
+    src: "/images/bg1.jpg",
     alt: "Laptops",
     span: "col-span-2 row-span-2",
     label: "Laptops",
     href: "/laptop",
   },
   {
-    src: "https://dubsnatch.com/cdn/shop/files/bluetooth-on-ear-gradient-pastel-headphones-mic-stereo-dubsnatch_1200x.jpg?v=1684453587",
-    alt: "Audio",
+    src: "/images/headphone.webp",
+    alt: "Headphones",
     span: "col-span-1 row-span-1",
-    label: "Audio",
-    href: "/accessories",
+    label: "Headphones",
+    href: "/headphone",
   },
   {
     src: "/images/smartphone.png",
@@ -28,11 +28,11 @@ const tiles = [
     href: "/smartphone",
   },
   {
-    src: "https://media.wired.com/photos/65b0438c22aa647640de5c75/3:2/w_2560%2Cc_limit/Mechanical-Keyboard-Guide-Gear-GettyImages-1313504623.jpg",
-    alt: "Gaming",
+    src: "/images/keyboard.webp",
+    alt: "Keyboards",
     span: "col-span-2 row-span-1",
-    label: "Gaming",
-    href: "/gadgets",
+    label: "Keyboards",
+    href: "/keyboard",
   },
 ];
 
@@ -152,7 +152,7 @@ export default function MosaicHero() {
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 250, damping: 20 }}
-                className={`relative h-full w-full rounded-2xl border border-gray-200 bg-white/70 backdrop-blur-xl shadow-xl overflow-hidden`}
+                className={`relative h-full w-full rounded-2xl border border-gray-200 bg-gray-400 backdrop-blur-xl shadow-xl overflow-hidden`}
               >
                 <Image
                   src={t.src}
@@ -161,13 +161,7 @@ export default function MosaicHero() {
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
-                {/* overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-                {/* label chip */}
-                <div className="absolute top-3 left-3 inline-flex items-center gap-2 rounded-full bg-white/90 backdrop-blur px-3 py-1 text-sm font-medium shadow border border-gray-200">
-                  <span className="h-2 w-2 rounded-full bg-amber-500" />
-                  {t.label}
-                </div>
+                
               </motion.div>
             </Link>
           ))}

@@ -10,13 +10,13 @@ const SecondBanners = ({ banners = [] }) => {
             id: 1,
             imageUrl: "/images/banner3.webp",
             altText: "Special Offer",
-            link: "/collections/special-offers",
+            link: "/deals",
         },
         {
             id: 2,
             imageUrl: "/images/banner4.webp",
             altText: "New Arrivals",
-            link: "/collections/new-arrivals",
+            link: "/deals",
         },
     ];
 
