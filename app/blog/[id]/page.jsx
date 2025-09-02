@@ -19,7 +19,7 @@ export default async function SingleBlog({ params }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground">
       <BlackNavBar color="inherit" />
-      <main className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8">
+      <main className=" max-w-3xl px-4 sm:px-6 lg:px-8 py-8">
         <article className="bg-white rounded-xl border shadow-sm overflow-hidden">
           {blog?.[0]?.image && (
             <div className="w-full">
