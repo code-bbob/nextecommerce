@@ -1,114 +1,109 @@
 "use client";
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import BlogFooter from "./blogFooter";
-import Plugins from "./plugins";
-import Footer from "../Footer.server";
+import Link from "next/link";
 
-const BLOGS_PER_PAGE = 3; // Define constant for blogs per page
+const BLOGS_PER_PAGE = 6;
 
-export default function BlogsView({ blogData }) {
+export default function BlogsView({ blogData = [] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
 
-  // Memoize the handleClick function to prevent unnecessary re-renders
   const handleClick = useCallback((pageNumber) => {
     setCurrentPage(pageNumber);
-  }, [setCurrentPage]);
+  }, []);
 
-  // Calculate pagination indices based on currentPage and constant
   const indexOfLastBlog = currentPage * BLOGS_PER_PAGE;
   const indexOfFirstBlog = indexOfLastBlog - BLOGS_PER_PAGE;
   const currentBlogs = blogData.slice(indexOfFirstBlog, indexOfLastBlog);
-
-  // Calculate the total number of pages
   const totalPages = Math.ceil(blogData.length / BLOGS_PER_PAGE);
 
-  return (
-    <>
-      <div className="text-white bg-fixed mx-auto flex flex-wrap py-6">
-        <section className="md:w-3/5 flex flex-col items-center px-3">
-          {currentBlogs.map((blog) => (
-            <article
-              key={blog.id}
-              onClick={() => router.push(`/blog/${blog.id}`)}
-              className="flex flex-col w-[50vw] shadow-2xl my-4 cursor-pointer"
-            >
-              <div className="hover:opacity-75">
-                <img
-                  className="w-full h-80 object-cover" // Use object-cover for better image scaling
-                  src={blog?.image}
-                  alt={blog?.title}
-                  loading="lazy" // Add lazy loading for performance
-                />
-              </div>
-              <div className="bg-gray-800 flex flex-col justify-start p-6">
-                <p className="text-white text-sm font-bold uppercase pb-4">
-                  {blog?.category}
-                </p>
-                <h2 className="text-3xl font-bold hover:text-gray-700 pb-4">
-                  {blog?.title} {/* Use h2 for better semantic structure */}
-                </h2>
-                <p className="text-sm pb-3">
-                  By{" "}
-                  <a
-                    href="#"
-                    className="font-semibold hover:text-gray-800"
-                  >
-                    {blog?.author}
-                  </a>
-                  , Published on {blog?.date}
-                </p>
-                <div // Use a div for the content to manage potential overflow
-                  className="pb-6 break-words" // Add overflow hidden to the content area
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      blog?.content && blog?.content.length > 150
-                        ? `${blog?.content.slice(0, 150)}...`
-                        : blog?.content,
-                  }}
-                />
-                <a
-                  href={`/blog/${blog.id}`} // Link directly to the blog post
-                  className="uppercase text-blue-800 hover:text-black"
-                >
-                  Continue Reading <i className="fas fa-arrow-right"></i>
-                </a>
-              </div>
-            </article>
-          ))}
-          {/* Pagination */}
-          {totalPages > 1 && ( // Conditionally render pagination if there's more than one page
-            <div className="flex items-center py-8">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button // Use button for accessibility
-                  key={index + 1}
-                  onClick={() => handleClick(index + 1)}
-                  className={`h-10 w-10 font-semibold text-gray-800 hover:text-gray-900 text-sm flex items-center justify-center ml-3 ${
-                    currentPage === index + 1
-                      ? "bg-blue-800 text-white"
-                      : "bg-gray-500 hover:bg-blue-600"
-                  }`}
-                  aria-current={currentPage === index + 1 ? "page" : undefined} // Improve accessibility
-                >
-                  {index + 1}
-                </button>
-              ))}
-              <button
-                onClick={() => handleClick(currentPage + 1)}
-                className={`h-10 w-10 font-semibold text-gray-800 bg-black hover:text-gray-900 text-sm flex items-center justify-center ml-3 px-3 ${
-                  currentPage === totalPages ? " text-gray-400 cursor-default" : "text-white hover:bg-blue-600"
-                }`}
-                disabled={currentPage === totalPages} // Disable button at the last page
-              >
-                Next <i className="fas fa-arrow-right ml-2"></i>
-              </button>
-            </div>
-          )}
-        </section>
-
-        {/* <Plugins /> */}
+  if (!blogData?.length) {
+    return (
+      <div className="rounded-2xl border bg-white shadow-sm p-8 text-center">
+        <h2 className="text-lg font-semibold">No blog posts yet</h2>
+        <p className="text-sm text-muted-foreground mt-1">Check back soon for tips, news, and reviews.</p>
       </div>
-    </>
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {currentBlogs.map((blog) => (
+          <article
+            key={blog.id}
+            className="group relative overflow-hidden rounded-xl border bg-white shadow-sm transition hover:shadow-md cursor-pointer"
+            onClick={() => router.push(`/blog/${blog.id}`)}
+          >
+            <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100">
+              <img
+                className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                src={blog?.image}
+                alt={blog?.title || "Blog cover"}
+                loading="lazy"
+              />
+            </div>
+            <div className="p-4">
+              {blog?.category && (
+                <span className="inline-flex items-center rounded-full bg-blue-50 text-blue-700 ring-1 ring-blue-200 px-2 py-0.5 text-xs font-medium">
+                  {blog.category}
+                </span>
+              )}
+              <h2 className="mt-2 line-clamp-2 text-base font-semibold tracking-tight group-hover:text-blue-700">
+                {blog?.title}
+              </h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                By <span className="font-medium text-foreground">{blog?.author || "Team"}</span> · {blog?.date}
+              </p>
+              <div
+                className="mt-3 text-sm text-foreground/80 line-clamp-3"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    blog?.content && blog?.content.length > 180
+                      ? `${blog?.content.slice(0, 180)}...`
+                      : blog?.content || "",
+                }}
+              />
+              <div className="mt-4">
+                <Link href={`/blog/${blog.id}`} className="text-sm font-medium text-blue-700 hover:underline">
+                  Continue reading →
+                </Link>
+              </div>
+            </div>
+          </article>
+        ))}
+      </section>
+
+      {totalPages > 1 && (
+    <nav className="flex items-center justify-center gap-2" aria-label="pagination">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => handleClick(index + 1)}
+      className={`h-9 w-9 rounded-md px-0 text-sm font-medium border transition ${
+                currentPage === index + 1
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-white text-foreground hover:bg-slate-50 border-slate-200"
+              }`}
+              aria-current={currentPage === index + 1 ? "page" : undefined}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => handleClick(Math.min(currentPage + 1, totalPages))}
+            className={`h-9 rounded-md px-3 text-sm font-medium border transition ${
+              currentPage === totalPages
+                ? "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed"
+                : "bg-white text-foreground hover:bg-slate-50 border-slate-200"
+            }`}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </nav>
+      )}
+    </div>
   );
 }

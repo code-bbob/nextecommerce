@@ -1,8 +1,9 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { motion } from "framer-motion"
-import { Star, ShoppingCart } from "lucide-react"
+import { Star, ShoppingCart, SearchX, RotateCcw, Store, Home } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useDispatch, useSelector } from "react-redux"
@@ -45,7 +46,7 @@ const ProductCardSkeleton = () => {
   )
 }
 
-export default function ProductGrid({ products, isLoading, gridCols = 5 }) {
+export default function ProductGrid({ products, isLoading, gridCols = 5, onResetFilters }) {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const dispatch = useDispatch()
   const isLoggedIn = useSelector((state) => state.access.isAuthenticated)
@@ -125,7 +126,7 @@ export default function ProductGrid({ products, isLoading, gridCols = 5 }) {
               <div className="relative">
                 {/* Ribbon background */}
                 <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-bold py-1 px-8 text-xs shadow-md flex items-center justify-center">
-                  New Year Deal
+                  Dashain Tihar Deal
                 </div>
 
                 {/* Top triangle cutout */}
@@ -194,10 +195,48 @@ export default function ProductGrid({ products, isLoading, gridCols = 5 }) {
       ))}
 
       {products?.length === 0 && !isLoading && (
-        <div className="text-muted-foreground text-center col-span-2 md:col-span-3 lg:col-span-4">
-          <div className="text-lg font-medium">No products found</div>
-          <div className="text-sm mt-1">Try adjusting your filters or search terms</div>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
+          className="col-span-full"
+        >
+          <div className="relative overflow-hidden  rounded-xl ">
+            <div className="p-6 md:p-8 flex flex-col items-center text-center">
+              <div className="mb-3 inline-flex items-center justify-center w-14 h-14 rounded-full text-muted-foreground border border-border">
+                <SearchX className="w-7 h-7" />
+              </div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground">No products found</h2>
+              <p className="mt-1 text-sm md:text-base text-muted-foreground max-w-xl">
+                Try broadening your filters, removing some selections, or exploring our store and deals.
+              </p>
+
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                <Button
+                  onClick={() => (onResetFilters ? onResetFilters() : router.push('/store'))}
+                  className="bg-red-500 hover:bg-primary/90 text-primary-foreground"
+                >
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  {onResetFilters ? 'Clear filters' : 'Back to Store'}
+                </Button>
+                <Link href="/deals" prefetch className="inline-flex items-center px-4 py-2 rounded-md border border-border hover:bg-accent hover:text-accent-foreground">
+                  <Store className="w-4 h-4 mr-2" /> Browse Deals
+                </Link>
+                <Link href="/" prefetch className="inline-flex items-center px-4 py-2 rounded-md border border-border hover:bg-accent hover:text-accent-foreground">
+                  <Home className="w-4 h-4 mr-2" /> Home
+                </Link>
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-2 text-sm">
+                {['laptop','smartphone','accessories','gadgets'].map((c) => (
+                  <Link key={c} href={`/${c}`} prefetch className="px-3 py-1 rounded-full border border-border text-muted-foreground hover:bg-accent hover:text-accent-foreground">
+                    {c.charAt(0).toUpperCase() + c.slice(1)}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.div>
       )}
     </div>
   )

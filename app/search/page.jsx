@@ -196,10 +196,7 @@ function Search() {
         )}
         
         <main className="flex-1 p-4 md:p-8">
-          <div className="flex justify-between md:justify-center items-center mb-6">
-            <h1 className="text-md md:text-xl font-bold text-foreground capitalize">
-              {searchQuery ? `Items matching "${searchQuery}"` : "Products"}
-            </h1>
+          <div className="flex justify-end items-center mb-6">
             <Button 
               variant="outline" 
               className="md:hidden bg-card text-foreground border-border hover:bg-accent" 
@@ -210,11 +207,12 @@ function Search() {
             </Button>
           </div>
           
-          <ProductGrid products={products} isLoading={isLoading} gridCols={isSidebarOpen ? 4 : 5} />
+          <ProductGrid products={products} isLoading={isLoading} gridCols={isSidebarOpen ? 4 : 5} query={searchQuery} />
           
           {/* Pagination Controls */}
           
             
+          {products.length > 0 && (
           <div className="flex justify-center items-center mt-8 space-x-4">
             <Button 
               onClick={() => handlePageChange(currentPage - 1)} 
@@ -234,6 +232,7 @@ function Search() {
               Next <ChevronRight className="ml-2" />
             </Button>
           </div>
+          )}
         </main>
       </div>
       <Footer />

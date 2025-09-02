@@ -32,7 +32,22 @@ const GoogleCallback = () => {
     }
   }, [dispatch, router]);
 
-  return <div className="bg-gradient-to-b  from-black via-gray-900 to-black bg-fixed min-h-screen text-white text-center">Redirecting...</div>;
+  return (
+    <div className="min-h-screen bg-white text-foreground flex items-center justify-center px-4">
+      <div className="w-full max-w-sm text-center">
+        <div className="mx-auto mb-4 h-12 w-12 relative" role="status" aria-live="polite" aria-label="Signing you in">
+          <span className="sr-only">Signing you in…</span>
+          <div className="absolute inset-0 rounded-full border-2 border-slate-200"></div>
+          <div className="absolute inset-0 rounded-full border-2 border-blue-600 border-t-transparent animate-spin"></div>
+        </div>
+        <h1 className="text-lg font-semibold tracking-tight">Signing you in</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Please wait while we complete your login…</p>
+        <p className="mt-4 text-xs text-muted-foreground">
+          If you’re not redirected automatically, <a href="/" className="text-blue-700 hover:underline">click here</a>.
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export default GoogleCallback;

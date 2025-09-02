@@ -152,7 +152,7 @@ export default function MosaicHero() {
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 250, damping: 20 }}
-                className={`relative h-full w-full rounded-2xl border border-gray-200 bg-gray-400 backdrop-blur-xl shadow-xl overflow-hidden`}
+                className={`relative h-full w-full rounded-2xl border border-gray-200 bg-white/70 backdrop-blur-xl shadow-xl overflow-hidden`}
               >
                 <Image
                   src={t.src}
@@ -161,7 +161,13 @@ export default function MosaicHero() {
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
-                
+                {/* overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                {/* label chip */}
+                {/* <div className="absolute top-3 left-3 inline-flex items-center gap-2 rounded-full bg-white/90 backdrop-blur px-3 py-1 text-sm font-medium shadow border border-gray-200">
+                  <span className="h-2 w-2 rounded-full bg-amber-500" />
+                  {t.label}
+                </div> */}
               </motion.div>
             </Link>
           ))}
