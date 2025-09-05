@@ -125,7 +125,7 @@ export function OrderSummary() {
           <h2 className="text-lg text-center font-semibold lg:mb-6">Order Summary</h2>
           {cartItems.map((item) => (
             <div key={item.product_id} className="flex items-center gap-4">
-              <div className="relative w-16 h-16 bg-gray-800 rounded">
+              <div className="relative w-16 h-16 rounded">
                 <div className="absolute -right-2 -top-2 w-5 h-5 z-50 bg-gray-700 rounded-full flex items-center justify-center text-xs">
                   {item.quantity}
                 </div>
@@ -133,7 +133,7 @@ export function OrderSummary() {
                   src={getCDNImageUrl(item.image) || "/placeholder.svg"}
                   alt={item.name}
                   fill
-                  className="object-cover rounded"
+                  className="object-cover rounded"zzzCu
                   sizes="64px"
                 />
               </div>

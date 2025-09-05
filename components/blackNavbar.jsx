@@ -286,9 +286,11 @@ export default function BlackNavBar({ color = "black" }) {
               <Link href="/blog" className="hover:text-primary transition-colors duration-200">
                 Blogs
               </Link>
-              <Link href="/auth/login" className="hover:text-primary transition-colors duration-200">
+              { hasHydrated && !isLoggedIn && (
+                <Link href="/auth/login" className="hover:text-primary transition-colors duration-200">
                 Login
               </Link>
+              )}
               {/* Logout (if logged in) */}
               {hasHydrated && isLoggedIn && (
                 <button
