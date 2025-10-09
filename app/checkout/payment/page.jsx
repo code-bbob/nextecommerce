@@ -147,7 +147,7 @@ export default function PaymentPage() {
                   <p className="text-sm mt-1">
                     {shippingMethod === "Urgent"
                       ? "Urgent · RS. 8.90"
-                      : "Standard · RS. 6.90"}
+                      : "Standard · Free"}
                   </p>
                 </div>
                 <Link href="/checkout/shipping" className="text-blue-500 text-sm hover:text-blue-400">

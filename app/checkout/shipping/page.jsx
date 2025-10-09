@@ -15,8 +15,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const shippingMethods = [
-  { id: "Urgent", name: "Urgent", price: 8.9, duration: "Same day" },
-  { id: "standard", name: "Standard", price: 6.9, duration: "3 to 4 business days" },
+  // { id: "Urgent", name: "Urgent", price: 100, duration: "Same day" },
+  { id: "standard", name: "Standard", price: "Free", duration: "1 to 2 business days" },
 ];
 
 export default function ShippingPage() {
@@ -96,21 +96,21 @@ export default function ShippingPage() {
                 className="space-y-2"
               >
                 {shippingMethods.map((method) => (
+                  <Label htmlFor={method.id} className="cursor-pointer">
                   <div
                     key={method.id}
-                    className="flex items-center justify-between border border-gray-800 rounded-lg p-4 cursor-pointer hover:border-gray-700"
+                    className="flex justify-between border border-gray-800 rounded-lg p-4 cursor-pointer hover:border-gray-700"
                   >
+                        <div className="flex items-center gap-4">
                       <RadioGroupItem className="text-white border-white" value={method.id} id={method.id} />
-                    <div className="flex items-center space-x-3">
-                      <Label htmlFor={method.id} className="cursor-pointer">
-                        <div>
+                    <div className=" ">
                           <p>{method.name}</p>
                           <p className="text-sm text-gray-400">{method.duration}</p>
                         </div>
-                      </Label>
                     </div>
-                    <span>RS. {method.price.toFixed(2)}</span>
+                    <span>{method.price} </span>
                   </div>
+                      </Label>
                 ))}
               </RadioGroup>
             </section>
