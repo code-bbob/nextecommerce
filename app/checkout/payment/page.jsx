@@ -85,10 +85,10 @@ export default function PaymentPage() {
 
   if (loading) {
     return (
-      <div className="bg-black h-screen">
+      <div className=" h-screen">
         <BlackNavBar />
         <div className="flex justify-center items-center h-[calc(100vh-200px)]">
-          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
+          <div className="w-12 h-12 border-4 border-black border-t-transparent rounded-full animate-spin" />
         </div>
       </div>
     );

@@ -132,7 +132,7 @@ function StorePage() {
                 />
               </Suspense>
             </div>
-          </aside>
+          </aside>  
         )}
         {/* Main Content */}
         <main className="flex-1 p-4 md:p-8">
