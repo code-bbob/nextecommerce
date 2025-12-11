@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import customFetch from "@/utils/customFetch";
 import { getCDNImageUrl } from "@/utils/imageUtils";
+import { getCachedData } from "@/utils/apiCache";
 
 const formatRs = (n) => Number(n || 0).toLocaleString();
 
@@ -16,8 +17,11 @@ export default function MinimalProductGrid() {
     (async () => {
       try {
         setLoading(true);
-        const res = await customFetch(`shop/api/?page=1`);
-        const data = await res.json();
+        const data = await getCachedData(
+          'shop/api/?page=1',
+          () => customFetch(`shop/api/?page=1`).then(r => r.json()),
+          10 * 60 * 1000 // 10 minute cache
+        );
         const list = Array.isArray(data?.results) ? data.results : Array.isArray(data) ? data : [];
         const simple = list.slice(0, 12).map((p) => ({
           id: p.product_id ?? p.id,
@@ -65,7 +69,15 @@ export default function MinimalProductGrid() {
               ) : p ? (
                 <Link href={`/product/${p.id}`} className="block">
                   <div className="relative h-44 sm:h-52 md:h-56 bg-white">
-                    <Image src={p.image} alt={p.name} fill className="object-contain" />
+                    <Image 
+                      src={p.image} 
+                      alt={p.name} 
+                      fill 
+                      className="object-contain"
+                      loading="lazy"
+                      quality={75}
+                      sizes="(max-width: 640px) 220px, (max-width: 768px) 260px, 280px"
+                    />
                   </div>
                   <div className="p-4">
                     <div className="text-[11px] font-semibold tracking-wide text-blue-600 uppercase line-clamp-1">{p.tag}</div>

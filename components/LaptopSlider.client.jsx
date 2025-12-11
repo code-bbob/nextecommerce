@@ -41,7 +41,7 @@ export default function LaptopGrid() {
   return (
     <section className="py-3">
       <div className="">
-        <h2 className="text-xl font-bold mt-4 mb-4 text-center text-foreground">TOP SELLING PRODUCTS</h2>
+        <h2 className="text-xl font-bold mt-4 mb-4 text-center text-foreground">TOP SELLING LAPTOPS</h2>
 
         <div className="grid grid-cols-2 lg:grid-cols-3">
           {displayedProducts.map((product) => (

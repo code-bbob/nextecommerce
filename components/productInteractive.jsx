@@ -19,9 +19,28 @@ import { useEffect } from "react";
 
 export default function ProductInteractive({ product }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(
-    getCDNImageUrl(product.images[0]?.image) || "/placeholder.svg"
+  // Color selection state
+  // Find all unique color options from images
+  const colorOptions = Array.from(
+    new Map(
+      product.images
+        .filter((img) => img.color && (img.hex || img.color_name))
+        .map((img) => [img.color, { color: img.color, color_name: img.color_name, hex: img.hex }])
+    ).values()
   );
+
+  // If there are color options, default to the first color; else null
+  const [selectedColor, setSelectedColor] = useState(null);
+
+  // Default selected image: first image, or first of selected color if set
+  const getDefaultImage = () => {
+    if (selectedColor) {
+      const colorImg = product.images.find((img) => img.color === selectedColor);
+      if (colorImg) return getCDNImageUrl(colorImg.image);
+    }
+    return getCDNImageUrl(product.images[0]?.image) || "/placeholder.svg";
+  };
+  const [selectedImage, setSelectedImage] = useState(getDefaultImage());
   const [modalImage, setModalImage] = useState(null);
   const router = useRouter();
 
@@ -56,6 +75,16 @@ export default function ProductInteractive({ product }) {
       preloadImages(imageUrls);
     }
   }, [product.images]);
+
+  // When color changes, update selected image to first image of that color
+  useEffect(() => {
+    if (selectedColor) {
+      const colorImg = product.images.find((img) => img.color === selectedColor);
+      if (colorImg) setSelectedImage(getCDNImageUrl(colorImg.image));
+    }
+    // If color is cleared, do not change selectedImage
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedColor]);
 
   const handleAddToCart = () => {
     const cartItem = {
@@ -175,9 +204,9 @@ export default function ProductInteractive({ product }) {
                 </span>
               </div>
             </div>
-            <div 
+            <div
               className={`relative w-auto h-auto min-h-60 md:min-h-96 rounded-lg overflow-hidden border border-gray-800 bg-inherit backdrop-blur-sm p-4 group ${
-                isMobile ? 'cursor-pointer' : 'cursor-crosshair'
+                isMobile ? "cursor-pointer" : "cursor-crosshair"
               }`}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
@@ -217,29 +246,47 @@ export default function ProductInteractive({ product }) {
               )}
             </div>
             <div className="grid grid-cols-4 gap-4">
-              {product.images.map((img, i) => {
-                const cdnImageUrl = getCDNImageUrl(img.image);
-                return (
-                  <div
-                    key={i}
-                    className={`relative aspect-square rounded-lg overflow-hidden border ${
-                      selectedImage === cdnImageUrl
-                        ? "border-primary shadow-md"
-                        : "border-border"
-                    } bg-card/50 backdrop-blur-sm hover:border-primary cursor-pointer transition-all duration-200 hover:shadow-md`}
-                    onMouseEnter={() => setSelectedImage(cdnImageUrl)}
-                  >
-                    <Image
-                      src={cdnImageUrl || "/placeholder.svg"}
-                      alt={`${product.name} - Image ${i + 1}`}
-                      fill
-                      className="object-cover"
-                      loading={i < 4 ? "eager" : "lazy"} // Load first 4 thumbnails immediately, rest lazily
-                      sizes="(max-width: 768px) 25vw, 12vw" // Optimized sizing for thumbnails
-                    />
-                  </div>
-                );
-              })}
+              {(() => {
+                let coloredImage = false;
+                // Show all images without a color attribute, and only the first image for each color
+                const seenColors = new Set();
+                return product.images
+                  .filter((img) => {
+                    if (!img.color) return true; // show all images without color
+                    else {
+                      if (!coloredImage) {
+                        coloredImage = true;
+                        return true; // show first image for this color
+                      }
+                      return false;
+                    }
+                    return false; // skip subsequent images with same color
+                  })
+                  .map((img, i) => {
+                    const cdnImageUrl = getCDNImageUrl(img.image);
+                    return (
+                      <div
+                        key={cdnImageUrl + i}
+                        className={`relative aspect-square rounded-lg overflow-hidden border ${
+                          selectedImage === cdnImageUrl
+                            ? "border-primary shadow-md"
+                            : "border-border"
+                        } bg-card/50 backdrop-blur-sm hover:border-primary cursor-pointer transition-all duration-200 hover:shadow-md`}
+                        onMouseEnter={() => setSelectedImage(cdnImageUrl)}
+                        onClick={() => setSelectedImage(cdnImageUrl)}
+                      >
+                        <Image
+                          src={cdnImageUrl || "/placeholder.svg"}
+                          alt={`${product.name} - Image ${i + 1}`}
+                          fill
+                          className="object-cover"
+                          loading={i < 4 ? "eager" : "lazy"}
+                          sizes="(max-width: 768px) 25vw, 12vw"
+                        />
+                      </div>
+                    );
+                  });
+              })()}
             </div>
              {/* Cool Attributes Table */}
              {product.attributes.length > 0 && (
@@ -325,12 +372,42 @@ export default function ProductInteractive({ product }) {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <p className="text-gray-300 font-bold">
+                <p className=" font-bold">
                   Category: {product.category}
                 </p>
                 <p className="text-muted-foreground font-bold">Series: {product.series}</p>
               </div>
             </div>
+            {/* Color Picker below main image */}
+            {colorOptions.length > 0 && (
+              <div className="flex items-center gap-3 mt-4 mb-2">
+                <span className="text-sm font-semibold text-black">Pick a color:</span>
+                {colorOptions.map((opt) => (
+                  <button
+                    key={opt.color}
+                    className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-150 focus:outline-none ${
+                      selectedColor === opt.color
+                        ? "border-primary ring-2 ring-primary"
+                        : "border-gray-300 hover:border-primary"
+                    }`}
+                    style={{ background: opt.hex || (opt.color_name ? opt.color_name.toLowerCase() : "#eee") }}
+                    title={opt.color_name || "Color"}
+                    aria-label={opt.color_name || "Color"}
+                    onClick={() => setSelectedColor(opt.color)}
+                  >
+                    {selectedColor === opt.color && (
+                      <span className="  bg-white/30" />
+                    )}
+                  </button>
+                ))}
+                {/* Show color name of selected */}
+                <span className="ml-2 text-xs font-bold text-foreground">
+                  {colorOptions.find((c) => c.color === selectedColor)?.color_name}
+                </span>
+              </div>
+            )}
+
+
 
             <div className="flex space-x-2 bg-card/50 border border-border rounded-lg p-4 md:space-x-4 shadow-sm">
               <Button

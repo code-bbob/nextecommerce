@@ -9,6 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import customFetch from "@/utils/customFetch";
 import { getCDNImageUrl } from "@/utils/imageUtils";
+import { getCachedData } from "@/utils/apiCache";
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, sendCartToServer } from "@/redux/cartSlice";
@@ -92,8 +93,11 @@ export default function DealsOfDay() {
     (async () => {
       try {
         setLoading(true);
-        const res = await customFetch(`shop/api/deals/?page=1`);
-        const data = await res.json();
+        const data = await getCachedData(
+          'shop/api/deals/?page=1',
+          () => customFetch(`shop/api/deals/?page=1`).then(r => r.json()),
+          10 * 60 * 1000 // 10 minute cache
+        );
         const list = Array.isArray(data?.results) ? data.results : Array.isArray(data) ? data : [];
         const simple = simplifyDeals(list).slice(0, 12);
         if (active) setItems(simple);
@@ -164,7 +168,15 @@ export default function DealsOfDay() {
                         {/* Clickable image/title area */}
                         <Link href={`/product/${p.id}`} className="block">
                           <div className="relative mx-auto h-48 sm:h-56 md:h-60 w-full">
-                            <Image src={p.image} alt={p.name} fill className="object-contain" />
+                            <Image 
+                              src={p.image} 
+                              alt={p.name} 
+                              fill 
+                              className="object-contain"
+                              loading="lazy"
+                              quality={75}
+                              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            />
                             {Number(p?.rating || 0) > 0 && (
                               <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-white/90 backdrop-blur px-2 py-1 text-[11px] font-semibold text-gray-800 ring-1 ring-black/5">
                                 <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />

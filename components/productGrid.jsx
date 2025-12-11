@@ -150,6 +150,9 @@ export default function ProductGrid({ products, isLoading, gridCols = 5, onReset
               style={{ objectFit: "cover" }}
               className="transition-transform duration-300 group-hover:scale-110"
               sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
+              priority={false}
+              loading="lazy"
+              quality={75}
             />
             <Badge className="absolute top-2 right-2 font-bold bg-primary text-primary-foreground z-20 shadow-sm">
               {product.category?.toLocaleUpperCase()}

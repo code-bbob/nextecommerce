@@ -1,0 +1,90 @@
+/* 
+ * Performance: Defer non-critical CSS animations
+ * By default, animations are disabled until JavaScript is loaded
+ * This prevents jank and allows the page to render faster
+ */
+
+/* Disable animations until JavaScript is ready */
+:not(.js-loaded) [class*="animate-"],
+:not(.js-loaded) [class*="transition-"],
+:not(.js-loaded) [class*="motion-"] {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Disable Framer Motion animations initially */
+:not(.js-loaded) .framer-motion-element {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Disable Swiper animations initially */
+:not(.js-loaded) .swiper {
+  opacity: 1 !important; /* Show content, no fade-in */
+}
+
+/* Keep content visible but static until JS loads */
+:not(.js-loaded) .motion-div,
+:not(.js-loaded) [data-motion] {
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+/* Once JS is loaded, enable animations smoothly */
+.js-loaded * {
+  /* Animations work normally now - all CSS will apply */
+}
+
+/* 
+ * Critical styles that MUST show immediately:
+ * - Text
+ * - Images  
+ * - Basic layout
+ * - No animations
+ */
+
+/* Image lazy loading - show immediately */
+img {
+  display: block;
+  width: 100%;
+}
+
+/* Product grid - show immediately without animation */
+.grid {
+  display: grid;
+}
+
+/* Navigation - show immediately */
+nav {
+  display: flex;
+}
+
+/* Buttons - show immediately */
+button,
+[role="button"] {
+  display: inline-flex;
+  cursor: pointer;
+}
+
+/* Text content - show immediately */
+h1, h2, h3, h4, h5, h6, p, span, div {
+  color: inherit;
+  font-family: inherit;
+}
+
+/* 
+ * Performance tip: Animations only enabled after page is interactive
+ */
+.js-loaded {
+  --animations-enabled: 1;
+}
+
+/* Prevent layout shift during JS load */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}

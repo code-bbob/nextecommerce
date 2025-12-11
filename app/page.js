@@ -15,6 +15,9 @@ import FirstBanners from "@/components/firstBanners";
 import SecondBanners from "@/components/secondBanners";
 import Footer from "@/components/Footer.server";
 
+// ISR - Revalidate every 1 hour
+export const revalidate = 3600;
+
 export async function generateMetadata() {
   return {
     title:

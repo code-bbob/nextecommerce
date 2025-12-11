@@ -11,6 +11,9 @@ import ProductJsonLd from "@/components/ProductJsonLd.server";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd.server";
 import RelatedProducts from "@/components/RelatedProducts.server";
 
+// ISR: Revalidate every 1 hour (same as other pages)
+export const revalidate = 3600;
+
 // Generate dynamic metadata based on the product data
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -18,7 +21,7 @@ export async function generateMetadata({ params }) {
   
   try {
     const res = await fetch(backendUrl, {
-      next: { revalidate: 3600 }  // Use same revalidation as main content
+      next: { revalidate: 3600 }  // ISR: Revalidate every 1 hour
     });
     if (!res.ok) {
       return {
@@ -85,7 +88,7 @@ export async function generateMetadata({ params }) {
 export async function generateStaticParams() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}shop/api/`, { 
-      next: { revalidate: 100 },
+      next: { revalidate: 3600 },  // ISR: Revalidate every 1 hour
       headers: {
         'Accept': 'application/json'
       }
@@ -121,9 +124,9 @@ export default async function ProductPage({ params }) {
   
   // Fetch product data from backend. { cache: "no-store" } ensures fresh data.
   try {
-    // Modified fetch to use ISR with 1 hour revalidation
+    // ISR: Revalidate every 1 hour
     const res = await fetch(backendUrl, { 
-      next: { revalidate: 100 } // Revalidate every hour
+      next: { revalidate: 3600 }
     });
     if (!res.ok) {
       notFound();
@@ -139,7 +142,7 @@ export default async function ProductPage({ params }) {
   // Fetch related products from backend for internal linking (best-effort)
   try {
     const relUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}shop/api/related/${id}/`;
-    const relRes = await fetch(relUrl, { next: { revalidate: 600 } });
+    const relRes = await fetch(relUrl, { next: { revalidate: 3600 } });  // ISR: Same as product
     if (relRes.ok) {
       const relData = await relRes.json();
       related = Array.isArray(relData?.results) ? relData.results : Array.isArray(relData) ? relData : [];

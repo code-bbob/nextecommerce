@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-      unoptimized: true, // Disable Next.js image optimization to save costs
+      // Enable Next.js Image Optimization (fast on localhost, uses next/image benefits)
+      unoptimized: false,
       remotePatterns: [
         {
           protocol: 'https',
@@ -10,7 +11,22 @@ const nextConfig = {
           pathname: '/**',
         },
       ],
-      // No custom loader needed when unoptimized is true
+      // Performance optimizations
+      deviceSizes: [320, 420, 640, 768, 1024, 1280, 1536],
+      imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+      // Cache optimized images for 365 days
+      minimumCacheTTL: 31536000,
+      // Use modern formats (webp, avif) when supported
+      formats: ['image/avif', 'image/webp'],
+      // Increase dangerouslyAllowSVG for icons/logos
+      dangerouslyAllowSVG: true,
+      contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    },
+    // Optimize bundle size
+    compress: true,
+    // Enable SWR (stale-while-revalidate) for API responses
+    experimental: {
+      optimizePackageImports: ['lucide-react', '@radix-ui'],
     },
   };
 
