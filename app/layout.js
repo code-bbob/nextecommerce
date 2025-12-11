@@ -3,6 +3,7 @@ import "./globals.css";
 import "./rocket-loader.css";
 import { Providers } from "./providers";
 import CartInitializer from "@/utils/cartInitializer";
+import ProgressBar from "@/components/ProgressBar";
 import { Inter } from 'next/font/google'
 import { Shadows_Into_Light } from "next/font/google";
  import { Playfair_Display } from "next/font/google";
@@ -98,6 +99,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.className}>
   <body className="bg-background min-h-screen antialiased">
+        <ProgressBar />
         {/* Store JSON-LD for SEO (SSR) */}
         {(() => {
           const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
