@@ -11,6 +11,9 @@ import ProductJsonLd from "@/components/ProductJsonLd.server";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd.server";
 import RelatedProducts from "@/components/RelatedProducts.server";
 
+// Make this page dynamic to avoid prerendering issues
+export const dynamic = 'force-dynamic';
+
 // ISR: Revalidate every 1 hour (same as other pages)
 export const revalidate = 3600;
 
@@ -59,20 +62,20 @@ export async function generateMetadata({ params }) {
         title,
         description,
         url: `${site}/product/${id}`,
-        images: [
+        images: product.images && product.images.length > 0 ? [
           {
             url: getCDNImageUrl(product.images[0]?.image),
             width: 800,
             height: 600,
             alt: product.name,
           },  
-        ],
+        ] : [],
       },
       twitter: {
         card: "summary_large_image",
         title,
         description,
-        images: [getCDNImageUrl(product.images[0]?.image)],
+        images: product.images && product.images.length > 0 ? [getCDNImageUrl(product.images[0]?.image)] : [],
       },
     };
   } catch (error) {
@@ -153,7 +156,7 @@ export default async function ProductPage({ params }) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    image: getCDNImageUrl(product.images[0]?.image),
+    image: product.images && product.images.length > 0 ? getCDNImageUrl(product.images[0]?.image) : null,
     description: product.meta_description || product.description,
     sku: product.sku,
     offers: {

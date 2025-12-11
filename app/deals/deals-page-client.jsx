@@ -15,7 +15,6 @@ export default function DealsPageClient({ initialProducts, initialPagination }) 
   const router = useRouter()
 
   const currentPage = parseInt(searchParams.get("page") || "1", 10)
-
   const [products, setProducts] = useState(initialProducts)
   const [ordering, setOrdering] = useState("")
   const [rating, setRating] = useState("")

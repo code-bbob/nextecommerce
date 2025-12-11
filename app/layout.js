@@ -9,6 +9,7 @@ import { Shadows_Into_Light } from "next/font/google";
  import { Playfair_Display } from "next/font/google";
  import { Newsreader } from "next/font/google";
  import { Poppins } from "next/font/google";
+import { Suspense } from 'react';
 // If loading a variable font, you don't need to specify the font weight
 const inter = Inter({
   subsets: ['latin'],
@@ -99,7 +100,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.className}>
   <body className="bg-background min-h-screen antialiased">
-        <ProgressBar />
+        <Suspense fallback={null}>
+          <ProgressBar />
+        </Suspense>
         {/* Store JSON-LD for SEO (SSR) */}
         {(() => {
           const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";

@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
-export default function ProgressBar() {
+// Internal component that uses hooks
+function ProgressBarCore() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [progress, setProgress] = useState(0)
@@ -139,5 +140,14 @@ export default function ProgressBar() {
         }}
       />
     </>
+  )
+}
+
+// Main component with Suspense boundary
+export default function ProgressBar() {
+  return (
+    <Suspense fallback={null}>
+      <ProgressBarCore />
+    </Suspense>
   )
 }

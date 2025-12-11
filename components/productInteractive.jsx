@@ -12,7 +12,7 @@ import { addToCart, sendCartToServer } from "@/redux/cartSlice";
 import customFetch from "@/utils/customFetch";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { getLocalCart, setLocalCart } from "@/utils/localCart";
+import { getLocalCart, setLocalCart }from "@/utils/localCart";
 import { getCDNImageUrl, preloadImages } from "@/utils/imageUtils";
 import { useEffect } from "react";
 
@@ -23,7 +23,7 @@ export default function ProductInteractive({ product }) {
   // Find all unique color options from images
   const colorOptions = Array.from(
     new Map(
-      product.images
+      (product.images || [])
         .filter((img) => img.color && (img.hex || img.color_name))
         .map((img) => [img.color, { color: img.color, color_name: img.color_name, hex: img.hex }])
     ).values()
@@ -35,10 +35,10 @@ export default function ProductInteractive({ product }) {
   // Default selected image: first image, or first of selected color if set
   const getDefaultImage = () => {
     if (selectedColor) {
-      const colorImg = product.images.find((img) => img.color === selectedColor);
+      const colorImg = (product.images || []).find((img) => img.color === selectedColor);
       if (colorImg) return getCDNImageUrl(colorImg.image);
     }
-    return getCDNImageUrl(product.images[0]?.image) || "/placeholder.svg";
+    return getCDNImageUrl((product.images || [])[0]?.image) || "/placeholder.svg";
   };
   const [selectedImage, setSelectedImage] = useState(getDefaultImage());
   const [modalImage, setModalImage] = useState(null);
@@ -71,7 +71,7 @@ export default function ProductInteractive({ product }) {
   // Preload all product images for instant switching - super fast UX
   useEffect(() => {
     if (product.images && product.images.length > 0) {
-      const imageUrls = product.images.map(img => img.image);
+      const imageUrls = (product.images || []).map(img => img.image);
       preloadImages(imageUrls);
     }
   }, [product.images]);
@@ -79,7 +79,7 @@ export default function ProductInteractive({ product }) {
   // When color changes, update selected image to first image of that color
   useEffect(() => {
     if (selectedColor) {
-      const colorImg = product.images.find((img) => img.color === selectedColor);
+      const colorImg = (product.images || []).find((img) => img.color === selectedColor);
       if (colorImg) setSelectedImage(getCDNImageUrl(colorImg.image));
     }
     // If color is cleared, do not change selectedImage
@@ -90,7 +90,7 @@ export default function ProductInteractive({ product }) {
     const cartItem = {
       product_id: product.product_id,
       price: product.price,
-      image: getCDNImageUrl(product.images[0]?.image),
+      image: getCDNImageUrl((product.images || [])[0]?.image),
       name: product.name,
       quantity: 1,
     };
@@ -250,7 +250,7 @@ export default function ProductInteractive({ product }) {
                 let coloredImage = false;
                 // Show all images without a color attribute, and only the first image for each color
                 const seenColors = new Set();
-                return product.images
+                return (product.images || [])
                   .filter((img) => {
                     if (!img.color) return true; // show all images without color
                     else {
@@ -289,7 +289,7 @@ export default function ProductInteractive({ product }) {
               })()}
             </div>
              {/* Cool Attributes Table */}
-             {product.attributes.length > 0 && (
+             {(product.attributes || []).length > 0 && (
              <div className="mt-8 hidden md:block">
               <h2 className="text-2xl font-bold mb-4 text-primary text-center">
                 Product Attributes
@@ -307,7 +307,7 @@ export default function ProductInteractive({ product }) {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    {product.attributes.map((attr, index) => (
+                    {(product.attributes || []).map((attr, index) => (
                       attr.value && (
                       <tr key={index} className="hover:bg-accent/50 transition-colors duration-200">
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground font-medium">
@@ -460,7 +460,7 @@ export default function ProductInteractive({ product }) {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {product.attributes.map((attr, index) => (
+                    {(product.attributes || []).map((attr, index) => (
                       attr.value &&(
                       <tr key={index} className="">
                         <td className="px-6 py-4 whitespace-nowrap text-sm ">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { login } from "@/redux/accessSlice";
@@ -12,7 +12,26 @@ import { toast, Toaster } from "react-hot-toast";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import customFetch from "@/utils/customFetch";
 
-const UserRegister = () => {
+// Loading component for Suspense fallback
+const RegisterLoading = () => (
+  <div className="min-h-screen py-4 flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 p-4">
+    <div className="w-full max-w-md bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl shadow-2xl p-6">
+      <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center animate-pulse">
+        <UserPlus className="w-10 h-10 text-white" />
+      </div>
+      <div className="h-6 bg-slate-700 rounded mb-4 animate-pulse"></div>
+      <div className="space-y-4">
+        <div className="h-10 bg-slate-700 rounded animate-pulse"></div>
+        <div className="h-10 bg-slate-700 rounded animate-pulse"></div>
+        <div className="h-10 bg-slate-700 rounded animate-pulse"></div>
+        <div className="h-10 bg-slate-700 rounded animate-pulse"></div>
+      </div>
+    </div>
+  </div>
+);
+
+// Internal component that uses useSearchParams
+const UserRegisterForm = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -228,6 +247,15 @@ const UserRegister = () => {
         </div>
       </motion.div>
     </div>
+  );
+};
+
+// Main component wrapped in Suspense
+const UserRegister = () => {
+  return (
+    <Suspense fallback={<RegisterLoading />}>
+      <UserRegisterForm />
+    </Suspense>
   );
 };
 
