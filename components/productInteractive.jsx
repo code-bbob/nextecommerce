@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { Heart, X, Star, Truck, Search } from "lucide-react";
 import CartSidebar from "@/components/cartSidebar";
@@ -14,33 +14,32 @@ import toast from "react-hot-toast";
 import { useNavigationProgress } from "@/hooks/useNavigationProgress";
 import { getLocalCart, setLocalCart }from "@/utils/localCart";
 import { getCDNImageUrl, preloadImages } from "@/utils/imageUtils";
-import { useEffect } from "react";
 
 
 export default function ProductInteractive({ product }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  // Color selection state
-  // Find all unique color options from images
-  const colorOptions = Array.from(
-    new Map(
-      (product.images || [])
-        .filter((img) => img.color && (img.hex || img.color_name))
-        .map((img) => [img.color, { color: img.color, color_name: img.color_name, hex: img.hex }])
-    ).values()
-  );
+  
+  // Memoize color options to avoid recalculation
+  const colorOptions = useMemo(() => {
+    if (!product?.images || !Array.isArray(product.images) || product.images.length === 0) return [];
+    return Array.from(
+      new Map(
+        product.images
+          .filter((img) => img && img.color && (img.hex || img.color_name))
+          .map((img) => [img.color, { color: img.color, color_name: img.color_name, hex: img.hex }])
+      ).values()
+    );
+  }, [product?.images]);
 
-  // If there are color options, default to the first color; else null
   const [selectedColor, setSelectedColor] = useState(null);
-
-  // Default selected image: first image, or first of selected color if set
-  const getDefaultImage = () => {
-    if (selectedColor) {
-      const colorImg = (product.images || []).find((img) => img.color === selectedColor);
-      if (colorImg) return getCDNImageUrl(colorImg.image);
-    }
-    return getCDNImageUrl((product.images || [])[0]?.image) || "/placeholder.svg";
-  };
-  const [selectedImage, setSelectedImage] = useState(getDefaultImage());
+  
+  // Default image - set directly without callback
+  const defaultImageUrl = useMemo(() => {
+    if (!product?.images || product.images.length === 0) return "/placeholder.svg";
+    return getCDNImageUrl(product.images[0]?.image) || "/placeholder.svg";
+  }, [product?.images]);
+  
+  const [selectedImage, setSelectedImage] = useState(defaultImageUrl);
   const [modalImage, setModalImage] = useState(null);
   const router = useNavigationProgress();
 
@@ -49,15 +48,12 @@ export default function ProductInteractive({ product }) {
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
 
-  // Check if device is mobile
+  // Check if device is mobile - only run on mount
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    setIsMobile(window.innerWidth < 768);
     
-    checkMobile();
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', checkMobile);
-    
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -68,29 +64,31 @@ export default function ProductInteractive({ product }) {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.access.isAuthenticated);
 
-  // Preload all product images for instant switching - super fast UX
+  // Defer image preloading to avoid blocking initial render
   useEffect(() => {
-    if (product.images && product.images.length > 0) {
-      const imageUrls = (product.images || []).map(img => img.image);
-      preloadImages(imageUrls);
-    }
-  }, [product.images]);
+    const timer = setTimeout(() => {
+      if (product?.images && Array.isArray(product.images) && product.images.length > 0) {
+        const imageUrls = product.images.map(img => img.image).filter(Boolean);
+        preloadImages(imageUrls);
+      }
+    }, 500); // Defer 500ms after initial render
+    
+    return () => clearTimeout(timer);
+  }, [product?.images]);
 
-  // When color changes, update selected image to first image of that color
+  // When color changes, update selected image
   useEffect(() => {
-    if (selectedColor) {
-      const colorImg = (product.images || []).find((img) => img.color === selectedColor);
+    if (selectedColor && product?.images && product.images.length > 0) {
+      const colorImg = product.images.find((img) => img.color === selectedColor);
       if (colorImg) setSelectedImage(getCDNImageUrl(colorImg.image));
     }
-    // If color is cleared, do not change selectedImage
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedColor]);
+  }, [selectedColor, product?.images]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = useCallback(() => {
     const cartItem = {
       product_id: product.product_id,
       price: product.price,
-      image: getCDNImageUrl((product.images || [])[0]?.image),
+      image: getCDNImageUrl((product.images?.[0]?.image)),
       name: product.name,
       quantity: 1,
     };
@@ -112,7 +110,7 @@ export default function ProductInteractive({ product }) {
       setLocalCart(localCart)
     }
     setIsCartOpen(true);
-  };
+  }, [dispatch, isLoggedIn, product]);
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
@@ -289,7 +287,7 @@ export default function ProductInteractive({ product }) {
               })()}
             </div>
              {/* Cool Attributes Table */}
-             {(product.attributes || []).length > 0 && (
+             {product?.attributes && product.attributes.length > 0 && (
              <div className="mt-8 hidden md:block">
               <h2 className="text-2xl font-bold mb-4 text-primary text-center">
                 Product Attributes
@@ -442,7 +440,7 @@ export default function ProductInteractive({ product }) {
               <span className="font-medium">Free delivery on orders over RS. 150</span>
             </div>
 
-            {product.attributes.length > 0 && (
+            {product?.attributes && product.attributes.length > 0 && (
              <div className="mt-8 block md:hidden">
               <h2 className="text-2xl font-bold mb-4 text-red-500">
                 Product Attributes
@@ -658,7 +656,7 @@ export default function ProductInteractive({ product }) {
                         <p className="">{comment.text}</p>
                       </div>
                     </div>
-                    {comment.replies.length > 0 && (
+                    {comment?.replies && comment.replies.length > 0 && (
                       <div className="ml-12 space-y-4">
                         {comment.replies.map((reply, index) => (
                           <div

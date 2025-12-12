@@ -10,11 +10,9 @@ import CatBar from "@/components/catbar";
 import ProductJsonLd from "@/components/ProductJsonLd.server";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd.server";
 import RelatedProducts from "@/components/RelatedProducts.server";
+import { Suspense } from "react";
 
-// Make this page dynamic to avoid prerendering issues
-export const dynamic = 'force-dynamic';
-
-// ISR: Revalidate every 1 hour (same as other pages)
+// ISR: Revalidate every 1 hour for fast caching
 export const revalidate = 3600;
 
 // Generate dynamic metadata based on the product data
@@ -123,9 +121,8 @@ export default async function ProductPage({ params }) {
   const { id } = await params;
   const backendUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}shop/api/${id}/`;
   let product = {};
-  let related = [];
   
-  // Fetch product data from backend. { cache: "no-store" } ensures fresh data.
+  // Fetch product data from backend with caching
   try {
     // ISR: Revalidate every 1 hour
     const res = await fetch(backendUrl, { 
@@ -142,42 +139,30 @@ export default async function ProductPage({ params }) {
     console.error(error);
     notFound();
   }
-  // Fetch related products from backend for internal linking (best-effort)
+  
+  // Fetch related products with timeout to avoid slow loads
+  let related = [];
   try {
     const relUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}shop/api/related/${id}/`;
-    const relRes = await fetch(relUrl, { next: { revalidate: 3600 } });  // ISR: Same as product
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2000); // 2 second timeout
+    
+    const relRes = await fetch(relUrl, { 
+      next: { revalidate: 3600 },
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    
     if (relRes.ok) {
       const relData = await relRes.json();
       related = Array.isArray(relData?.results) ? relData.results : Array.isArray(relData) ? relData : [];
     }
-  } catch {}
-  // JSON-LD structured data for SEO
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    image: product.images && product.images.length > 0 ? getCDNImageUrl(product.images[0]?.image) : null,
-    description: product.meta_description || product.description,
-    sku: product.sku,
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "NPR",
-      price: product.price,
-      availability: "https://schema.org/InStock",
-    },
-    
-  };
+  } catch (error) {
+    // If related products timeout or fail, continue without them
+    console.warn('Related products fetch failed, continuing without them');
+  }
+  
   const site = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
-  const breadcrumbJson = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site },
-      { "@type": "ListItem", position: 2, name: "Store", item: `${site}/store` },
-      { "@type": "ListItem", position: 3, name: product.name, item: `${site}/product/${id}` },
-    ],
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans">
       <BlackNavBar color="inherit"/>
@@ -188,8 +173,10 @@ export default async function ProductPage({ params }) {
       </header>
       {/* Pass product data to a client component for interactivity (code-split) */}
       <ProductInteractive product={product} />
-      {/* Internal linking to related products (SSR) */}
-      <RelatedProducts products={related} />
+      {/* Internal linking to related products (lazy loaded) */}
+      <Suspense fallback={null}>
+        <RelatedProducts products={related} />
+      </Suspense>
       {/* JSON-LD Structured Data (SSR) */}
       <ProductJsonLd product={product} siteUrl={site} />
       <BreadcrumbJsonLd
