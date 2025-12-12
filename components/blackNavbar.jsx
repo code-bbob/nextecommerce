@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { useRouter } from "next/navigation";
+import { useNavigationProgress } from "@/hooks/useNavigationProgress";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, ShoppingCart, X, Menu, Zap, Home, Tag, Gift, User, ChevronRight } from "lucide-react";
@@ -21,7 +21,7 @@ function useDebounce(value, delay) {
 }
 
 export default function BlackNavBar({ color = "black" }) {
-  const router = useRouter();
+  const router = useNavigationProgress();
   const dispatch = useDispatch();
 
   const isLoggedIn = useSelector((s) => s.access.isAuthenticated);

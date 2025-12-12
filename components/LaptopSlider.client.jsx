@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useNavigationProgress } from "@/hooks/useNavigationProgress";
 import { getCDNImageUrl } from "@/utils/imageUtils";
 
 export default function LaptopGrid() {
   const [products, setProducts] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
-  const router = useRouter();
+  const router = useNavigationProgress();
 
   useEffect(() => {
     async function fetchLaptops() {

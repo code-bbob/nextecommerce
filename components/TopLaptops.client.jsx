@@ -1,13 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useNavigationProgress } from "@/hooks/useNavigationProgress";
 import { getCDNImageUrl } from "@/utils/imageUtils";
 
 export default function TopLaptops() {
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(0);
-  const router = useRouter();
+  const router = useNavigationProgress();
 
   useEffect(() => {
     let isMounted = true;

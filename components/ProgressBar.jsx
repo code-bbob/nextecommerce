@@ -1,64 +1,91 @@
 'use client'
 
-import { useEffect, useState, Suspense } from 'react'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { useEffect, useState, Suspense, useRef, useCallback } from 'react'
+import { usePathname, useSearchParams, useRouter } from 'next/navigation'
 
 // Internal component that uses hooks
 function ProgressBarCore() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const router = useRouter()
   const [progress, setProgress] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
+  const lastPathRef = useRef(pathname)
+  const routerRef = useRef(router)
 
+  // Update router ref when router changes
   useEffect(() => {
-    // Start progress bar when navigation begins
-    setProgress(10)
-    setIsAnimating(true)
+    routerRef.current = router
+  }, [router])
 
-    // Quick progress increments
-    const timer1 = setTimeout(() => {
-      setProgress(25)
-    }, 30)
+  // Expose global function to start progress
+  useEffect(() => {
+    window.__startProgress = () => {
+      setProgress(10)
+      setIsAnimating(true)
+      setTimeout(() => setProgress(25), 30)
+      setTimeout(() => setProgress(50), 80)
+      setTimeout(() => setProgress(75), 150)
+    }
 
-    const timer2 = setTimeout(() => {
-      setProgress(50)
-    }, 80)
+    return () => {
+      delete window.__startProgress
+    }
+  }, [])
 
-    const timer3 = setTimeout(() => {
-      setProgress(75)
-    }, 150)
-
-    // Detect when page is done loading
-    const handleLoad = () => {
+  // Handle pathname changes (when route actually completes)
+  useEffect(() => {
+    if (pathname !== lastPathRef.current) {
+      lastPathRef.current = pathname
+      
+      // Complete the progress bar when page finishes loading
       setProgress(100)
+      
       setTimeout(() => {
         setProgress(0)
         setIsAnimating(false)
-      }, 200)
-    }
-
-    // Listen for page load and route completion
-    window.addEventListener('load', handleLoad)
-    
-    // Also complete on rapid completion (page already loaded)
-    const maxTimer = setTimeout(() => {
-      if (progress < 100) {
-        setProgress(100)
-        setTimeout(() => {
-          setProgress(0)
-          setIsAnimating(false)
-        }, 200)
-      }
-    }, 250)
-
-    return () => {
-      clearTimeout(timer1)
-      clearTimeout(timer2)
-      clearTimeout(timer3)
-      clearTimeout(maxTimer)
-      window.removeEventListener('load', handleLoad)
+      }, 300)
     }
   }, [pathname, searchParams])
+
+  // Memoized click handler for better performance
+  const handleClick = useCallback((e) => {
+    // Early exit for non-link clicks (99% of cases)
+    const link = e.target.closest('a')
+    if (!link) return
+
+    const href = link.getAttribute('href')
+    if (!href) return
+
+    // Quick early exits - avoid expensive checks when not needed
+    const firstChar = href[0]
+    if (firstChar === '#' || firstChar === '?' || href.includes('://') || link.target) {
+      return
+    }
+
+    // Check if it's a different page (only for internal navigation)
+    const currentPath = window.location.pathname + window.location.search
+    if (href === currentPath || href.startsWith('mailto:') || href.startsWith('tel:')) {
+      return
+    }
+
+    // Start progress animation
+    if (!isAnimating) {
+      window.__startProgress?.()
+    }
+  }, [isAnimating])
+
+  // Global click listener with passive option for performance
+  useEffect(() => {
+    // Use passive listener for better scroll performance
+    const options = { capture: true, passive: true }
+    
+    document.addEventListener('click', handleClick, options)
+
+    return () => {
+      document.removeEventListener('click', handleClick, options)
+    }
+  }, [handleClick])
 
   return (
     <>

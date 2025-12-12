@@ -11,7 +11,7 @@ import { useState } from "react"
 import { addToCart, sendCartToServer } from "@/redux/cartSlice"
 import CartSidebar from "@/components/cartSidebar"
 import { getLocalCart, setLocalCart } from "@/utils/localCart"
-import { useRouter } from "next/navigation"
+import { useNavigationProgress } from "@/hooks/useNavigationProgress"
 import { getCDNImageUrl } from "@/utils/imageUtils"
 
 // Skeleton component for product cards
@@ -50,7 +50,7 @@ export default function ProductGrid({ products, isLoading, gridCols = 5, onReset
   const [isCartOpen, setIsCartOpen] = useState(false)
   const dispatch = useDispatch()
   const isLoggedIn = useSelector((state) => state.access.isAuthenticated)
-  const router = useRouter()
+  const router = useNavigationProgress()
 
   const handleEmi = (e, product_id) => {
     e.stopPropagation()

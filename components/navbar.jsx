@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigationProgress } from "@/hooks/useNavigationProgress";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, ShoppingCart, X } from "lucide-react";
@@ -30,7 +30,7 @@ export default function NavBar() {
   const [isLoading, setIsLoading] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  const router = useRouter();
+  const router = useNavigationProgress();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.access.isAuthenticated);
   const cartItems = useSelector((state) => state.cart.items);

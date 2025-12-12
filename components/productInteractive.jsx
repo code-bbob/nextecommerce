@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart, sendCartToServer } from "@/redux/cartSlice";
 import customFetch from "@/utils/customFetch";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useNavigationProgress } from "@/hooks/useNavigationProgress";
 import { getLocalCart, setLocalCart }from "@/utils/localCart";
 import { getCDNImageUrl, preloadImages } from "@/utils/imageUtils";
 import { useEffect } from "react";
@@ -42,7 +42,7 @@ export default function ProductInteractive({ product }) {
   };
   const [selectedImage, setSelectedImage] = useState(getDefaultImage());
   const [modalImage, setModalImage] = useState(null);
-  const router = useRouter();
+  const router = useNavigationProgress();
 
   // Amazon-style zoom states
   const [showZoom, setShowZoom] = useState(false);
