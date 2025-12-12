@@ -23,12 +23,17 @@ async function getInitialProducts(page = 1) {
 }
 
 // Server Component - Fetches data instantly
-export default async function StorePage() {
+export default async function StorePage({ searchParams }) {
+  // Read page number from URL query params (?page=2)
+  // In Next.js 15, searchParams is a Promise, so we need to await it
+  const params = await searchParams;
+  const pageNum = parseInt(params?.page) || 1;
+  
   // Data is fetched on the server before page renders
   // This means products are ALREADY LOADED when page reaches client
-  const initialProducts = await getInitialProducts(1);
+  const initialProducts = await getInitialProducts(pageNum);
 
   // Pass pre-fetched data to client component
   // Client renders immediately with NO loading state
-  return <StorePageClient initialProducts={initialProducts} currentPage={1} />;
+  return <StorePageClient initialProducts={initialProducts} currentPage={pageNum} />;
 }

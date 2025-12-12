@@ -2,9 +2,9 @@
 
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Sliders, X } from "lucide-react"
 import { Slider } from "@/components/ui/slider"
 import { useState } from "react"
+import { X } from "lucide-react"
 
 export default function FilterSidebar({
   category,
@@ -25,16 +25,27 @@ export default function FilterSidebar({
 
   const handleOrderChange = (value) => {
     setOrdering(value)
-    updateActiveFilters()
   }
 
   const handleRatingChange = (value) => {
     setRating(value)
-    updateActiveFilters()
   }
 
   const handleSlideRatingChange = (value) => {
     setTempMinRating(value[0])
+  }
+
+  const applyFilters = () => {
+    setMinRating(tempMinRating)
+    setMinPrice(Number(tempMinPrice) || "")
+    setMaxPrice(Number(tempMaxPrice) || "")
+    updateActiveFilters()
+  }
+
+  const handleBrandFilter = (e, brandName) => {
+    e.preventDefault()
+    setBrandName(brandName)
+    updateActiveFilters()
   }
 
   const updateActiveFilters = () => {
@@ -44,19 +55,6 @@ export default function FilterSidebar({
     if (tempMaxPrice) count++
     if (tempBrandName) count++
     setActiveFilters(count)
-  }
-
-  const applyFilters = () => {
-    setMinRating(tempMinRating)
-    setMinPrice(Number(tempMinPrice))
-    setMaxPrice(Number(tempMaxPrice))
-    updateActiveFilters()
-  }
-
-  const handleBrandFilter = (e, brandName) => {
-    e.preventDefault()
-    setBrandName(brandName)
-    updateActiveFilters()
   }
 
   const resetFilters = () => {
@@ -74,131 +72,131 @@ export default function FilterSidebar({
   }
 
   return (
-    <div className="p-4 w-full no-scrollbar bg-card/50 text-foreground shadow-sm ">
-      <div className="flex justify-between items-center mb-2">
-        <div className="flex items-center space-x-2">
-          <Sliders className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-bold text-foreground">Filters</h2>
-          {activeFilters > 0 && (
-            <span className="bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-full shadow-sm">{activeFilters}</span>
-          )}
-        </div>
-        <Button variant="ghost" className="text-indigo-400 hover:bg-white" onClick={() => setIsSidebarOpen(false)}>
-          <X className="h-5 w-5" />
-        </Button>
-      </div>
+    <div className="w-full bg-transparent text-foreground">
+      {/* Filter Groups */}
+      <div className="space-y-6">
+        {/* Sorting Section */}
+        <div className="space-y-2">
+          <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">Sorting</h3>
 
-      {/* Sort by Price */}
-      <div className="mb-3">
-        <h3 className="text-sm font-bold mb-1 ">Sort by Price</h3>
-        <Select onValueChange={handleOrderChange}>
-          <SelectTrigger className="w-full bg-input border border-border text-foreground focus:ring-primary/50 focus:border-primary">
-            <SelectValue placeholder="Select option" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="price">Price: Low to High</SelectItem>
-            <SelectItem value="-price">Price: High to Low</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Sort by Rating */}
-      <div className="mb-3">
-        <h3 className="text-sm mb-1 font-bold">Sort by Rating</h3>
-        <Select onValueChange={handleRatingChange}>
-          <SelectTrigger className="w-full bg-input border border-border text-foreground focus:ring-primary/50 focus:border-primary">
-            <SelectValue placeholder="Select option" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="rating">Rating: Low to High</SelectItem>
-            <SelectItem value="-rating">Rating: High to Low</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Minimum Rating */}
-      <div className="mb-3">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-sm font-bold ">Minimum Rating</h3>
-          <span className="text-foreground font-bold">{tempMinRating} ★</span>
-        </div>
-        <Slider
-          defaultValue={[0]}
-          max={5}
-          step={1}
-          onValueChange={handleSlideRatingChange}
-          className="text-primary"
-        />
-        <div className="flex justify-between text-xs text-gray-400 mt-1">
-          <span>0</span>
-          <span>1</span>
-          <span>2</span>
-          <span>3</span>
-          <span>4</span>
-          <span>5</span>
-        </div>
-      </div>
-
-      {/* Price Range */}
-      <div className="mb-3">
-        <h3 className="text-sm font-bold mb-1 text-primary">Price Range</h3>
-        <div className="flex space-x-2">
-          <div className="w-full">
-            <label className="text-xs text-black font-bold mb-1 block">Min Price</label>
-            <input
-              type="number"
-              value={tempMinPrice}
-              placeholder="0"
-              className="w-full rounded-md border border-border bg-input text-foreground px-3 py-2 focus:ring-primary/50 focus:border-primary transition-colors duration-200"
-              onChange={(e) => setTempMinPrice(e.target.value)}
-            />
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground">Price</label>
+            <Select onValueChange={handleOrderChange}>
+              <SelectTrigger className="w-full bg-white border border-border/10 text-foreground focus:ring-foreground/20 focus:border-foreground/30 rounded-lg hover:bg-slate-50 transition-colors text-sm h-9">
+                <SelectValue placeholder="Sort by price" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="price">Low to High</SelectItem>
+                <SelectItem value="-price">High to Low</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <div className="w-full">
-            <label className="text-xs font-bold mb-1 block">Max Price</label>
-            <input
-              type="number"
-              value={tempMaxPrice}
-              placeholder="1000"
-              className="w-full rounded-md border border-border bg-input text-foreground px-3 py-2 focus:ring-primary/50 focus:border-primary transition-colors duration-200"
-              onChange={(e) => setTempMaxPrice(e.target.value)}
-            />
+
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground">Rating</label>
+            <Select onValueChange={handleRatingChange}>
+              <SelectTrigger className="w-full bg-white border border-border/10 text-foreground focus:ring-foreground/20 focus:border-foreground/30 rounded-lg hover:bg-slate-50 transition-colors text-sm h-9">
+                <SelectValue placeholder="Sort by rating" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="rating">Low to High</SelectItem>
+                <SelectItem value="-rating">High to Low</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
+
+        {/* Divider */}
+        {/* <div className="h-px bg-gray-200"></div> */}
+
+        {/* Filtering Section */}
+        <div className="space-y-2">
+          <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">Filters</h3>
+
+          {/* Rating Filter */}
+          <div className="space-y-3 bg-slate-50/50 p-4 rounded-lg border border-border/5">
+            <div className="flex justify-between items-center">
+              <label className="text-xs font-semibold text-foreground">Min Rating</label>
+              <span className="text-xs font-bold text-foreground bg-white border border-border/10 px-2.5 py-1 rounded-md">{tempMinRating}★</span>
+            </div>
+            <Slider
+              defaultValue={[0]}
+              max={5}
+              step={1}
+              onValueChange={handleSlideRatingChange}
+              className="text-foreground"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground font-medium">
+              <span>0★</span>
+              <span>5★</span>
+            </div>
+          </div>
+
+          {/* Price Filter */}
+          <div className="space-y-3 bg-slate-50/50 p-4 rounded-lg border border-border/5">
+            <label className="text-xs font-semibold text-foreground block">Price Range</label>
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <input
+                  type="number"
+                  value={tempMinPrice}
+                  placeholder="Min"
+                  className="w-full rounded-lg border border-border/10 bg-white text-foreground px-3 py-2 focus:ring-2 focus:ring-foreground/10 focus:border-foreground/30 transition-all duration-200 placeholder:text-muted-foreground/50 text-xs font-medium"
+                  onChange={(e) => setTempMinPrice(e.target.value)}
+                />
+              </div>
+              <div className="flex-1">
+                <input
+                  type="number"
+                  value={tempMaxPrice}
+                  placeholder="Max"
+                  className="w-full rounded-lg border border-border/10 bg-white text-foreground px-3 py-2 focus:ring-2 focus:ring-foreground/10 focus:border-foreground/30 transition-all duration-200 placeholder:text-muted-foreground/50 text-xs font-medium"
+                  onChange={(e) => setTempMaxPrice(e.target.value)}
+                />
+              </div>
+            </div>
+            <Button
+              className="bg-foreground hover:bg-foreground/85 text-background w-full transition-all duration-200 shadow-sm hover:shadow-md rounded-lg text-xs font-bold h-9"
+              onClick={applyFilters}
+            >
+              Apply Price
+            </Button>
+          </div>
+
+          {/* Brand Filter */}
+          <div className="space-y-3 bg-slate-50/50 p-4 rounded-lg border border-border/5">
+            <label className="text-xs font-semibold text-foreground block">Brand</label>
+            <form className="flex gap-2" onSubmit={(e) => handleBrandFilter(e, tempBrandName)}>
+              <input
+                type="text"
+                value={tempBrandName}
+                placeholder="Search brand..."
+                className="flex-1 rounded-lg border border-border/10 bg-white text-foreground px-3 py-2 focus:ring-2 focus:ring-foreground/10 focus:border-foreground/30 transition-all duration-200 placeholder:text-muted-foreground/50 text-xs font-medium"
+                onChange={(e) => setTempBrandName(e.target.value)}
+              />
+              <Button
+                type="submit"
+                className="bg-foreground hover:bg-foreground/85 text-background transition-all duration-200 shadow-sm hover:shadow-md rounded-lg font-bold text-xs px-3 h-9"
+              >
+                Go
+              </Button>
+            </form>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="h-px bg-gradient-to-r from-border/20 to-transparent"></div>
+
+        {/* Reset Section */}
         <Button
-          className="bg-primary hover:bg-primary/90 text-primary-foreground mt-3 w-full transition-colors duration-200 btn-futuristic shadow-sm hover:shadow-md"
-          onClick={applyFilters}
+          className="w-full bg-white hover:bg-red-50 text-foreground border border-border/10 hover:border-red-200 hover:text-red-600 transition-all duration-200 shadow-sm hover:shadow-md rounded-lg font-semibold text-xs h-9"
+          onClick={resetFilters}
+          variant="outline"
         >
-          Apply Price Range
+          <X className="w-4 h-4 mr-2" />
+          Clear All Filters
         </Button>
       </div>
-
-      {/* Brand Name */}
-      <div className="mb-3">
-        <h3 className="text-sm font-bold mb-2 ">Brand Name</h3>
-        <form className="flex gap-2" onSubmit={(e) => handleBrandFilter(e, tempBrandName)}>
-          <input
-            type="text"
-            value={tempBrandName}
-            placeholder="Search by brand..."
-            className="w-full rounded-md border border-border bg-input text-foreground px-3 py-2 focus:ring-primary/50 focus:border-primary transition-colors duration-200"
-            onChange={(e) => setTempBrandName(e.target.value)}
-          />
-          <Button
-            type="submit"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground min-w-16 transition-colors duration-200 btn-futuristic shadow-sm hover:shadow-md"
-          >
-            Apply
-          </Button>
-        </form>
-      </div>
-
-      {/* Reset Filters */}
-      <Button
-        className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground transition-colors duration-200 shadow-sm hover:shadow-md"
-        onClick={resetFilters}
-      >
-        Reset All Filters
-      </Button>
     </div>
   )
 }

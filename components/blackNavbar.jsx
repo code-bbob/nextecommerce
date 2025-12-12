@@ -46,19 +46,29 @@ export default function BlackNavBar({ color = "black" }) {
     setMounted(true);
   }, []);
 
+  // Defer countdown to not block initial render - starts after content is visible
   useEffect(() => {
-    const targetDate = new Date("2025-10-10T23:59:59+05:45").getTime();
-    const id = setInterval(() => {
-      const now = Date.now();
-      const diff = targetDate - now;
-      if (diff <= 0) return setCountdown("Offer Expired!");
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
-    }, 1000);
-    return () => clearInterval(id);
+    let intervalId;
+    const timerId = setTimeout(() => {
+      const targetDate = new Date("2025-10-10T23:59:59+05:45").getTime();
+      intervalId = setInterval(() => {
+        const now = Date.now();
+        const diff = targetDate - now;
+        if (diff <= 0) {
+          setCountdown("Offer Expired!");
+          return;
+        }
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+      }, 1000);
+    }, 100);
+    return () => {
+      clearTimeout(timerId);
+      if (intervalId) clearInterval(intervalId);
+    };
   }, []);
 
   useEffect(() => {
