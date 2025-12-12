@@ -203,24 +203,44 @@ export default function ProductPageLayout({
 
                   {/* Page Numbers - Desktop Only */}
                   <div className="hidden sm:flex items-center gap-1.5">
-                    {Array.from({
-                      length: Math.min(5, pagination.total_pages),
-                    }).map((_, i) => {
-                      const pageNum = i + 1;
-                      return (
+                    {(() => {
+                      const totalPages = pagination.total_pages;
+                      const currentPage = pagination.current_page;
+                      const pagesToShow = 5;
+                      let startPage = 1;
+                      let endPage = totalPages;
+
+                      // Calculate the range of pages to display
+                      if (totalPages > pagesToShow) {
+                        const half = Math.floor(pagesToShow / 2);
+                        startPage = Math.max(1, currentPage - half);
+                        endPage = Math.min(totalPages, startPage + pagesToShow - 1);
+
+                        // Adjust if we're near the end
+                        if (endPage - startPage < pagesToShow - 1) {
+                          startPage = Math.max(1, endPage - pagesToShow + 1);
+                        }
+                      }
+
+                      const pages = [];
+                      for (let i = startPage; i <= endPage; i++) {
+                        pages.push(i);
+                      }
+
+                      return pages.map((pageNum) => (
                         <button
                           key={pageNum}
                           onClick={() => onPageChange?.(pageNum)}
-                          className={`h-9 w-9 rounded-full font-medium transition-all duration-200 text-sm ${
-                            pageNum === pagination.current_page
+                          className={`h-9 w-9 rounded-full font-medium transition-all duration-200 text-sm flex items-center justify-center ${
+                            pageNum === currentPage
                               ? "bg-foreground text-background shadow-sm font-bold"
                               : "bg-slate-100 text-foreground hover:bg-slate-200"
                           }`}
                         >
                           {pageNum}
                         </button>
-                      );
-                    })}
+                      ));
+                    })()}
                   </div>
 
                   <Button

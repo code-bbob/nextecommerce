@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense, useState } from "react"
+import { Suspense, useState, useEffect } from "react"
 import ProductGrid from "@/components/productGrid"
 import FilterSidebar from "@/components/filterSidebar"
 import Footer from "@/components/Footer.server"
@@ -25,6 +25,12 @@ export default function DealsPageClient({ initialProducts, initialPagination }) 
   const [isLoading, setIsLoading] = useState(false)
   const [brandName, setBrandName] = useState("")
   const [pagination, setPagination] = useState(initialPagination)
+
+  // Update state when initialProducts or initialPagination changes (when page changes)
+  useEffect(() => {
+    setProducts(initialProducts)
+    setPagination(initialPagination)
+  }, [initialProducts, initialPagination])
 
   const handlePageChange = (newPage) => {
     const params = new URLSearchParams(searchParams.toString())

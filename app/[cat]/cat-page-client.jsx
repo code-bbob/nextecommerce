@@ -1,13 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import ProductPageLayout from "@/components/ProductPageLayout"
 import { useRouter } from "next/navigation"
 
 export default function CatPageClient({ initialProducts, initialPagination, cat }) {
   const router = useRouter()
-  const [products] = useState(initialProducts)
-  const [pagination] = useState(initialPagination)
+  const [products, setProducts] = useState(initialProducts)
+  const [pagination, setPagination] = useState(initialPagination)
+
+  // Update state when initialProducts or initialPagination changes (when page changes)
+  useEffect(() => {
+    setProducts(initialProducts)
+    setPagination(initialPagination)
+  }, [initialProducts, initialPagination])
 
   const handlePageChange = (newPage) => {
     const params = new URLSearchParams()

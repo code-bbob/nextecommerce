@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense, useState } from "react"
+import { Suspense, useState, useEffect } from "react"
 import NavBar from "@/components/navbar"
 import ProductGrid from "@/components/productGrid"
 import FilterSidebar from "@/components/filterSidebar"
@@ -26,6 +26,12 @@ export default function BrandPageClient({ initialProducts, initialPagination, ca
   const [isLoading, setIsLoading] = useState(false)
   const [brandName, setBrandName] = useState("")
   const [pagination, setPagination] = useState(initialPagination)
+
+  // Update state when initialProducts or initialPagination changes (when page changes)
+  useEffect(() => {
+    setProducts(initialProducts)
+    setPagination(initialPagination)
+  }, [initialProducts, initialPagination])
 
   const handlePageChange = (newPage) => {
     const paramsObj = new URLSearchParams(searchParams.toString())

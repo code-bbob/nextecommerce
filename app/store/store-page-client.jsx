@@ -1,19 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ProductPageLayout from "@/components/ProductPageLayout";
 
 export function StorePageClient({ initialProducts, currentPage }) {
   const router = useRouter();
-  const [products] = useState(initialProducts.results || initialProducts);
-  const [pagination] = useState({
+  const [products, setProducts] = useState(initialProducts.results || initialProducts);
+  const [pagination, setPagination] = useState({
     count: initialProducts.count,
     total_pages: initialProducts.total_pages,
     current_page: initialProducts.current_page || currentPage,
     next: initialProducts.links?.next,
     previous: initialProducts.links?.previous,
   });
+
+  // Update state when initialProducts changes (when page changes)
+  useEffect(() => {
+    setProducts(initialProducts.results || initialProducts);
+    setPagination({
+      count: initialProducts.count,
+      total_pages: initialProducts.total_pages,
+      current_page: initialProducts.current_page || currentPage,
+      next: initialProducts.links?.next,
+      previous: initialProducts.links?.previous,
+    });
+  }, [initialProducts, currentPage]);
 
   const handlePageChange = (newPage) => {
     const params = new URLSearchParams();
