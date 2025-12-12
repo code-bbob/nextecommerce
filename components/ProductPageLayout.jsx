@@ -79,11 +79,11 @@ export default function ProductPageLayout({
       <CatBar />
 
       {/* Main Content Area - Sidebar and Content Side by Side from Top */}
-      <div className="flex-grow flex flex-row relative">
+      <div className="flex-grow bg-gray-0 flex flex-row relative">
         {/* Sidebar - Starts from top, full height */}
-        <aside className="hidden lg:flex lg:w-80 bg-white border-r border-border/5 sticky top-0 h-screen flex-col overflow-hidden">
+        <aside className="hidden lg:flex lg:w-80 border-r sticky top-0 h-screen flex-col overflow-hidden">
           {/* Sidebar Header */}
-          <div className="px-8 py-6 border-b border-border/5 bg-gradient-to-b from-white to-slate-50/50">
+          <div className="px-8 py-6 border-b border-border/5 ">
             <div>
               <h2 className="text-sm font-bold text-foreground mb-1 uppercase tracking-wider">
                 Refine Search
@@ -112,7 +112,7 @@ export default function ProductPageLayout({
         {/* Main Content - Page Title and Products */}
         <main className="flex-1 flex flex-col">
           {/* Hero Section - Premium */}
-          <section className="bg-white border-b border-border/5 px-6 md:px-10 lg:px-12 pt-8 md:pt-8">
+          <section className=" border-b border-border/5 px-6 md:px-10 lg:px-12 pt-8 md:pt-8">
             <div className="max-w-6xl">
               {/* Breadcrumb */}
               {breadcrumbItems.length > 0 && (
@@ -168,7 +168,7 @@ export default function ProductPageLayout({
           </section>
 
           {/* Products Section */}
-          <section className="flex-1 px-6 md:px-10 lg:px-12 py-4">
+          <section className="flex-1 px-4 py-4">
             <ProductGrid products={products} gridCols={gridCols} />
 
             {/* Pagination Section */}

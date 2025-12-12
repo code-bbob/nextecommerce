@@ -66,7 +66,7 @@ export default function ProductGrid({ products, gridCols = 5, onResetFilters }) 
   return (
     <>
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-      <div className={`grid ${gridColumnsClass} gap-3`}>
+      <div className={`grid ${gridColumnsClass} gap-4`}>
         {products?.map((product) => (
           <div
             key={product.product_id}

@@ -72,7 +72,7 @@ export default function FilterSidebar({
   }
 
   return (
-    <div className="w-full bg-transparent text-foreground">
+    <div className="w-full  bg-transparent text-foreground">
       {/* Filter Groups */}
       <div className="space-y-6">
         {/* Sorting Section */}
