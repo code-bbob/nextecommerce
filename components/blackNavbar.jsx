@@ -241,7 +241,7 @@ export default function BlackNavBar({ color = "black" }) {
       <header className="bg-card/90 backdrop-blur-md text-foreground fixed top-0 left-0 right-0 w-full p-2 z-40 shadow-modern border-b border-border/30">
         <div className="mx-auto px-4 h-16 flex items-center justify-between">
           {/* Left side: Logo + Mobile Menu Button */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center h-32 w-32 space-x-3">
             <button
               onClick={() => setIsSidePanelOpen(true)}
               className="md:hidden p-1 text-foreground hover:text-primary focus:outline-none transition-colors duration-200"
@@ -251,7 +251,7 @@ export default function BlackNavBar({ color = "black" }) {
             </button>
 
             <Link href="/" className="flex items-center space-x-2">
-              <Image src="/images/digiblack.png" alt="logo" width={100} height={50} className="object-contain" />
+              <Image src="/images/digiblack.png" alt="logo" width={50} height={50} className="object-contain" />
             </Link>
           </div>
 

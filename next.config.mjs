@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-      // Enable Next.js Image Optimization (fast on localhost, uses next/image benefits)
-      unoptimized: false,
+      // Disable Vercel's paid Image Optimization - use DigitalOcean CDN instead for free
+      unoptimized: true,
       remotePatterns: [
         {
           protocol: 'https',
@@ -11,9 +11,6 @@ const nextConfig = {
           pathname: '/**',
         },
       ],
-      // Performance optimizations
-      deviceSizes: [320, 420, 640, 768, 1024, 1280, 1536],
-      imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
       // Cache optimized images for 365 days
       minimumCacheTTL: 31536000,
       // Use modern formats (webp, avif) when supported
