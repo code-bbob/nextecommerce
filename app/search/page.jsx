@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button"
 import { Filter, ChevronLeft, ChevronRight } from "lucide-react"
 import { X } from "lucide-react"
 import BlackNavBar from "@/components/blackNavbar"
-import CatBar from "@/components/catbar"
 
 function Search() {
   const searchParams = useSearchParams()
@@ -138,7 +137,7 @@ function Search() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans">
       <BlackNavBar color="inherit"/>
-      <CatBar/>
+
 
       {/* Filter Toggle Button */}
       

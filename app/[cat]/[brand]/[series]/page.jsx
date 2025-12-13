@@ -10,7 +10,6 @@ import { useSearchParams, useParams,useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Filter, ChevronLeft, ChevronRight, X } from "lucide-react"
 import BlackNavBar from "@/components/blackNavbar"
-import CatBar from "@/components/catbar"
 
 // Metadata is handled in app/[cat]/[brand]/[series]/layout.jsx
 
@@ -87,7 +86,6 @@ function StorePage() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground h-full">
       <BlackNavBar color="inherit" />
-      <CatBar />
 
       {/* Hover strip to open sidebar */}
       <div

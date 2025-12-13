@@ -7,7 +7,6 @@ import Footer from "@/components/Footer.server"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import CatBar from "@/components/catbar"
 import BlackNavBar from "@/components/blackNavbar"
 
 export default function DealsPageClient({ initialProducts, initialPagination }) {
@@ -43,9 +42,6 @@ export default function DealsPageClient({ initialProducts, initialPagination }) 
     <div className="flex flex-col min-h-screen bg-white text-gray-100">
       {/* NavBar */}
       <BlackNavBar color="inherit" />
-
-      {/* Category Bar */}
-      <CatBar />
 
       {/* Filter Toggle Button */}
       <div 

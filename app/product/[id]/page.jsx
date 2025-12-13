@@ -6,7 +6,6 @@ import ProductInteractive from "@/components/productInteractive";
 import { notFound } from "next/navigation";
 // Removed next/script usage; JSON-LD is injected server-side
 import { getCDNImageUrl } from "@/utils/imageUtils";
-import CatBar from "@/components/catbar";
 import ProductJsonLd from "@/components/ProductJsonLd.server";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd.server";
 import RelatedProducts from "@/components/RelatedProducts.server";
@@ -166,7 +165,6 @@ export default async function ProductPage({ params }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans">
       <BlackNavBar color="inherit"/>
-      <CatBar />
       {/* Semantic header for SEO */}
       <header className="sr-only">
         <h1>{product.name} price in Nepal | Buy {product.brand?.name ? `${product.brand.name} ` : ""}{product.name}</h1>

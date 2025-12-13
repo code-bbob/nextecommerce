@@ -5,7 +5,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import ProductGrid from "@/components/productGrid";
 import FilterSidebar from "@/components/filterSidebar";
 import BlackNavBar from "@/components/blackNavbar";
-import CatBar from "@/components/catbar";
 import Footer from "@/components/Footer.server";
 import { Button } from "@/components/ui/button";
 
@@ -77,7 +76,6 @@ export default function ProductPageLayout({
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-white via-white to-slate-50/50 text-foreground h-full">
       <BlackNavBar color="inherit" />
       <div className="h-6 bg-white"></div>
-      <CatBar />
 
       {/* Main Content Area - Sidebar and Content Side by Side from Top */}
       <div className="flex-grow bg-gray-0 flex flex-row relative">

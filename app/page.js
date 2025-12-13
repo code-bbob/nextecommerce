@@ -9,7 +9,6 @@ import ProductShowcase from "@/components/ProductShowcase.client";
 import DealsOfDay from "@/components/DealsOfDay.client";
 import TopLaptops from "@/components/TopLaptops.client";
 import LaptopSlider from "@/components/LaptopSlider.client";
-import CatBar from "@/components/catbar";
 import BlogSlider from "@/components/blogsSlider";
 import FirstBanners from "@/components/firstBanners";
 import SecondBanners from "@/components/secondBanners";
@@ -34,7 +33,6 @@ export default function Page() {
     <>
       <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-slate-50 min-h-screen relative">
         <BlackNavBar color="white" />
-        <CatBar />
         <main className="mx-auto max-w-screen-2xl px-3 sm:px-6 lg:px-10 pb-14">
           <MosaicHero />
           <ShopByCategory />

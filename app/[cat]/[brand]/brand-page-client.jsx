@@ -9,7 +9,6 @@ import { useSearchParams, useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import BlackNavBar from "@/components/blackNavbar"
-import CatBar from "@/components/catbar"
 
 export default function BrandPageClient({ initialProducts, initialPagination, cat, brand }) {
   const searchParams = useSearchParams()
@@ -43,7 +42,6 @@ export default function BrandPageClient({ initialProducts, initialPagination, ca
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans">
       <BlackNavBar color="inherit" />
-      <CatBar />
 
       {/* Hover strip to open sidebar */}
       <div

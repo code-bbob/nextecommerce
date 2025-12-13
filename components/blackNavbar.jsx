@@ -4,12 +4,24 @@ import { createPortal } from "react-dom";
 import { useNavigationProgress } from "@/hooks/useNavigationProgress";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, ShoppingCart, X, Menu, Zap, Home, Tag, Gift, User, ChevronRight } from "lucide-react";
+import { Search, ShoppingCart, X, Menu, Zap, Home, Tag, Gift, User, ChevronRight, ChevronDown } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import CartSidebar from "@/components/cartSidebar";
 import { logout } from "@/redux/accessSlice";
 import customFetch from "@/utils/customFetch";
 import { getCDNImageUrl } from "@/utils/imageUtils";
+
+const NAV_CATEGORIES = [
+  "laptop",
+  "smartphone",
+  "keyboard",
+  "headphone",
+  "monitor",
+  "smartwatch",
+  "accessories",
+  "gadgets",
+  "printer",
+];
 
 function useDebounce(value, delay) {
   const [debounced, setDebounced] = useState(value);
@@ -39,11 +51,37 @@ export default function BlackNavBar({ color = "black" }) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [countdown, setCountdown] = useState("");
 
+  const [activeCategory, setActiveCategory] = useState(null);
+  const [preFetchedCategories, setPreFetchedCategories] = useState({});
+
   const debouncedQuery = useDebounce(query, 400);
 
   useEffect(() => {
     setHasHydrated(true);
     setMounted(true);
+  }, []);
+
+  // Pre-fetch category data on mount (for mega menu)
+  useEffect(() => {
+    let isCancelled = false;
+    async function fetchCategories() {
+      const dataMap = {};
+      await Promise.all(
+        NAV_CATEGORIES.map(async (category) => {
+          try {
+            const res = await customFetch(`shop/api/navcat/?search=${encodeURIComponent(category)}`);
+            dataMap[category] = res.ok ? await res.json() : [];
+          } catch (error) {
+            dataMap[category] = [];
+          }
+        })
+      );
+      if (!isCancelled) setPreFetchedCategories(dataMap);
+    }
+    fetchCategories();
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   // Defer countdown to not block initial render - starts after content is visible
@@ -165,6 +203,65 @@ export default function BlackNavBar({ color = "black" }) {
     );
   };
 
+  const chunk = (arr, size) =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (v, i) => arr.slice(i * size, i * size + size));
+
+  const renderMegaMenu = () => {
+    if (!activeCategory) return null;
+    const data = preFetchedCategories[activeCategory];
+    return (
+      <div
+        className="absolute left-0 top-full w-full bg-white z-40 border-t border-slate-700 shadow-lg"
+        onClick={() => setActiveCategory(null)}
+      >
+        <div className="mx-auto px-6 py-6">
+          {data && data.length ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+              {data.map((brandObj, idx) => {
+                const items = brandObj.series?.length > 0 ? brandObj.series : brandObj.subcategories;
+                const hasManyItems = items && items.length > 10;
+                const itemChunks = hasManyItems ? chunk(items, Math.ceil(items.length / 2)) : [items];
+
+                return (
+                  <div key={idx}>
+                    <h3
+                      onClick={() => router.push(`/${activeCategory}/${brandObj.brand}`)}
+                      className="font-semibold hover:font-bold mb-4 cursor-pointer hover:text-red-700 transition-colors duration-150 text-sm uppercase tracking-wide"
+                    >
+                      {brandObj.brand}
+                    </h3>
+
+                    {items && items.length > 0 ? (
+                      <div className={hasManyItems ? "grid grid-cols-2 gap-x-4" : ""}>
+                        {itemChunks.map((chunkItems, chunkIndex) => (
+                          <ul key={chunkIndex} className="space-y-2">
+                            {chunkItems.map((item) => (
+                              <li
+                                key={item.id}
+                                className="cursor-pointer text-gray-800 hover:text-black hover:font-bold transition-colors duration-150 text-sm"
+                                onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${item.id}`)}
+                              >
+                                {item.name}
+                              </li>
+                            ))}
+                          </ul>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-sm text-slate-500">No items available</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-center text-slate-500 py-8">No data found</p>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       {/* Mobile Search Overlay */}
@@ -250,9 +347,9 @@ export default function BlackNavBar({ color = "black" }) {
       {/* Main Nav Bar (fixed) */}
       <header className="bg-white backdrop-blur-md text-foreground fixed top-0 left-0 right-0 w-full z-40 border-b border-gray-200">
         <div className="h-10 bg-red-800 text-white text-center p-2">New Year Sale is live.</div>
-        <div className="mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="mx-auto px-4 h-16 flex items-center justify-between border-b border-gray-200">
           {/* Left side: Logo + Mobile Menu Button */}
-          <div className="flex items-center h-32 w-32 space-x-3">
+          <div className="flex items-center h-12 w-32 space-x-3">
             <button
               onClick={() => setIsSidePanelOpen(true)}
               className="md:hidden p-1 text-foreground hover:text-primary focus:outline-none transition-colors duration-200"
@@ -383,9 +480,41 @@ export default function BlackNavBar({ color = "black" }) {
               </div>
             </>
           ), document.body)}
+
+      {/* Desktop Category Bar + Mega Menu (merged from CatBar) */}
+        <div className="relative flex items-center justify-center max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-10 h-12">
+          <div
+            className="relative"
+            onMouseLeave={() => {
+              setActiveCategory(null);
+            }}
+          >
+            <nav className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-1">
+              {NAV_CATEGORIES.map((cat) => (
+                <Link
+                  key={cat}
+                  href={`/${cat}`}
+                  className="px-4 py-2 rounded-sm text-sm font-semibold hover:bg-gray-100 transition-all duration-150 whitespace-nowrap"
+                  onMouseEnter={() => setActiveCategory(cat)}
+                >
+                  {cat.charAt(0).toUpperCase() + cat.slice(1)} <ChevronDown className="inline-block h-4 w-4" />
+                </Link>
+              ))}
+
+              <div className="mx-2 h-6 w-px bg-slate-700" />
+
+              <Link
+                href="/custom-pc-in-nepal"
+                className="px-4 py-2 rounded-sm text-md font-semibold text-red-700 font-bold hover:bg-gray-100 transition-all duration-150 whitespace-nowrap ml-auto"
+              >
+                Custom PC
+              </Link>
+            </nav>
+
+            {renderMegaMenu()}
+          </div>
+        </div>
       </header>
-      {/* Spacer to offset fixed navbar height */}
-      <div className="h-20" aria-hidden="true" />
     </>
   );
 }
