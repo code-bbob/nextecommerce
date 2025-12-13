@@ -248,7 +248,8 @@ export default function BlackNavBar({ color = "black" }) {
       )}
 
       {/* Main Nav Bar (fixed) */}
-      <header className="bg-card/90 backdrop-blur-md text-foreground fixed top-0 left-0 right-0 w-full p-2 z-40 shadow-modern border-b border-border/30">
+      <header className="bg-white backdrop-blur-md text-foreground fixed top-0 left-0 right-0 w-full z-40 border-b border-gray-200">
+        <div className="h-10 bg-red-800 text-white text-center p-2">New Year Sale is live.</div>
         <div className="mx-auto px-4 h-16 flex items-center justify-between">
           {/* Left side: Logo + Mobile Menu Button */}
           <div className="flex items-center h-32 w-32 space-x-3">
@@ -266,8 +267,8 @@ export default function BlackNavBar({ color = "black" }) {
           </div>
 
           {/* Middle: Desktop Search Bar */}
-          <div className="hidden md:flex md:flex-grow mx-6">
-            <form onSubmit={handleSearch} className="relative w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="hidden md:flex md:flex-grow md:justify-center mx-6">
+            <form onSubmit={handleSearch} className="relative w-96" onClick={(e) => e.stopPropagation()}>
               <input
                 type="text"
                 value={query}

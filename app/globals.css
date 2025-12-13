@@ -2,6 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Font family definitions */
+:root {
+  --font-sora: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-merriweather: 'Merriweather', serif;
+  --font-outfit: 'Outfit', sans-serif;
+}
+
+/* Apply premium fonts */
+body {
+  font-family: var(--font-sora) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-outfit) !important;
+  font-weight: 600;
+}
+
+.font-serif {
+  font-family: var(--font-merriweather) !important;
+}
+
+.font-sora {
+  font-family: var(--font-sora) !important;
+}
+
+.font-outfit {
+  font-family: var(--font-outfit) !important;
+}
 
 
 @layer base {

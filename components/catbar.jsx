@@ -151,34 +151,36 @@ export default function CatBar() {
     const data = preFetchedCategories[activeCategory];
     return (
       <div
-        className="absolute left-0 top-full w-full bg-white text-black z-40 border-t border-gray-200 shadow-lg"
+        className="absolute left-0 top-full w-full bg-slate-900 text-slate-100 z-40 border-t border-slate-700 shadow-lg"
         onMouseEnter={() => setActiveCategory(activeCategory)}
         onMouseLeave={() => setActiveCategory(null)}
       >
-        <div className="mx-auto p-6">
+        <div className="mx-auto px-6 py-6">
           {data && data.length ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
               {data.map((brandObj, idx) => {
                 const items = brandObj.series?.length > 0 ? brandObj.series : brandObj.subcategories;
                 const hasManyItems = items && items.length > 10;
                 const itemChunks = hasManyItems ? chunk(items, Math.ceil(items.length / 2)) : [items];
 
                 return (
-                  <div key={idx} className="border-r border-gray-200 pr-4 last:border-r-0">
+                  <div key={idx}>
+                    {/* Brand Title */}
                     <h3
                       onClick={() => router.push(`/${activeCategory}/${brandObj.brand}`)}
-                      className="font-bold mb-2 cursor-pointer hover:text-blue-600 transition-colors duration-200"
+                      className="font-semibold mb-4 cursor-pointer text-white hover:text-blue-400 transition-colors duration-150 text-sm uppercase tracking-wide"
                     >
                       {brandObj.brand}
                     </h3>
+                    
                     {items && items.length > 0 ? (
                       <div className={hasManyItems ? "grid grid-cols-2 gap-x-4" : ""}>
                         {itemChunks.map((chunk, chunkIndex) => (
-                          <ul key={chunkIndex} className="space-y-1">
+                          <ul key={chunkIndex} className="space-y-2">
                             {chunk.map((item) => (
                               <li
                                 key={item.id}
-                                className="hover:underline cursor-pointer text-gray-600 hover:text-blue-600 transition-colors duration-200 text-sm"
+                                className="cursor-pointer text-slate-400 hover:text-white transition-colors duration-150 text-sm"
                                 onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${item.id}`)}
                               >
                                 {item.name}
@@ -188,14 +190,14 @@ export default function CatBar() {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-sm text-gray-500">No series or subcategories available</div>
+                      <div className="text-sm text-slate-500">No items available</div>
                     )}
                   </div>
                 );
               })}
             </div>
           ) : (
-            <p className="text-center">No data found for {activeCategory}</p>
+            <p className="text-center text-slate-500 py-8">No data found</p>
           )}
         </div>
       </div>
@@ -206,27 +208,33 @@ export default function CatBar() {
   return (
     <>
       
-      <header className="shadow-modern hidden md:block bg-slate-800 text-white py-2 border-b border-gray-200 sticky top-16 z-30">
+      <header className="hidden md:block w-full z-30 bg-white shadow-md">
         <div className="relative">
-          <div className="mx-auto flex items-center justify-between">
-            <nav className="md:flex ml-10 items-center space-x-6 w-full flex-wrap gap-y-2">
+          <div className="mx-auto flex items-center justify-center px-6">
+            <nav className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-1">
               {["laptop", "smartphone","keyboard","headphone", "monitor", "smartwatch", "accessories", "gadgets","printer"].map((cat) => (
                 <Link
                   key={cat}
                   href={`/${cat}`}
-                  className="cursor-pointer hover:text-primary transition-colors duration-200"
+                  className="px-4 py-2 rounded-sm text-sm font-semibold hover:bg-gray-100 transition-all duration-150 whitespace-nowrap"
                   onMouseEnter={() => setActiveCategory(cat)}
                   onMouseLeave={() => setActiveCategory(null)}
                 >
-                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  {cat.charAt(0).toUpperCase() + cat.slice(1)} {`v`}
                 </Link>
               ))}
-              <Link href="/custom-pc-in-nepal" className="cursor-pointer">
+              
+              {/* Divider */}
+              <div className="mx-2 h-6 w-px bg-slate-700"></div>
+              
+              {/* Custom PC - Featured Link */}
+              <Link 
+                href="/custom-pc-in-nepal" 
+                className="px-4 py-2 rounded-sm text-md font-semibold text-red-700 font-bold hover:bg-blue-700 transition-all duration-150 whitespace-nowrap ml-auto"
+              >
                 Custom PC
               </Link>
-              
             </nav>
-
           </div>
 
           {renderMegaMenu()}

@@ -113,10 +113,10 @@ export default function ProductGrid({ products, gridCols = 5, onResetFilters }) 
                   {[...Array(5)].map((_, i) => (
                     <span
                       key={i}
-                      className={`text-xs ${
+                      className={`text-sm ${
                         i < Math.floor(product.ratings.stats.avg_rating)
                           ? "text-yellow-400"
-                          : "text-gray-300"
+                          : "text-yellow-300"
                       }`}
                     >
                       ★

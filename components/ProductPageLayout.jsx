@@ -76,6 +76,7 @@ export default function ProductPageLayout({
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-white via-white to-slate-50/50 text-foreground h-full">
       <BlackNavBar color="inherit" />
+      <div className="h-6 bg-white"></div>
       <CatBar />
 
       {/* Main Content Area - Sidebar and Content Side by Side from Top */}
@@ -83,7 +84,7 @@ export default function ProductPageLayout({
         {/* Sidebar - Starts from top, full height */}
         <aside className="hidden lg:flex lg:w-80 border-r sticky top-0 h-screen flex-col overflow-hidden">
           {/* Sidebar Header */}
-          <div className="px-8 py-6 border-b border-border/5 ">
+          <div className="px-6 py-6 border-b border-border/5 ">
             <div>
               <h2 className="text-sm font-bold text-foreground mb-1 uppercase tracking-wider">
                 Refine Search
@@ -94,7 +95,7 @@ export default function ProductPageLayout({
 
           {/* Sidebar Content */}
           <div className="flex-1 overflow-y-auto">
-            <div className="px-8">
+            <div className="px-6">
               <FilterSidebar
                 setOrdering={handleOrderingChange}
                 setRating={handleRatingChange}

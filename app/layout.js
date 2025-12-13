@@ -4,40 +4,35 @@ import "./rocket-loader.css";
 import { Providers } from "./providers";
 import CartInitializer from "@/utils/cartInitializer";
 import ProgressBar from "@/components/ProgressBar";
-import { Inter } from 'next/font/google'
+import { Sora, Merriweather, Outfit } from 'next/font/google'
 import { Shadows_Into_Light } from "next/font/google";
  import { Playfair_Display } from "next/font/google";
  import { Newsreader } from "next/font/google";
  import { Poppins } from "next/font/google";
 import { Suspense } from 'react';
-// If loading a variable font, you don't need to specify the font weight
-const inter = Inter({
+
+// Premium body font - Modern and clean
+const sora = Sora({
   subsets: ['latin'],
   display: 'swap',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-sora'
 })
 
-const shadowsIntoLight = Shadows_Into_Light({
+// Premium serif font - Elegant
+const merriweather = Merriweather({
   subsets: ['latin'],
   display: 'swap',
-  weight: '400',
+  weight: ['400', '700'],
+  variable: '--font-merriweather'
 })
 
-const playfairDisplay = Playfair_Display({
+// Premium heading font - Modern
+const outfit = Outfit({
   subsets: ['latin'],
   display: 'swap',
-  weight: '400',
-})
-
-const newsreader = Newsreader({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: '500',
-})
-
-const poppins = Poppins({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: '400',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-outfit'
 })
 
 
@@ -98,8 +93,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={inter.className}>
-  <body className="bg-background min-h-screen antialiased">
+    <html lang="en" className={`${sora.variable} ${merriweather.variable} ${outfit.variable}`}>
+  <body className="bg-background min-h-screen antialiased font-sora">
         <Suspense fallback={null}>
           <ProgressBar />
         </Suspense>
@@ -133,7 +128,7 @@ export default function RootLayout({ children }) {
             },
             contactPoint: phone
               ? [
-                  {
+                {
                     "@type": "ContactPoint",
                     telephone: phone,
                     contactType: "customer service",
@@ -142,7 +137,7 @@ export default function RootLayout({ children }) {
                   },
                 ]
               : undefined,
-            currenciesAccepted: "NPR",
+              currenciesAccepted: "NPR",
             paymentAccepted: "Cash, Card, EMI",
             areaServed: ["Kathmandu", "Pokhara", "Nepal"],
             sameAs: []

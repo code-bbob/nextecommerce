@@ -8,6 +8,11 @@ export default {
   ],
   theme: {
   	extend: {
+      fontFamily: {
+        sora: ['var(--font-sora)'],
+        merriweather: ['var(--font-merriweather)'],
+        outfit: ['var(--font-outfit)'],
+      },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

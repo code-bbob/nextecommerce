@@ -114,7 +114,7 @@ export default function FilterSidebar({
           <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">Filters</h3>
 
           {/* Rating Filter */}
-          <div className="space-y-3 bg-slate-50/50 p-4 rounded-lg border border-border/5">
+          <div className="space-y-3 bg-slate-50/50 py-4 rounded-lg border border-border/5">
             <div className="flex justify-between items-center">
               <label className="text-xs font-semibold text-foreground">Min Rating</label>
               <span className="text-xs font-bold text-foreground bg-white border border-border/10 px-2.5 py-1 rounded-md">{tempMinRating}★</span>
@@ -133,7 +133,7 @@ export default function FilterSidebar({
           </div>
 
           {/* Price Filter */}
-          <div className="space-y-3 bg-slate-50/50 p-4 rounded-lg border border-border/5">
+          <div className="space-y-3 bg-slate-50/50 py-4 rounded-lg border border-border/5">
             <label className="text-xs font-semibold text-foreground block">Price Range</label>
             <div className="flex gap-2">
               <div className="flex-1">
@@ -164,7 +164,7 @@ export default function FilterSidebar({
           </div>
 
           {/* Brand Filter */}
-          <div className="space-y-3 bg-slate-50/50 p-4 rounded-lg border border-border/5">
+          <div className="space-y-3 bg-slate-50/50 py-4 rounded-lg border border-border/5">
             <label className="text-xs font-semibold text-foreground block">Brand</label>
             <form className="flex gap-2" onSubmit={(e) => handleBrandFilter(e, tempBrandName)}>
               <input
