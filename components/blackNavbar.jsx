@@ -413,7 +413,7 @@ export default function BlackNavBar({ color = "black" }) {
       {/* Main Nav Bar (fixed) */}
       <header className="bg-white backdrop-blur-md text-foreground fixed top-0 left-0 right-0 w-full z-40 border-b border-gray-200">
         {/* Premium Banner - New Year Sale */}
-        <div className="h-10 bg-red-800 text-white flex items-center justify-between px-4">
+        <div className="h-10 bg-red-800  text-white flex items-center justify-between px-4">
           <div className=" flex items-center gap-6">
             <div className="hidden md:flex items-center gap-4 text-xs">
               <a

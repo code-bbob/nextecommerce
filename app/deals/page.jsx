@@ -1,63 +1,39 @@
-import customFetch from "@/utils/customFetch"
-import DealsPageClient from "./deals-page-client"
-import { Suspense } from "react"
+import customFetch from "@/utils/customFetch";
+import { DealsPageClient } from "./deals-page-client";
 
-export const revalidate = 3600 // ISR: Revalidate every 1 hour
+// ISR - Revalidate every 1 hour
+export const revalidate = 3600;
 
+// Fetch deals server-side
 async function getInitialDeals(page = 1) {
   try {
-    const apiUrl = `shop/api/deals/?page=${page}`
-    const res = await customFetch(apiUrl)
-    const data = await res.json()
-
-    if (data.results) {
-      return {
-        products: data.results,
-        pagination: {
-          count: data.count,
-          total_pages: data.total_pages,
-          current_page: data.current_page,
-          next: data.links.next,
-          previous: data.links.previous
-        }
-      }
-    }
+    const response = await customFetch(`shop/api/deals/?page=${page}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Failed to fetch deals:', error);
     return {
-      products: data,
-      pagination: {
-        count: 0,
-        total_pages: 1,
-        current_page: 1,
-        next: null,
-        previous: null
-      }
-    }
-  } catch (err) {
-    console.error('Error fetching deals:', err)
-    return {
-      products: [],
-      pagination: {
-        count: 0,
-        total_pages: 1,
-        current_page: 1,
-        next: null,
-        previous: null
-      }
-    }
+      results: [],
+      count: 0,
+      total_pages: 0,
+      current_page: 1,
+      links: { next: null, previous: null },
+    };
   }
 }
 
+// Server Component - Fetches data instantly
 export default async function DealsPage({ searchParams }) {
-  const page = parseInt(searchParams.page || '1', 10)
+  // Read page number from URL query params (?page=2)
+  // In Next.js 15, searchParams is a Promise, so we need to await it
+  const params = await searchParams;
+  const pageNum = parseInt(params?.page) || 1;
   
-  const { products, pagination } = await getInitialDeals(page)
+  // Data is fetched on the server before page renders
+  // This means products are ALREADY LOADED when page reaches client
+  const initialDeals = await getInitialDeals(pageNum);
 
-  return (
-    <Suspense fallback={<div className="bg-gray-800">Loading page...</div>}>
-      <DealsPageClient 
-        initialProducts={products} 
-        initialPagination={pagination}
-      />
-    </Suspense>
-  )
+  // Pass pre-fetched data to client component
+  // Client renders immediately with NO loading state
+  return <DealsPageClient initialProducts={initialDeals} currentPage={pageNum} />;
 }

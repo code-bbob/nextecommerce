@@ -151,12 +151,12 @@ export default function ProductPageLayout({
               {activeFilters.length > 0 && (
                 <div className="flex flex-wrap gap-2 pt-4 border-t border-border/5">
                   <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
-                    Active:
+                    Active Filters:
                   </span>
                   {activeFilters.map((filter) => (
                     <span
                       key={filter.key}
-                      className="inline-flex items-center gap-2 bg-slate-100 text-foreground px-3 py-1.5 rounded-full text-xs font-medium"
+                      className="inline-flex items-center gap-2 bg-slate-100 text-foreground px-3 rounded-full text-xs font-medium"
                     >
                       {filter.label}
                     </span>

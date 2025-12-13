@@ -91,7 +91,7 @@ export default function CartSidebar({ isOpen, onClose }) {
   return (
     <>
       <Toaster position="top-center" reverseOrder={false}/>
-      {isOpen && <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40" onClick={onClose}></div>}
+      {isOpen && <div className="fixed  bg-background/80 backdrop-blur-sm z-40" onClick={onClose}></div>}
 
       <div
         ref={sidebarRef}

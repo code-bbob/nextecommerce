@@ -75,8 +75,8 @@ export default function ProductGrid({ products, gridCols = 5, onResetFilters }) 
           >
             {/* Deal Badge - Top Left */}
             {product.deal && (
-              <div className="absolute top-4 left-4 z-20 pointer-events-none">
-                <span className="inline-block text-white font-bold py-2 px-3.5 text-xs rounded-full bg-red-600 shadow-lg">
+              <div className="absolute top-48 left-2 z-20 pointer-events-none">
+                <span className="inline-block text-white font-bold px-3 text-xs rounded-full bg-red-600 shadow-lg">
                   Sale
                 </span>
               </div>
@@ -88,7 +88,7 @@ export default function ProductGrid({ products, gridCols = 5, onResetFilters }) 
                 src={getCDNImageUrl(product.images[0]?.image) || "/placeholder.svg"}
                 alt={product.name}
                 fill
-                // style={{ objectFit: "contain" }}
+                style={{ objectFit: "contain" }}
                 className="group-hover:opacity-90  md:py-4 transition-opacity duration-200"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
                 priority={false}

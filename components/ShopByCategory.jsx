@@ -9,7 +9,7 @@ const categories = [
   { name: "Headphones", href: "/headphone", image: "/images/headphone.webp" },
   { name: "Gadgets", href: "/gadgets", image: "/images/gadget.jpg" },
   { name: "Smartwatches", href: "/smartwatch", image: "/images/smartwatch.jpg" },
-  { name: "Printers", href: "/printers", image: "/images/printer.webp" },
+  { name: "Printers", href: "/printer", image: "/images/printer.webp" },
   { name: "Accessories", href: "/accessories", image: "/images/accessories.jpg" },
   { name: "Custom PC", href: "/custom-pc", image: "/images/case.jpg" },
 ];

@@ -33,6 +33,8 @@ export default function FilterSidebar({
 
   const handleSlideRatingChange = (value) => {
     setTempMinRating(value[0])
+    setMinRating(value[0])
+    updateActiveFilters()
   }
 
   const applyFilters = () => {
