@@ -13,11 +13,23 @@ import { getLocalCart, setLocalCart } from "@/utils/localCart"
 import { useNavigationProgress } from "@/hooks/useNavigationProgress"
 import { getCDNImageUrl } from "@/utils/imageUtils"
 
-export default function ProductGrid({ products, gridCols = 5, onResetFilters }) {
+export default function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters }) {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const dispatch = useDispatch()
   const isLoggedIn = useSelector((state) => state.access.isAuthenticated)
   const router = useNavigationProgress()
+
+  // Skeleton loader component
+  const SkeletonCard = () => (
+    <div className="flex flex-col bg-white border border-border/5 rounded-xl overflow-hidden animate-pulse h-full shadow-sm">
+      <div className="relative sm:h-56 bg-slate-200" />
+      <div className="p-1 sm:p-2 flex flex-col flex-grow space-y-3">
+        <div className="h-4 bg-slate-200 rounded w-3/4" />
+        <div className="h-4 bg-slate-200 rounded w-1/2" />
+        <div className="mt-auto h-10 bg-slate-200 rounded" />
+      </div>
+    </div>
+  )
 
   const handleEmi = (e, product_id) => {
     e.stopPropagation()
@@ -67,7 +79,14 @@ export default function ProductGrid({ products, gridCols = 5, onResetFilters }) 
     <>
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
       <div className={`grid ${gridColumnsClass} gap-4`}>
-        {products?.map((product) => (
+        {isLoading ? (
+          // Show skeleton loaders while loading
+          Array.from({ length: 10 }).map((_, i) => (
+            <SkeletonCard key={`skeleton-${i}`} />
+          ))
+        ) : (
+          // Show products when loaded
+          products?.map((product) => (
           <div
             key={product.product_id}
             className="flex flex-col bg-white border border-border/5 rounded-xl overflow-hidden hover:shadow-xl hover:border-gray-200 text-foreground relative group h-full shadow-sm cursor-pointer transition-shadow duration-300"
@@ -153,9 +172,10 @@ export default function ProductGrid({ products, gridCols = 5, onResetFilters }) 
               </Button>
             </div>
           </div>
-        ))}
+          ))
+        )}
 
-        {products?.length === 0 && (
+        {products?.length === 0 && !isLoading && (
           <div className="col-span-full">
             <div className="relative overflow-hidden rounded-xl border border-border/5 bg-gradient-to-b from-slate-50 to-slate-100 p-16 md:p-20 text-center">
               <SearchX className="h-16 w-16 text-muted-foreground mx-auto mb-5 opacity-40" />

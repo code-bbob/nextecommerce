@@ -33,7 +33,7 @@ function ProgressBarCore() {
     }
   }, [])
 
-  // Handle pathname changes (when route actually completes)
+  // Handle pathname and searchParams changes (when route actually completes)
   useEffect(() => {
     if (pathname !== lastPathRef.current) {
       lastPathRef.current = pathname
@@ -46,7 +46,20 @@ function ProgressBarCore() {
         setIsAnimating(false)
       }, 300)
     }
-  }, [pathname, searchParams])
+  }, [pathname])
+
+  // Handle searchParams changes (for same-page navigation like search filters)
+  useEffect(() => {
+    // Only complete progress if it was animating
+    if (isAnimating) {
+      setProgress(100)
+      
+      setTimeout(() => {
+        setProgress(0)
+        setIsAnimating(false)
+      }, 300)
+    }
+  }, [searchParams, isAnimating])
 
   // Memoized click handler for better performance
   const handleClick = useCallback((e) => {

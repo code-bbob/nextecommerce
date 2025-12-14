@@ -1,18 +1,11 @@
 "use client"
 
 import { Suspense, useState, useEffect } from "react"
-import NavBar from "@/components/navbar"
-import ProductGrid from "@/components/productGrid"
-import FilterSidebar from "@/components/filterSidebar"  
+import ProductPageLayout from "@/components/ProductPageLayout"
 import customFetch from "@/utils/customFetch"
-import Footer from "@/components/Footer.server"
 import { useSearchParams, useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Filter, ChevronLeft, ChevronRight } from "lucide-react"
-import { X } from "lucide-react"
-import BlackNavBar from "@/components/blackNavbar"
 
-function Search() {
+function Search({ initialData = null, initialPagination = null }) {
   const searchParams = useSearchParams()
   const router = useRouter()
   
@@ -21,16 +14,16 @@ function Search() {
   // Get the search term (if provided in URL: ?q=sth)
   const searchQuery = searchParams.get("q") || ""
   
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState(initialData || [])
   const [ordering, setOrdering] = useState("")
   const [rating, setRating] = useState("")
   const [minRating, setMinRating] = useState("")
   const [minPrice, setMinPrice] = useState("")
   const [maxPrice, setMaxPrice] = useState("")
   const [brandName, setBrandName] = useState("")
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [pagination, setPagination] = useState({
+  const [isLoading, setIsLoading] = useState(false)
+  const [hasInitialized, setHasInitialized] = useState(!!initialData)
+  const [pagination, setPagination] = useState(initialPagination || {
     count: 0,
     total_pages: 1,
     current_page: 1,
@@ -97,6 +90,7 @@ function Search() {
         console.error(err)
       } finally {
         setIsLoading(false)
+        setHasInitialized(true)
       }
     }
     fetchProducts()
@@ -109,133 +103,50 @@ function Search() {
     router.push(`${currentPath}?${paramsObj.toString()}`)
   }
 
-  // Generate pagination numbers with ellipsis if needed
-  const getPageNumbers = () => {
-    const totalPages = pagination.total_pages
-    const current = pagination.current_page
-    if (totalPages <= 5) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1)
-    }
-    const pages = [1]
-    if (current > 3) {
-      pages.push("...")
-    }
-    const start = Math.max(2, current - 1)
-    const end = Math.min(totalPages - 1, current + 1)
-    for (let i = start; i <= end; i++) {
-      pages.push(i)
-    }
-    if (current < totalPages - 2) {
-      pages.push("...")
-    }
-    if (totalPages > 1) {
-      pages.push(totalPages)
-    }
-    return pages
+  const handleOrderingChange = (value) => {
+    setOrdering(value)
   }
 
+  const handleRatingChange = (value) => {
+    setRating(value)
+  }
+
+  const handleMinRatingChange = (value) => {
+    setMinRating(value)
+  }
+
+  const handleMinPriceChange = (value) => {
+    setMinPrice(value)
+  }
+
+  const handleMaxPriceChange = (value) => {
+    setMaxPrice(value)
+  }
+
+  const handleBrandNameChange = (value) => {
+    setBrandName(value)
+  }
+
+  const pageTitle = searchQuery ? `Search Results for "${searchQuery}"` : "Products"
+  const pageDescription = searchQuery ? `${pagination.count || 0} products found` : "Browse all available products"
+
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans">
-      <BlackNavBar color="inherit"/>
-
-
-      {/* Filter Toggle Button */}
-      
-      <div 
-          className="fixed left-0 top-0 w-6 h-full z-10"
-          onMouseEnter={() => setIsSidebarOpen(true)}
-        />
-      {/* Main Layout */}
-      <div className="flex-grow flex md:flex-row flex-col">
-      {!isSidebarOpen && (
-                  <ChevronRight className=" fixed top-1/2 h-5 w-5" />
-        
-)}
-
-        {/* Sidebar */}
-        {isSidebarOpen && (
-          <aside className={`${isSidebarOpen ? 'block' : 'hidden'} md:w-60 lg:w-72 border-gray-700 transition-all duration-300`}>
-          <div className="sticky top-20 h-screen overflow-y-auto">
-              <FilterSidebar
-                setOrdering={setOrdering}
-                setRating={setRating}
-                setMinRating={setMinRating}
-                setMinPrice={setMinPrice}
-                setMaxPrice={setMaxPrice}
-                setBrandName={setBrandName}
-                isSidebarOpen={isSidebarOpen}
-                setIsSidebarOpen={setIsSidebarOpen}
-              />
-            </div>
-          </aside>
-        )}
-        
-        {/* Mobile Sidebar (modal-style) */}
-        {isSidebarOpen && (
-          <div className="md:hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-sm p-4 overflow-y-auto">
-            <div className="bg-card border border-border rounded-lg p-4 shadow-modern">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-foreground">Filters</h2>
-                <Button variant="ghost" className="text-foreground hover:bg-accent" onClick={() => setIsSidebarOpen(false)}>
-                  <X />
-                </Button>
-              </div>
-              <FilterSidebar
-                setOrdering={setOrdering}
-                setRating={setRating}
-                setMinRating={setMinRating}
-                setMinPrice={setMinPrice}
-                setMaxPrice={setMaxPrice}
-                setBrandName={setBrandName}
-                isSidebarOpen={isSidebarOpen}
-                setIsSidebarOpen={setIsSidebarOpen}
-              />
-            </div>
-          </div>
-        )}
-        
-        <main className="flex-1 p-4 md:p-8">
-          <div className="flex justify-end items-center mb-6">
-            <Button 
-              variant="outline" 
-              className="md:hidden bg-card text-foreground border-border hover:bg-accent" 
-              onClick={() => setIsSidebarOpen(true)}
-            >
-              <Filter className="mr-2 h-4 w-4" />
-              Filters
-            </Button>
-          </div>
-          
-          <ProductGrid products={products} isLoading={isLoading} gridCols={isSidebarOpen ? 4 : 5} query={searchQuery} />
-          
-          {/* Pagination Controls */}
-          
-            
-          {products.length > 0 && (
-          <div className="flex justify-center items-center mt-8 space-x-4">
-            <Button 
-              onClick={() => handlePageChange(currentPage - 1)} 
-              disabled={!pagination.previous || currentPage === 1}
-              className="btn-futuristic bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              <ChevronLeft className="mr-2" /> Previous
-            </Button>
-            <span className="text-foreground font-medium bg-card/80 px-4 py-2 rounded-lg border border-border/30 shadow-sm">
-              {currentPage} of {pagination.total_pages}
-            </span>
-            <Button 
-              onClick={() => handlePageChange(currentPage + 1)} 
-              disabled={!pagination.next || currentPage === pagination.total_pages}
-              className="btn-futuristic bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              Next <ChevronRight className="ml-2" />
-            </Button>
-          </div>
-          )}
-        </main>
-      </div>
-      <Footer />
-    </div>
+    <ProductPageLayout
+      products={products}
+      pagination={pagination}
+      currentPage={currentPage}
+      onPageChange={handlePageChange}
+      onOrderingChange={handleOrderingChange}
+      onRatingChange={handleRatingChange}
+      onMinRatingChange={handleMinRatingChange}
+      onMinPriceChange={handleMinPriceChange}
+      onMaxPriceChange={handleMaxPriceChange}
+      onBrandNameChange={handleBrandNameChange}
+      pageTitle={pageTitle}
+      pageDescription={pageDescription}
+      isLoading={isLoading || !hasInitialized}
+      gridCols={4}
+    />
   )
 }
 

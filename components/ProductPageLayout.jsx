@@ -27,6 +27,7 @@ export default function ProductPageLayout({
   pageDescription,
   breadcrumbItems = [],
   gridCols = 4,
+  isLoading = false,
 }) {
   const [ordering, setOrdering] = useState("");
   const [rating, setRating] = useState("");
@@ -168,7 +169,7 @@ export default function ProductPageLayout({
 
           {/* Products Section */}
           <section className="flex-1 px-4 py-4">
-            <ProductGrid products={products} gridCols={gridCols} />
+            <ProductGrid products={products} isLoading={isLoading} gridCols={gridCols} />
 
             {/* Pagination Section */}
             {pagination?.total_pages > 1 && (
