@@ -413,9 +413,9 @@ export default function BlackNavBar({ color = "black" }) {
       {/* Main Nav Bar (fixed) */}
       <header className="bg-white backdrop-blur-md text-foreground fixed top-0 left-0 right-0 w-full z-40 border-b border-gray-200">
         {/* Premium Banner - New Year Sale */}
-        <div className="h-10 bg-red-800  text-white flex items-center justify-between px-4">
+        <div className="h-10 bg-black  text-white flex items-center justify-between px-4">
           <div className=" flex items-center gap-6">
-            <div className="hidden md:flex items-center gap-4 text-xs">
+            <div className="hidden md:flex font-bold items-center gap-4 text-xs">
               <a
                 href="https://maps.google.com/?q=Digitech+Enterprises+Kathmandu+Nepal"
                 target="_blank"
@@ -425,7 +425,7 @@ export default function BlackNavBar({ color = "black" }) {
                 <MapPin className="w-3 h-3" />
                 Kathmandu
               </a>
-              <span className="text-red-600">|</span>
+              <span className="text-white">|</span>
               <a
                 href="https://maps.google.com/?q=Digitech+Enterprises+Pokhara+Nepal"
                 target="_blank"
@@ -468,7 +468,7 @@ export default function BlackNavBar({ color = "black" }) {
             </a>
           </div>
         </div>
-        <div className="mx-auto px-4 h-16 flex items-center justify-between border-b border-gray-200">
+        <div className="md:mx-8 px-4 h-16 flex items-center justify-between border-b border-gray-200">
           {/* Left side: Logo + Mobile Menu Button */}
           <div className="flex items-center h-12 w-32 space-x-3">
             <button
