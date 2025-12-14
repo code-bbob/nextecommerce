@@ -21,7 +21,7 @@ const tiles = [
     href: "/headphone",
   },
   {
-    src: "/images/smartphone.png",
+    src: "/images/cropped.jpg",
     alt: "Phones",
     span: "col-span-2 row-span-2 md:col-span-1 md:row-span-2",
     label: "Phones",

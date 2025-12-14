@@ -112,11 +112,12 @@ export default function CartSidebar({ isOpen, onClose }) {
             ) : (
               items.map((item) => (
                 <div key={item.product_id} className="flex items-center gap-4 p-3 bg-card/50 rounded-lg border border-border/30 hover:bg-accent/50 transition-colors duration-200">
-                  <div className="relative w-16 h-16 flex-shrink-0">
+                  <div className="relative w-24 h-24 flex-shrink-0">
                     <Image
                       src={getCDNImageUrl(item.image) || "/placeholder.svg"}
                       alt={item.name}
                       fill
+                      style={{ objectFit: "contain" }}
                       className="object-cover rounded"
                       sizes="64px"
                     />
