@@ -11,7 +11,9 @@ function ProgressBarCore() {
   const [progress, setProgress] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const lastPathRef = useRef(pathname)
+  const lastSearchRef = useRef(searchParams.toString())
   const routerRef = useRef(router)
+  const progressTimeoutRef = useRef(null)
 
   // Update router ref when router changes
   useEffect(() => {
@@ -28,38 +30,80 @@ function ProgressBarCore() {
       setTimeout(() => setProgress(75), 150)
     }
 
+    // Also expose a function to complete progress manually
+    window.__completeProgress = () => {
+      setProgress(100)
+      setTimeout(() => {
+        setProgress(0)
+        setIsAnimating(false)
+      }, 300)
+    }
+
     return () => {
       delete window.__startProgress
+      delete window.__completeProgress
     }
   }, [])
 
   // Handle pathname and searchParams changes (when route actually completes)
   useEffect(() => {
-    if (pathname !== lastPathRef.current) {
+    const pathChanged = pathname !== lastPathRef.current
+    const searchChanged = searchParams.toString() !== lastSearchRef.current
+    
+    if ((pathChanged || searchChanged) && isAnimating) {
       lastPathRef.current = pathname
+      lastSearchRef.current = searchParams.toString()
       
-      // Complete the progress bar when page finishes loading
-      setProgress(100)
+      // Clear any existing timeout
+      if (progressTimeoutRef.current) {
+        clearTimeout(progressTimeoutRef.current)
+      }
       
-      setTimeout(() => {
-        setProgress(0)
-        setIsAnimating(false)
+      // Complete progress when pathname or search params change (page has loaded in Next.js)
+      // Add delay to ensure content is rendered
+      progressTimeoutRef.current = setTimeout(() => {
+        setProgress(100)
+        setTimeout(() => {
+          setProgress(0)
+          setIsAnimating(false)
+        }, 300)
       }, 300)
     }
-  }, [pathname])
+  }, [pathname, searchParams, isAnimating])
 
-  // Handle searchParams changes (for same-page navigation like search filters)
+  // Handle page load completion - fallback for initial page load
   useEffect(() => {
-    // Only complete progress if it was animating
-    if (isAnimating) {
-      setProgress(100)
-      
-      setTimeout(() => {
-        setProgress(0)
-        setIsAnimating(false)
-      }, 300)
+    const completeProgressOnLoad = () => {
+      if (isAnimating && progress < 100) {
+        // Add a small delay to ensure content is rendered
+        setTimeout(() => {
+          setProgress(100)
+          setTimeout(() => {
+            setProgress(0)
+            setIsAnimating(false)
+          }, 300)
+        }, 100)
+      }
     }
-  }, [searchParams, isAnimating])
+
+    // Check if page is already loaded
+    if (document.readyState === 'complete') {
+      completeProgressOnLoad()
+    } else {
+      // Wait for page to fully load (fallback)
+      window.addEventListener('load', completeProgressOnLoad)
+      return () => window.removeEventListener('load', completeProgressOnLoad)
+    }
+  }, [isAnimating, progress])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (progressTimeoutRef.current) {
+        clearTimeout(progressTimeoutRef.current)
+      }
+    }
+  }, [])
 
   // Memoized click handler for better performance
   const handleClick = useCallback((e) => {
