@@ -20,6 +20,7 @@ export default function ProductInteractive({ product }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const carouselApi = useRef(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
 
   // Memoize color options to avoid recalculation
   const colorOptions = useMemo(() => {
@@ -241,7 +242,7 @@ export default function ProductInteractive({ product }) {
               onTouchMove={dragMove}
               onTouchEnd={dragEnd}
             >
-              <CarouselContent className="h-60 md:h-[60vh]">
+              <CarouselContent className="h-60 md:h-[70vh]">
                 {allImages.map((img, idx) => (
                   <CarouselItem key={idx} className="flex items-center justify-center">
                     <div 
@@ -400,70 +401,108 @@ export default function ProductInteractive({ product }) {
             </div>
 
             {colorOptions.length > 0 && (
-              <div className="flex items-center gap-3 mt-4 mb-2">
-                <span className="text-sm font-semibold text-black">
-                  Pick a color:
+              <div className="mt-4 mb-4">
+                <span className="text-sm font-semibold text-foreground block mb-3">
+                  Choose Colour
                 </span>
-                {colorOptions.map((opt) => (
-                  <button
-                    key={opt.color}
-                    className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-150 focus:outline-none ${
-                      selectedColor === opt.color
-                        ? "border-primary ring-2 ring-primary"
-                        : "border-gray-300 hover:border-primary"
-                    }`}
-                    style={{
-                      background:
-                        opt.hex ||
-                        (opt.color_name
-                          ? opt.color_name.toLowerCase()
-                          : "#eee"),
-                    }}
-                    title={opt.color_name || "Color"}
-                    aria-label={opt.color_name || "Color"}
-                    onClick={() => setSelectedColor(opt.color)}
-                  >
-                    {selectedColor === opt.color && (
-                      <span className="  bg-white/30" />
-                    )}
-                  </button>
-                ))}
-                {/* Show color name of selected */}
-                <span className="ml-2 text-xs font-bold text-foreground">
-                  {
-                    colorOptions.find((c) => c.color === selectedColor)
-                      ?.color_name
-                  }
-                </span>
+                <div className="flex flex-wrap gap-3">
+                  {colorOptions.map((opt) => (
+                    <button
+                      key={opt.color}
+                      className={`px-4 py-2 rounded-lg border-2 flex items-center gap-2 transition-all duration-150 focus:outline-none ${
+                        selectedColor === opt.color
+                          ? "border-primary bg-primary/10"
+                          : "border-border hover:border-primary bg-card"
+                      }`}
+                      title={opt.color_name || "Color"}
+                      aria-label={opt.color_name || "Color"}
+                      onClick={() => setSelectedColor(opt.color)}
+                    >
+                      <div
+                        className="w-5 h-5 rounded-full border-2 border-gray-300"
+                        style={{
+                          background:
+                            opt.hex ||
+                            (opt.color_name
+                              ? opt.color_name.toLowerCase()
+                              : "#eee"),
+                        }}
+                      />
+                      <span className="text-sm font-medium text-foreground">
+                        {opt.color_name || "Color"}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            )}
+            )} 
 
-            <div className="flex space-x-2 bg-card/50 border border-border rounded-lg p-4 md:space-x-4 shadow-sm">
-              <Button
-                className="flex-1 bg-secondary text-secondary-foreground hover:bg-secondary/90 btn-futuristic shadow-sm hover:shadow-md transition-all duration-200"
-                size="lg"
-                // onClick={() => router.push("/product/emi/" + product.product_id)}
-              >
-                Apply EMI
-              </Button>
-              <Button
-                className="flex-1 bg-primary hover:bg-primary/90 btn-futuristic shadow-sm hover:shadow-md transition-all duration-200"
-                size="lg"
-                onClick={handleAddToCart}
-              >
-                Add to cart
-              </Button>
-              <Button
-                variant="outline"
-                className="border-border hidden md:block hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
-                aria-label="Add to wishlist"
-              >
-                <Heart
-                  size={64}
-                  className="text-destructive hover:text-destructive/80"
-                  fill="currentColor"
-                />
-              </Button>
+            {/* Choose Size */}
+            <div className="mt-4 mb-4">
+              <span className="text-sm font-semibold text-foreground block mb-3">
+                Choose Size
+              </span>
+              <div className="flex gap-3">
+                <button className="px-4 py-2 rounded-lg border-2 border-primary bg-primary/10 font-medium text-foreground">
+                  256GB
+                </button>
+                <button className="px-4 py-2 rounded-lg border-2 border-border hover:border-primary bg-card font-medium text-foreground">
+                  512GB
+                </button>
+              </div>
+            </div>
+
+            {/* Quantity and Add to Cart */}
+            <div className="flex flex-col gap-4 mt-6">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-semibold text-foreground">Quantity</span>
+                <div className="flex items-center border border-border rounded-lg">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="px-3 py-2 hover:bg-muted transition-colors"
+                    aria-label="Decrease quantity"
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    value={quantity}
+                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-12 text-center border-0 bg-transparent focus:outline-none"
+                  />
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="px-3 py-2 hover:bg-muted transition-colors"
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex space-x-2 bg-card/50 border border-border rounded-lg p-4 md:space-x-4 shadow-sm">
+                <Button
+                  className="w-64 bg-foreground shadow-md hover:bg-foreground/90 "
+                  size="lg"
+                  onClick={handleAddToCart}
+                >
+                  Add to cart
+                </Button>
+                <Button
+                  variant="outline"
+                  className="border border-gray-300 shadow-md w-64 flex hidden md:block hover:bg-accent"
+                  size="lg"
+                >
+                  <div className="flex items-center justify-center space-x-2">
+                  <Heart
+                    size={20}
+                    className="text-destructive hover:text-destructive/80"
+                    fill="currentColor"
+                    />
+                    <p>Add to WishList</p>
+                    </div>
+                </Button>
+              </div>
             </div>
 
             <div className="flex items-center text-sm text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-lg p-3">
@@ -769,7 +808,7 @@ export default function ProductInteractive({ product }) {
                 <CarouselContent>
                   {allImages.map((img, idx) => (
                     <CarouselItem key={idx} className="flex items-center justify-center">
-                      <div className="relative w-full aspect-square md:aspect-auto md:h-[80vh] flex items-center justify-center">
+                      <div className="relative w-full aspect-square md:aspect-auto md:h-[100vh] flex items-center justify-center">
                         <Image
                           src={img}
                           alt={`Image ${idx + 1}`}
