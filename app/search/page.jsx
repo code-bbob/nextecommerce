@@ -1,159 +1,114 @@
-"use client"
-
-import { Suspense, useState, useEffect } from "react"
-import ProductPageLayout from "@/components/ProductPageLayout"
 import customFetch from "@/utils/customFetch"
-import { useSearchParams, useRouter } from "next/navigation"
+import { SearchPageClient } from "./search-page-client"
+import { Suspense } from "react"
 
-function Search({ initialData = null, initialPagination = null }) {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  
-  // Get the current page from URL or default to 1
-  const currentPage = parseInt(searchParams.get("page") || "1", 10)
-  // Get the search term (if provided in URL: ?q=sth)
-  const searchQuery = searchParams.get("q") || ""
-  
-  const [products, setProducts] = useState(initialData || [])
-  const [ordering, setOrdering] = useState("")
-  const [rating, setRating] = useState("")
-  const [minRating, setMinRating] = useState("")
-  const [minPrice, setMinPrice] = useState("")
-  const [maxPrice, setMaxPrice] = useState("")
-  const [brandName, setBrandName] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [hasInitialized, setHasInitialized] = useState(!!initialData)
-  const [pagination, setPagination] = useState(initialPagination || {
-    count: 0,
-    total_pages: 1,
-    current_page: 1,
-    next: null,
-    previous: null
-  })
+// ISR - Revalidate every 1 hour
+export const revalidate = 3600
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setIsLoading(true)
-        
-        // Build the query parameters
-        const queryParams = new URLSearchParams()
-        
-        // Append the search term if it exists. This will also determine which endpoint to use.
-        if (searchQuery) {
-          queryParams.append("search", searchQuery)
-        }
-        
-        if (ordering) {
-          queryParams.append("ordering", ordering)
-        }
-        if (rating) {
-          queryParams.append("rating", rating)
-        }
-        if (minRating) {
-          queryParams.append("min_rating", minRating)
-        }
-        if (minPrice) {
-          queryParams.append("min_price", minPrice)
-        }
-        if (maxPrice) {
-          queryParams.append("max_price", maxPrice)
-        }
-        if (brandName) {
-          queryParams.append("brand", brandName)
-        }
-        
-        // Add page parameter
-        queryParams.append("page", currentPage.toString())
-        
-        // Select endpoint based on whether a search query exists
-        const apiUrl = searchQuery 
-          ? `shop/api/search/?${queryParams.toString()}`
-          : `shop/api/?${queryParams.toString()}`
-        
-        const res = await customFetch(apiUrl)
-        const data = await res.json()
-        
-        if (data.results) {
-          setProducts(data.results)
-          setPagination({
-            count: data.count,
-            total_pages: data.total_pages,
-            current_page: data.current_page,
-            next: data.links.next,
-            previous: data.links.previous
-          })
-        } else {
-          setProducts(data)
-        }
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setIsLoading(false)
-        setHasInitialized(true)
-      }
+// Fetch products server-side
+async function getInitialProducts(searchQuery, page = 1) {
+  try {
+    const queryParams = new URLSearchParams()
+    
+    if (searchQuery) {
+      queryParams.append("search", searchQuery)
     }
-    fetchProducts()
-  }, [searchQuery, ordering, rating, minRating, currentPage, minPrice, maxPrice, brandName])
-
-  const handlePageChange = (newPage) => {
-    const paramsObj = new URLSearchParams(searchParams.toString())
-    paramsObj.set("page", newPage.toString())
-    const currentPath = window.location.pathname
-    router.push(`${currentPath}?${paramsObj.toString()}`)
+    
+    queryParams.append("page", page.toString())
+    
+    const endpoint = searchQuery 
+      ? `shop/api/search/?${queryParams.toString()}`
+      : `shop/api/?${queryParams.toString()}`
+    
+    const response = await customFetch(endpoint)
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Failed to fetch products:', error)
+    return {
+      results: [],
+      count: 0,
+      total_pages: 0,
+      current_page: 1,
+      links: { next: null, previous: null },
+    }
   }
-
-  const handleOrderingChange = (value) => {
-    setOrdering(value)
-  }
-
-  const handleRatingChange = (value) => {
-    setRating(value)
-  }
-
-  const handleMinRatingChange = (value) => {
-    setMinRating(value)
-  }
-
-  const handleMinPriceChange = (value) => {
-    setMinPrice(value)
-  }
-
-  const handleMaxPriceChange = (value) => {
-    setMaxPrice(value)
-  }
-
-  const handleBrandNameChange = (value) => {
-    setBrandName(value)
-  }
-
-  const pageTitle = searchQuery ? `Search Results for "${searchQuery}"` : "Products"
-  const pageDescription = searchQuery ? `${pagination.count || 0} products found` : "Browse all available products"
-
-  return (
-    <ProductPageLayout
-      products={products}
-      pagination={pagination}
-      currentPage={currentPage}
-      onPageChange={handlePageChange}
-      onOrderingChange={handleOrderingChange}
-      onRatingChange={handleRatingChange}
-      onMinRatingChange={handleMinRatingChange}
-      onMinPriceChange={handleMinPriceChange}
-      onMaxPriceChange={handleMaxPriceChange}
-      onBrandNameChange={handleBrandNameChange}
-      pageTitle={pageTitle}
-      pageDescription={pageDescription}
-      isLoading={isLoading || !hasInitialized}
-      gridCols={4}
-    />
-  )
 }
 
-export default function Page(){
-  return(
-    <Suspense fallback={<div className="text-black">Loading products...</div>}>
-      <Search />
+// Server Component - Fetches data instantly
+export default async function SearchPage({ searchParams }) {
+  // In Next.js 15, searchParams is a Promise, so we need to await it
+  const params = await searchParams
+  
+  const searchQuery = params?.q || ""
+  const pageNum = parseInt(params?.page) || 1
+  
+  // Data is fetched on the server before page renders
+  const initialData = await getInitialProducts(searchQuery, pageNum)
+  
+  const initialPagination = {
+    count: initialData.count || 0,
+    total_pages: initialData.total_pages || 0,
+    current_page: initialData.current_page || pageNum,
+    next: initialData.links?.next || null,
+    previous: initialData.links?.previous || null
+  }
+
+  // Skeleton loader component
+  const SkeletonLoader = () => (
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-white via-white to-slate-50/50">
+      <div className="h-6 bg-white"></div>
+      <div className="flex-grow bg-gray-0 flex flex-row relative">
+        {/* Sidebar skeleton */}
+        <aside className="hidden lg:flex lg:w-80 border-r sticky top-0 h-screen flex-col overflow-hidden bg-white">
+          <div className="px-6 py-6 border-b border-border/5">
+            <div className="h-4 bg-slate-200 rounded w-20 mb-2"></div>
+            <div className="h-1 w-6 bg-slate-200 rounded-full"></div>
+          </div>
+          <div className="flex-1 overflow-y-auto space-y-4 p-6">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="space-y-2">
+                <div className="h-3 bg-slate-200 rounded w-24"></div>
+                <div className="h-8 bg-slate-200 rounded"></div>
+              </div>
+            ))}
+          </div>
+        </aside>
+        {/* Main content skeleton */}
+        <main className="flex-1 flex flex-col">
+          <div className="border-b border-border/5 px-6 md:px-10 lg:px-12 pt-8 md:pt-8">
+            <div className="h-6 bg-slate-200 rounded w-32 mb-4"></div>
+            <div className="h-8 bg-slate-200 rounded w-48 mb-2"></div>
+            <div className="h-4 bg-slate-200 rounded w-64"></div>
+          </div>
+          <section className="flex-1 px-4 py-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div key={i} className="flex flex-col bg-white border border-border/5 rounded-xl overflow-hidden animate-pulse h-full shadow-sm">
+                  <div className="relative sm:h-56 bg-slate-200" />
+                  <div className="p-1 sm:p-2 flex flex-col flex-grow space-y-3">
+                    <div className="h-4 bg-slate-200 rounded w-3/4" />
+                    <div className="h-4 bg-slate-200 rounded w-1/2" />
+                    <div className="mt-auto h-10 bg-slate-200 rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  )
+
+  // Pass pre-fetched data to client component
+  return (
+    <Suspense fallback={<SkeletonLoader />}>
+      <SearchPageClient 
+        initialProducts={initialData.results || []}
+        initialPagination={initialPagination}
+        currentPage={pageNum}
+        searchQuery={searchQuery}
+      />
     </Suspense>
   )
 }

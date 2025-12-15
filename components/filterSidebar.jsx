@@ -3,10 +3,10 @@
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
-import { useState } from "react"
+import { useState, memo } from "react"
 import { X } from "lucide-react"
 
-export default function FilterSidebar({
+function FilterSidebar({
   category,
   setOrdering,
   setRating,
@@ -202,3 +202,5 @@ export default function FilterSidebar({
     </div>
   )
 }
+
+export default memo(FilterSidebar)

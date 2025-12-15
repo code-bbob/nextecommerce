@@ -29,6 +29,7 @@ export default function ProductPageLayout({
   gridCols = 4,
   isLoading = false,
 }) {
+  console.log("ProductPageLayout received products:", { count: products?.length, products });
   const [ordering, setOrdering] = useState("");
   const [rating, setRating] = useState("");
   const [minRating, setMinRating] = useState("");

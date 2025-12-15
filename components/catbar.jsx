@@ -184,7 +184,7 @@ export default function CatBar() {
                               <li
                                 key={item.id}
                                 className="cursor-pointer text-gray-800 hover:text-black hover:font-bold transition-colors duration-150 text-sm"
-                                onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${item.id}`)}
+                                onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${item.name}`)}
                               >
                                 {item.name}
                               </li>

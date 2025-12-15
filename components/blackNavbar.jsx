@@ -80,20 +80,25 @@ export default function BlackNavBar({ color = "black" }) {
   useEffect(() => {
     let isCancelled = false;
     async function fetchCategories() {
-      const dataMap = {};
-      await Promise.all(
-        NAV_CATEGORIES.map(async (category) => {
-          try {
-            const res = await customFetch(
-              `shop/api/navcat/?search=${encodeURIComponent(category)}`
-            );
-            dataMap[category] = res.ok ? await res.json() : [];
-          } catch (error) {
-            dataMap[category] = [];
-          }
-        })
-      );
-      if (!isCancelled) setPreFetchedCategories(dataMap);
+      try {
+        const res = await customFetch("shop/api/navcat/");
+        const data = res.ok ? await res.json() : [];
+        
+        const dataMap = {};
+        
+        // Parse the response and organize by category
+        data.forEach((categoryObj) => {
+          Object.entries(categoryObj).forEach(([categoryName, items]) => {
+            if (NAV_CATEGORIES.includes(categoryName.toLowerCase())) {
+              dataMap[categoryName.toLowerCase()] = items;
+            }
+          });
+        });
+        
+        if (!isCancelled) setPreFetchedCategories(dataMap);
+      } catch (error) {
+        if (!isCancelled) setPreFetchedCategories({});
+      }
     }
     fetchCategories();
     return () => {
@@ -287,7 +292,7 @@ export default function BlackNavBar({ color = "black" }) {
                                 className="cursor-pointer text-gray-800 hover:text-black hover:font-bold transition-colors duration-150 text-sm"
                                 onClick={() =>
                                   router.push(
-                                    `/${activeCategory}/${brandObj.brand}/${item.id}`
+                                    `/${activeCategory}/${brandObj.brand}/${item.name}`
                                   )
                                 }
                               >

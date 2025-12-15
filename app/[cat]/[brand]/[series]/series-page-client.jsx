@@ -5,9 +5,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import ProductPageLayout from "@/components/ProductPageLayout";
 import customFetch from "@/utils/customFetch";
 
-export function BrandPageClient({ initialProducts, initialPagination, currentPage, cat, brand }) {
+export function SeriesPageClient({ initialProducts, initialPagination, currentPage, cat, brand, series }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  console.log("SeriesPageClient initialized with:", { initialProducts, initialPagination, currentPage, cat, brand, series });
 
   const [products, setProducts] = useState(initialProducts || []);
   const [pagination, setPagination] = useState(initialPagination || {
@@ -58,12 +60,16 @@ export function BrandPageClient({ initialProducts, initialPagination, currentPag
 
       queryParams.append("page", currentPage.toString());
 
-      const apiUrl = `shop/api/catsearch/${cat}/brand/${brand}/?${queryParams.toString()}`;
+      const apiUrl = `shop/api/catsearch/${cat}/${brand}/${series}/?${queryParams.toString()}`;
+      console.log("Fetching from URL:", apiUrl);
 
       const res = await customFetch(apiUrl);
       const data = await res.json();
+      console.log("API Response:", data);
+      console.log("Is array?", Array.isArray(data));
 
       if (data.results) {
+        console.log("Found data.results, count:", data.results.length);
         setProducts(data.results);
         setPagination({
           count: data.count,
@@ -72,15 +78,19 @@ export function BrandPageClient({ initialProducts, initialPagination, currentPag
           next: data.links.next,
           previous: data.links.previous
         });
-      } else {
+      } else if (Array.isArray(data)) {
+        console.log("Data is array, count:", data.length);
         setProducts(data);
+      } else {
+        console.log("No products found, data:", data);
+        setProducts(initialProducts || []);
       }
     } catch (err) {
       console.error("Error fetching products:", err);
     } finally {
       setIsLoading(false);
     }
-  }, [cat, brand, currentPage]);
+  }, [cat, brand, series, currentPage]);
 
   // Debounced filter update function
   const updateFiltersWithDebounce = useCallback((newFilters) => {
@@ -179,8 +189,8 @@ export function BrandPageClient({ initialProducts, initialPagination, currentPag
     router.push(`${currentPath}?${paramsObj.toString()}`);
   };
 
-  const pageTitle = `${brand.charAt(0).toUpperCase() + brand.slice(1)}`;
-  const pageDescription = `Browse our collection of ${brand} products in ${cat}`;
+  const pageTitle = `${series.charAt(0).toUpperCase() + series.slice(1)}`;
+  const pageDescription = `Browse ${series} products from ${brand} in ${cat}`;
 
   return (
     <ProductPageLayout
@@ -200,7 +210,8 @@ export function BrandPageClient({ initialProducts, initialPagination, currentPag
         { label: "Home", href: "/" },
         { label: "Categories", href: "/" },
         { label: cat.charAt(0).toUpperCase() + cat.slice(1), href: `/${cat}` },
-        { label: brand }
+        { label: brand, href: `/${cat}/${brand}` },
+        { label: series }
       ]}
       gridCols={4}
       isLoading={isLoading}

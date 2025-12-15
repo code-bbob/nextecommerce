@@ -1,162 +1,130 @@
-"use client"
-
-import { Suspense, useState, useEffect } from "react"
-import NavBar from "@/components/navbar"
-import ProductGrid from "@/components/productGrid"
-import FilterSidebar from "@/components/filterSidebar"
 import customFetch from "@/utils/customFetch"
-import Footer from "@/components/Footer.server"
-import { useSearchParams, useParams,useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Filter, ChevronLeft, ChevronRight, X } from "lucide-react"
-import BlackNavBar from "@/components/blackNavbar"
+import { SeriesPageClient } from "./series-page-client"
+import { Suspense } from "react"
+
+export const revalidate = 3600 // ISR: Revalidate every 1 hour
 
 // Metadata is handled in app/[cat]/[brand]/[series]/layout.jsx
 
-function StorePage() {
-  const searchParams = useSearchParams()
-  const params = useParams()
-  const router = useRouter()
-  const cat = params.cat
-  const currentPage = parseInt(searchParams.get('page') || '1', 10)
-  
-  const [products, setProducts] = useState([])
-  const [ordering, setOrdering] = useState("")
-  const [rating, setRating] = useState("")
-  const [minRating, setMinRating] = useState("")
-  const [minPrice, setMinPrice] = useState("")
-  const [maxPrice, setMaxPrice] = useState("")
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [brandName, setBrandName] = useState("")
-  const [pagination, setPagination] = useState({
-    count: 0,
-    total_pages: 1,
-    current_page: 1,
-    next: null,
-    previous: null
-  })
+async function getInitialProducts(cat, brand, series, page = 1) {
+  try {
+    const apiUrl = `shop/api/catsearch/${cat}/${series}/?page=${page}`
+    console.log("[Server] Fetching from:", apiUrl);
+    
+    const res = await customFetch(apiUrl)
+    const data = await res.json()
+    
+    console.log("[Server] API Response:", data);
+    console.log("[Server] Has results?", !!data.results);
+    console.log("[Server] Is array?", Array.isArray(data.results));
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setIsLoading(true)
-        const queryParams = new URLSearchParams()
-        if (ordering) queryParams.append('ordering', ordering)
-        if (rating) queryParams.append('ordering', rating)
-        if (minRating) queryParams.append('min_rating', minRating)
-        if (minPrice) queryParams.append('min_price', minPrice)
-        if (maxPrice) queryParams.append('max_price', maxPrice)
-        if (brandName) queryParams.append('brand', brandName)
-
-        queryParams.append('page', currentPage.toString())
-
-        const apiUrl = `shop/api/catsearch/${cat}/${params.series}/?${queryParams.toString()}`
-        const res = await customFetch(apiUrl)
-        const data = await res.json()
-
-        if (data.results) {
-          setProducts(data.results)
-          setPagination({
-            count: data.count,
-            total_pages: data.total_pages,
-            current_page: data.current_page,
-            next: data.links.next,
-            previous: data.links.previous
-          })
-        } else {
-          setProducts(data)
+    if (data.results && Array.isArray(data.results)) {
+      console.log("[Server] ✅ Returning products, count:", data.results.length);
+      return {
+        products: data.results,
+        pagination: {
+          count: data.count || 0,
+          total_pages: data.total_pages || 1,
+          current_page: data.current_page || page,
+          next: data.links?.next || null,
+          previous: data.links?.previous || null
         }
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setIsLoading(false)
       }
     }
-    fetchProducts()
-  }, [ordering, rating, minRating, currentPage, minPrice, maxPrice, brandName])
-
-  const handlePageChange = (newPage) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('page', newPage.toString())
-    const currentPath = window.location.pathname
-    router.push(`${currentPath}?${params.toString()}`)
+    console.log("[Server] ❌ Conditions not met, returning empty");
+    return {
+      products: [],
+      pagination: {
+        count: 0,
+        total_pages: 1,
+        current_page: 1,
+        next: null,
+        previous: null
+      }
+    }
+  } catch (err) {
+    console.error('[Server] Error fetching series products:', err)
+    return {
+      products: [],
+      pagination: {
+        count: 0,
+        total_pages: 1,
+        current_page: 1,
+        next: null,
+        previous: null
+      }
+    }
   }
-
-  return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground h-full">
-      <BlackNavBar color="inherit" />
-
-      {/* Hover strip to open sidebar */}
-      <div
-        className="fixed left-0 top-0 w-6 h-full z-10"
-        onMouseEnter={() => setIsSidebarOpen(true)}
-      />
-
-      {/* Main Layout */}
-      <div className="flex-grow flex md:flex-row flex-col">
-        {!isSidebarOpen && (
-          <ChevronRight className="fixed top-1/2 h-5 w-5 text-primary hover:text-primary/80 transition-colors" />
-        )}
-
-        {/* Sidebar */}
-        {isSidebarOpen && (
-          <aside
-            className={`${isSidebarOpen ? "block" : "hidden"} md:w-60 sticky top-0 lg:w-72 glass card-modern border-r border-border/30 transition-all duration-300`}
-          >
-            <div className="overflow-y-auto no-scrollbar">
-              <Suspense fallback={<div className="p-4 text-muted-foreground">Loading filters...</div>}>
-                <FilterSidebar
-                  setOrdering={setOrdering}
-                  setRating={setRating}
-                  setMinRating={setMinRating}
-                  setMinPrice={setMinPrice}
-                  setMaxPrice={setMaxPrice}
-                  setBrandName={setBrandName}
-                  isSidebarOpen={isSidebarOpen}
-                  setIsSidebarOpen={setIsSidebarOpen}
-                />
-              </Suspense>
-            </div>
-          </aside>
-        )}
-
-        {/* Main Content */}
-        <main className="flex-1 p-4 md:p-8">
-          <Suspense fallback={<div className="text-muted-foreground">Loading products...</div>}>
-            <ProductGrid products={products} isLoading={isLoading} gridCols={isSidebarOpen ? 4 : 5} />
-          </Suspense>
-          <div className="flex justify-center items-center mt-8 space-x-4">
-            <Button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={!pagination.previous || currentPage === 1}
-              className="btn-futuristic bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              <ChevronLeft className="mr-2" /> Previous
-            </Button>
-            <span className="text-foreground font-medium bg-card/80 px-4 py-2 rounded-lg border border-border/30 shadow-sm">
-              {currentPage} of {pagination.total_pages}
-            </span>
-            <Button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={!pagination.next || currentPage === pagination.total_pages}
-              className="btn-futuristic bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              Next <ChevronRight className="ml-2" />
-            </Button>
-          </div>
-        </main>
-      </div>
-      <Footer />
-    </div>
-  )
 }
 
-// 🔹 Wrap the component inside Suspense when exporting
-export default function PageWrapper() {
+// Skeleton loader component
+const SkeletonLoader = () => (
+  <div className="flex flex-col min-h-screen bg-gradient-to-b from-white via-white to-slate-50/50">
+    <div className="h-6 bg-white"></div>
+    <div className="flex-grow bg-gray-0 flex flex-row relative">
+      {/* Sidebar skeleton */}
+      <aside className="hidden lg:flex lg:w-80 border-r sticky top-0 h-screen flex-col overflow-hidden bg-white">
+        <div className="px-6 py-6 border-b border-border/5">
+          <div className="h-4 bg-slate-200 rounded w-20 mb-2"></div>
+          <div className="h-1 w-6 bg-slate-200 rounded-full"></div>
+        </div>
+        <div className="flex-1 overflow-y-auto space-y-4 p-6">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="space-y-2">
+              <div className="h-3 bg-slate-200 rounded w-24"></div>
+              <div className="h-8 bg-slate-200 rounded"></div>
+            </div>
+          ))}
+        </div>
+      </aside>
+      {/* Main content skeleton */}
+      <main className="flex-1 flex flex-col">
+        <div className="border-b border-border/5 px-6 md:px-10 lg:px-12 pt-8 md:pt-8">
+          <div className="h-6 bg-slate-200 rounded w-32 mb-4"></div>
+          <div className="h-8 bg-slate-200 rounded w-48 mb-2"></div>
+          <div className="h-4 bg-slate-200 rounded w-64"></div>
+        </div>
+        <section className="flex-1 px-4 py-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div key={i} className="flex flex-col bg-white border border-border/5 rounded-xl overflow-hidden animate-pulse h-full shadow-sm">
+                <div className="relative sm:h-56 bg-slate-200" />
+                <div className="p-1 sm:p-2 flex flex-col flex-grow space-y-3">
+                  <div className="h-4 bg-slate-200 rounded w-3/4" />
+                  <div className="h-4 bg-slate-200 rounded w-1/2" />
+                  <div className="mt-auto h-10 bg-slate-200 rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+)
+
+export default async function SeriesPage({ params, searchParams }) {
+  const cat = params.cat
+  const brand = params.brand
+  const series = params.series
+  const page = parseInt(searchParams.page || '1', 10)
+  
+  console.log("[SeriesPage] Params:", { cat, brand, series, page });
+  
+  const { products, pagination } = await getInitialProducts(cat, brand, series, page)
+  
+  console.log("[SeriesPage] Fetched data:", { productsCount: products.length, pagination });
+
   return (
-    <Suspense fallback={<div className="text-white">Loading page...</div>}>
-      <StorePage />
+    <Suspense fallback={<SkeletonLoader />}>
+      <SeriesPageClient 
+        initialProducts={products} 
+        initialPagination={pagination}
+        currentPage={page}
+        cat={cat}
+        brand={brand}
+        series={series}
+      />
     </Suspense>
   )
 }

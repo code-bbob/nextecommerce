@@ -6,18 +6,20 @@ import { Star, ShoppingCart, SearchX, RotateCcw, Store, Home } from "lucide-reac
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useDispatch, useSelector } from "react-redux"
-import { useState } from "react"
+import { useState, memo } from "react"
 import { addToCart, sendCartToServer } from "@/redux/cartSlice"
 import CartSidebar from "@/components/cartSidebar"
 import { getLocalCart, setLocalCart } from "@/utils/localCart"
 import { useNavigationProgress } from "@/hooks/useNavigationProgress"
 import { getCDNImageUrl } from "@/utils/imageUtils"
 
-export default function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters }) {
+function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters }) {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const dispatch = useDispatch()
   const isLoggedIn = useSelector((state) => state.access.isAuthenticated)
   const router = useNavigationProgress()
+
+  console.log("ProductGrid received:", { count: products?.length, products, isLoading });
 
   // Skeleton loader component
   const SkeletonCard = () => (
@@ -200,3 +202,5 @@ export default function ProductGrid({ products, isLoading = false, gridCols = 5,
     </>
   )
 }
+
+export default memo(ProductGrid)

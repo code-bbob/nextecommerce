@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProductPageLayout from "@/components/ProductPageLayout";
 import customFetch from "@/utils/customFetch";
 
-export function BrandPageClient({ initialProducts, initialPagination, currentPage, cat, brand }) {
+export function SearchPageClient({ initialProducts, initialPagination, currentPage, searchQuery }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -26,9 +26,32 @@ export function BrandPageClient({ initialProducts, initialPagination, currentPag
   const [maxPrice, setMaxPrice] = useState("");
   const [brandName, setBrandName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [currentSearchQuery, setCurrentSearchQuery] = useState(searchQuery);
 
   // Debounce timer refs
   const debounceTimer = useRef(null);
+
+  // Detect when search query changes and update state
+  useEffect(() => {
+    if (searchQuery !== currentSearchQuery) {
+      setCurrentSearchQuery(searchQuery);
+      setProducts(initialProducts || []);
+      setPagination(initialPagination || {
+        count: 0,
+        total_pages: 1,
+        current_page: 1,
+        next: null,
+        previous: null
+      });
+      // Reset filters when doing a new search
+      setOrdering("");
+      setRating("");
+      setMinRating("");
+      setMinPrice("");
+      setMaxPrice("");
+      setBrandName("");
+    }
+  }, [searchQuery, currentSearchQuery, initialProducts, initialPagination]);
 
   // Fetch products with current filters
   const fetchProducts = useCallback(async (filterParams) => {
@@ -36,6 +59,10 @@ export function BrandPageClient({ initialProducts, initialPagination, currentPag
       setIsLoading(true);
 
       const queryParams = new URLSearchParams();
+
+      if (currentSearchQuery) {
+        queryParams.append("search", currentSearchQuery);
+      }
 
       if (filterParams.ordering) {
         queryParams.append("ordering", filterParams.ordering);
@@ -58,7 +85,9 @@ export function BrandPageClient({ initialProducts, initialPagination, currentPag
 
       queryParams.append("page", currentPage.toString());
 
-      const apiUrl = `shop/api/catsearch/${cat}/brand/${brand}/?${queryParams.toString()}`;
+      const apiUrl = currentSearchQuery
+        ? `shop/api/search/?${queryParams.toString()}`
+        : `shop/api/?${queryParams.toString()}`;
 
       const res = await customFetch(apiUrl);
       const data = await res.json();
@@ -80,7 +109,7 @@ export function BrandPageClient({ initialProducts, initialPagination, currentPag
     } finally {
       setIsLoading(false);
     }
-  }, [cat, brand, currentPage]);
+  }, [currentSearchQuery, currentPage]);
 
   // Debounced filter update function
   const updateFiltersWithDebounce = useCallback((newFilters) => {
@@ -90,7 +119,7 @@ export function BrandPageClient({ initialProducts, initialPagination, currentPag
 
     debounceTimer.current = setTimeout(() => {
       fetchProducts(newFilters);
-    }, 300);
+    }, 300); // 300ms debounce
   }, [fetchProducts]);
 
   // Handle ordering change
@@ -179,8 +208,8 @@ export function BrandPageClient({ initialProducts, initialPagination, currentPag
     router.push(`${currentPath}?${paramsObj.toString()}`);
   };
 
-  const pageTitle = `${brand.charAt(0).toUpperCase() + brand.slice(1)}`;
-  const pageDescription = `Browse our collection of ${brand} products in ${cat}`;
+  const pageTitle = searchQuery ? `Search Results for "${searchQuery}"` : "Products";
+  const pageDescription = searchQuery ? `${pagination.count || 0} products found` : "Browse all available products";
 
   return (
     <ProductPageLayout
@@ -196,14 +225,8 @@ export function BrandPageClient({ initialProducts, initialPagination, currentPag
       onBrandNameChange={handleBrandNameChange}
       pageTitle={pageTitle}
       pageDescription={pageDescription}
-      breadcrumbItems={[
-        { label: "Home", href: "/" },
-        { label: "Categories", href: "/" },
-        { label: cat.charAt(0).toUpperCase() + cat.slice(1), href: `/${cat}` },
-        { label: brand }
-      ]}
-      gridCols={4}
       isLoading={isLoading}
+      gridCols={4}
     />
   );
 }
