@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ProductPageLayout from "@/components/ProductPageLayout";
+import customFetch from "@/utils/customFetch";
 
 export function DealsPageClient({ initialProducts, currentPage }) {
   const router = useRouter();
@@ -14,6 +15,15 @@ export function DealsPageClient({ initialProducts, currentPage }) {
     next: initialProducts.links?.next,
     previous: initialProducts.links?.previous,
   });
+  const [filters, setFilters] = useState({
+    ordering: "",
+    rating: "",
+    minRating: "",
+    minPrice: "",
+    maxPrice: "",
+    brandName: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
   // Update state when initialProducts changes (when page changes)
   useEffect(() => {
@@ -27,11 +37,96 @@ export function DealsPageClient({ initialProducts, currentPage }) {
     });
   }, [initialProducts, currentPage]);
 
+  const fetchFilteredProducts = async (newFilters, page = 1) => {
+    setIsLoading(true);
+    try {
+      const queryString = new URLSearchParams();
+      queryString.set("page", page.toString());
+      if (newFilters.ordering) queryString.set("ordering", newFilters.ordering);
+      if (newFilters.rating) queryString.set("rating", newFilters.rating);
+      if (newFilters.minRating) queryString.set("min_rating", newFilters.minRating);
+      if (newFilters.minPrice) queryString.set("min_price", newFilters.minPrice);
+      if (newFilters.maxPrice) queryString.set("max_price", newFilters.maxPrice);
+      if (newFilters.brandName) queryString.set("brand_name", newFilters.brandName);
+
+      const apiUrl = `shop/api/deals/?${queryString.toString()}`;
+      console.log('Fetching from:', apiUrl);
+      const res = await customFetch(apiUrl);
+      const data = await res.json();
+      console.log('API Response:', data);
+
+      if (data.results) {
+        console.log('Setting products:', data.results.length);
+        setProducts(data.results);
+      } else if (Array.isArray(data)) {
+        console.log('Response is array:', data.length);
+        setProducts(data);
+      } else {
+        console.warn('Unexpected API response structure:', data);
+        setProducts([]);
+      }
+
+      setPagination({
+        count: data.count || 0,
+        total_pages: data.total_pages || 1,
+        current_page: data.current_page || 1,
+        next: data.links?.next,
+        previous: data.links?.previous,
+      });
+    } catch (error) {
+      console.error("Error fetching filtered deals:", error);
+      setProducts([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handlePageChange = (newPage) => {
     const params = new URLSearchParams();
     params.set("page", newPage.toString());
-    const currentPath = window.location.pathname;
-    router.push(`${currentPath}?${params.toString()}`);
+    if (filters.ordering) params.set("ordering", filters.ordering);
+    if (filters.rating) params.set("rating", filters.rating);
+    if (filters.minRating) params.set("min_rating", filters.minRating);
+    if (filters.minPrice) params.set("min_price", filters.minPrice);
+    if (filters.maxPrice) params.set("max_price", filters.maxPrice);
+    if (filters.brandName) params.set("brand_name", filters.brandName);
+    router.push(`?${params.toString()}`);
+  };
+
+  const handleOrderingChange = (value) => {
+    const newFilters = { ...filters, ordering: value };
+    setFilters(newFilters);
+    fetchFilteredProducts(newFilters, 1);
+  };
+
+  const handleRatingChange = (value) => {
+    const newFilters = { ...filters, rating: value };
+    setFilters(newFilters);
+    fetchFilteredProducts(newFilters, 1);
+  };
+
+  const handleMinRatingChange = (value) => {
+    const newFilters = { ...filters, minRating: value };
+    setFilters(newFilters);
+    fetchFilteredProducts(newFilters, 1);
+  };
+
+  const handleMinPriceChange = (value) => {
+    const newFilters = { ...filters, minPrice: value };
+    setFilters(newFilters);
+    fetchFilteredProducts(newFilters, 1);
+  };
+
+  const handleMaxPriceChange = (value) => {
+    const newFilters = { ...filters, maxPrice: value };
+    setFilters(newFilters);
+    fetchFilteredProducts(newFilters, 1);
+  };
+
+  const handleBrandNameChange = (value) => {
+    const newFilters = { ...filters, brandName: value };
+    setFilters(newFilters);
+    fetchFilteredProducts(newFilters, 1);
   };
 
   return (
@@ -40,6 +135,12 @@ export function DealsPageClient({ initialProducts, currentPage }) {
       pagination={pagination}
       currentPage={pagination.current_page}
       onPageChange={handlePageChange}
+      onOrderingChange={handleOrderingChange}
+      onRatingChange={handleRatingChange}
+      onMinRatingChange={handleMinRatingChange}
+      onMinPriceChange={handleMinPriceChange}
+      onMaxPriceChange={handleMaxPriceChange}
+      onBrandNameChange={handleBrandNameChange}
       pageTitle="Deals of the Day"
       pageDescription={`Check out ${pagination.count} exclusive deals and discounts`}
       breadcrumbItems={[
@@ -47,6 +148,7 @@ export function DealsPageClient({ initialProducts, currentPage }) {
         { label: "Deals" },
       ]}
       gridCols={4}
+      isLoading={isLoading}
     />
   );
 }

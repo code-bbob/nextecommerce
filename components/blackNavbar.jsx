@@ -110,7 +110,7 @@ export default function BlackNavBar({ color = "black" }) {
   useEffect(() => {
     let intervalId;
     const timerId = setTimeout(() => {
-      const targetDate = new Date("2025-10-10T23:59:59+05:45").getTime();
+      const targetDate = new Date("2026-01-10T23:59:59+05:45").getTime();
       intervalId = setInterval(() => {
         const now = Date.now();
         const diff = targetDate - now;
@@ -542,7 +542,7 @@ export default function BlackNavBar({ color = "black" }) {
               >
                 <Zap className="h-5 w-5 text-orange-500" />
                 <div>
-                  <p className="text-orange-500">Dashain Tihar 2082</p>
+                  <p className="text-orange-500">New Year 2026</p>
                   {countdown && (
                     <p className="text-sm">
                       <span className="text-orange-500">Deals: </span>
