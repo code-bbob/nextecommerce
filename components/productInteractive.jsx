@@ -1,60 +1,87 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import Image from "next/image";
-import { Heart, X, Star, Truck, Search } from "lucide-react";
+import { Heart, X, Star, Truck } from "lucide-react";
 import CartSidebar from "@/components/cartSidebar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, sendCartToServer } from "@/redux/cartSlice";
 import customFetch from "@/utils/customFetch";
 import toast from "react-hot-toast";
 import { useNavigationProgress } from "@/hooks/useNavigationProgress";
-import { getLocalCart, setLocalCart }from "@/utils/localCart";
+import { getLocalCart, setLocalCart } from "@/utils/localCart";
 import { getCDNImageUrl, preloadImages } from "@/utils/imageUtils";
-
 
 export default function ProductInteractive({ product }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  
+  const carouselApi = useRef(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   // Memoize color options to avoid recalculation
   const colorOptions = useMemo(() => {
-    if (!product?.images || !Array.isArray(product.images) || product.images.length === 0) return [];
+    if (
+      !product?.images ||
+      !Array.isArray(product.images) ||
+      product.images.length === 0
+    )
+      return [];
     return Array.from(
       new Map(
         product.images
           .filter((img) => img && img.color && (img.hex || img.color_name))
-          .map((img) => [img.color, { color: img.color, color_name: img.color_name, hex: img.hex }])
+          .map((img) => [
+            img.color,
+            { color: img.color, color_name: img.color_name, hex: img.hex },
+          ])
       ).values()
     );
   }, [product?.images]);
 
   const [selectedColor, setSelectedColor] = useState(null);
-  
+
   // Default image - set directly without callback
   const defaultImageUrl = useMemo(() => {
-    if (!product?.images || product.images.length === 0) return "/placeholder.svg";
+    if (!product?.images || product.images.length === 0)
+      return "/placeholder.svg";
     return getCDNImageUrl(product.images[0]?.image) || "/placeholder.svg";
   }, [product?.images]);
-  
+
   const [selectedImage, setSelectedImage] = useState(defaultImageUrl);
   const [modalImage, setModalImage] = useState(null);
   const router = useNavigationProgress();
 
-  // Amazon-style zoom states
-  const [showZoom, setShowZoom] = useState(false);
-  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  // Get all unique images to enable sliding
+  const allImages = useMemo(() => {
+    if (!product?.images || !Array.isArray(product.images)) return [];
+    return product.images.map(img => getCDNImageUrl(img.image)).filter(Boolean);
+  }, [product?.images]);
+
+  // Mobile detection
   const [isMobile, setIsMobile] = useState(false);
+
+  // Track carousel dragging to distinguish from clicks
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartX = useCallback((e) => {
+    setIsDragging(false);
+  }, []);
+  const dragMove = useCallback(() => {
+    setIsDragging(true);
+  }, []);
+  const dragEnd = useCallback(() => {
+    setIsDragging(false);
+  }, []);
 
   // Check if device is mobile - only run on mount
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
-    
+
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   // Local state for discussion comments
@@ -67,19 +94,27 @@ export default function ProductInteractive({ product }) {
   // Defer image preloading to avoid blocking initial render
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (product?.images && Array.isArray(product.images) && product.images.length > 0) {
-        const imageUrls = product.images.map(img => img.image).filter(Boolean);
+      if (
+        product?.images &&
+        Array.isArray(product.images) &&
+        product.images.length > 0
+      ) {
+        const imageUrls = product.images
+          .map((img) => img.image)
+          .filter(Boolean);
         preloadImages(imageUrls);
       }
     }, 500); // Defer 500ms after initial render
-    
+
     return () => clearTimeout(timer);
   }, [product?.images]);
 
   // When color changes, update selected image
   useEffect(() => {
     if (selectedColor && product?.images && product.images.length > 0) {
-      const colorImg = product.images.find((img) => img.color === selectedColor);
+      const colorImg = product.images.find(
+        (img) => img.color === selectedColor
+      );
       if (colorImg) setSelectedImage(getCDNImageUrl(colorImg.image));
     }
   }, [selectedColor, product?.images]);
@@ -88,7 +123,7 @@ export default function ProductInteractive({ product }) {
     const cartItem = {
       product_id: product.product_id,
       price: product.price,
-      image: getCDNImageUrl((product.images?.[0]?.image)),
+      image: getCDNImageUrl(product.images?.[0]?.image),
       name: product.name,
       quantity: 1,
     };
@@ -97,17 +132,18 @@ export default function ProductInteractive({ product }) {
 
     if (isLoggedIn) {
       dispatch(sendCartToServer(cartItem));
-    }
-    else{
-      const localCart = getLocalCart()
-      const existingIndex = localCart.findIndex((item) => item.product_id === product.product_id)
+    } else {
+      const localCart = getLocalCart();
+      const existingIndex = localCart.findIndex(
+        (item) => item.product_id === product.product_id
+      );
       if (existingIndex !== -1) {
         // Increase quantity if already exists
-        localCart[existingIndex].quantity += 1
+        localCart[existingIndex].quantity += 1;
       } else {
-        localCart.push(cartItem)
+        localCart.push(cartItem);
       }
-      setLocalCart(localCart)
+      setLocalCart(localCart);
     }
     setIsCartOpen(true);
   }, [dispatch, isLoggedIn, product]);
@@ -143,31 +179,15 @@ export default function ProductInteractive({ product }) {
     }
   };
 
-  // Amazon-style zoom handlers (desktop only)
-  const handleMouseEnter = () => {
-    if (!isMobile) {
-      setShowZoom(true);
+  // Slider navigation handlers
+  const handleGridImageClick = useCallback((clickedImage) => {
+    const clickedIndex = allImages.indexOf(clickedImage);
+    if (clickedIndex !== -1 && carouselApi.current) {
+      carouselApi.current.scrollTo(clickedIndex);
+      setCurrentImageIndex(clickedIndex);
+      setSelectedImage(clickedImage);
     }
-  };
-
-  const handleMouseLeave = () => {
-    if (!isMobile) {
-      setShowZoom(false);
-    }
-  };
-
-  const handleMouseMove = (e) => {
-    if (isMobile) return;
-    
-    const element = e.currentTarget;
-    const { top, left, width, height } = element.getBoundingClientRect();
-    
-    // Calculate mouse position relative to the image (0-100%)
-    const x = ((e.clientX - left) / width) * 100;
-    const y = ((e.clientY - top) / height) * 100;
-    
-    setZoomPosition({ x, y });
-  };
+  }, [allImages]);
 
   return (
     <div>
@@ -177,15 +197,15 @@ export default function ProductInteractive({ product }) {
           {/* Product Images */}
           <div className="space-y-4">
             <div className="md:hidden space-y-4">
-
-          <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-primary to-primary/60" />
-                <span className="font-medium text-foreground">{product.brandName}</span>
+                <span className="font-medium text-foreground">
+                  {product.brandName}
+                </span>
               </div>
-      <h2 className="text-xl font-bold text-foreground">
-          
+              <h2 className="text-xl font-bold text-foreground">
                 {product.name}
-        </h2>
+              </h2>
               <div className="flex items-center space-x-2">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -202,82 +222,88 @@ export default function ProductInteractive({ product }) {
                 </span>
               </div>
             </div>
-            <div
-              className={`relative w-auto h-auto min-h-60 md:min-h-96 rounded-lg overflow-hidden border border-gray-800 bg-inherit backdrop-blur-sm p-4 group ${
-                isMobile ? "cursor-pointer" : "cursor-crosshair"
-              }`}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onMouseMove={handleMouseMove}
-              onClick={isMobile ? () => setModalImage(selectedImage) : undefined}
+            <Carousel 
+              className="w-full rounded-lg overflow-hidden bg-card/30"
+              setApi={(api) => {
+                carouselApi.current = api;
+                if (api) {
+                  api.on("select", () => {
+                    setCurrentImageIndex(api.selectedIndex);
+                    setSelectedImage(allImages[api.selectedIndex]);
+                  });
+                }
+              }}
+              onMouseDown={dragStartX}
+              onMouseMove={dragMove}
+              onMouseUp={dragEnd}
+              onMouseLeave={dragEnd}
+              onTouchStart={dragStartX}
+              onTouchMove={dragMove}
+              onTouchEnd={dragEnd}
             >
-              <Image
-                src={selectedImage || "/placeholder.svg"}
-                alt={product.name}
-                fill
-                className="object-contain md:object- mr-4"
-                priority={true} // Load main image immediately for fast LCP
-                sizes="(max-width: 768px) 100vw, 50vw" // Responsive sizing for performance
-              />
-              
-              {/* Zoom indicator */}
-              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-card/80 backdrop-blur-sm text-foreground p-2 rounded-full border border-border shadow-sm">
-                <Search className="w-4 h-4" />
-                <span className="sr-only">
-                  {isMobile ? 'Tap to enlarge' : 'Hover to zoom'}
-                </span>
-              </div>
-              
-              {/* Amazon-style Lens Overlay */}
-              {showZoom && !isMobile && (
-                <div
-                  className="absolute pointer-events-none border border-gray-900 bg-white bg-opacity-20 backdrop-blur-sm transition-all duration-75 ease-out shadow-lg"
-                  style={{
-                    width: '120px',
-                    height: '120px',
-                    left: `${Math.max(10, Math.min(zoomPosition.x, 90))}%`,
-                    top: `${Math.max(10, Math.min(zoomPosition.y, 90))}%`,
-                    transform: 'translate(-50%, -50%)',
-                    borderRadius: '6px',
-                  }}
-                />
+              <CarouselContent className="h-60 md:h-[60vh]">
+                {allImages.map((img, idx) => (
+                  <CarouselItem key={idx} className="flex items-center justify-center">
+                    <div 
+                      className="relative w-full h-full cursor-pointer"
+                      onClick={() => {
+                        if (!isDragging) {
+                          setModalImage(img);
+                        }
+                      }}
+                    >
+                      <Image
+                        src={img}
+                        alt={`${product.name} - ${idx + 1}`}
+                        fill
+                        className="object-contain p-4 pointer-events-none"
+                        priority={idx === 0}
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {allImages.length > 1 && (
+                <>
+                  <CarouselPrevious className="left-4 bg-black/50 hover:bg-black/70 text-white border-0 h-10 w-10" />
+                  <CarouselNext className="right-4 bg-black/50 hover:bg-black/70 text-white border-0 h-10 w-10" />
+                </>
               )}
-            </div>
-            <div className="grid grid-cols-4 gap-4">
+            </Carousel>
+            <div className="grid grid-cols-4">
               {(() => {
                 let coloredImage = false;
-                // Show all images without a color attribute, and only the first image for each color
-                const seenColors = new Set();
                 return (product.images || [])
                   .filter((img) => {
-                    if (!img.color) return true; // show all images without color
+                    if (!img.color)
+                      return true;
                     else {
                       if (!coloredImage) {
                         coloredImage = true;
-                        return true; // show first image for this color
+                        return true;
                       }
                       return false;
                     }
-                    return false; // skip subsequent images with same color
+                    return false;
                   })
                   .map((img, i) => {
                     const cdnImageUrl = getCDNImageUrl(img.image);
                     return (
                       <div
                         key={cdnImageUrl + i}
-                        className={`relative aspect-square rounded-lg overflow-hidden border ${
-                          selectedImage === cdnImageUrl
+                        className={`relative aspect-square overflow-hidden border ${
+                          allImages[currentImageIndex] === cdnImageUrl
                             ? "border-primary shadow-md"
                             : "border-border"
-                        } bg-card/50 backdrop-blur-sm hover:border-primary cursor-pointer transition-all duration-200 hover:shadow-md`}
-                        onMouseEnter={() => setSelectedImage(cdnImageUrl)}
-                        onClick={() => setSelectedImage(cdnImageUrl)}
+                        } bg-card/50 backdrop-blur-sm hover:scale-105 cursor-pointer transition-all duration-200 hover:shadow-md`}
+                        onClick={() => handleGridImageClick(cdnImageUrl)}
                       >
                         <Image
                           src={cdnImageUrl || "/placeholder.svg"}
                           alt={`${product.name} - Image ${i + 1}`}
                           fill
-                          className="object-cover"
+                          className="object-contain"
                           loading={i < 4 ? "eager" : "lazy"}
                           sizes="(max-width: 768px) 25vw, 12vw"
                         />
@@ -286,42 +312,46 @@ export default function ProductInteractive({ product }) {
                   });
               })()}
             </div>
-             {/* Cool Attributes Table */}
-             {product?.attributes && product.attributes.length > 0 && (
-             <div className="mt-8 hidden md:block">
-              <h2 className="text-2xl font-bold mb-4 text-primary text-center">
-                Product Attributes
-              </h2>
-              <div className="overflow-hidden rounded-lg shadow-modern border border-border">
-                <table className="min-w-full bg-card">
-                  <thead className="bg-muted/50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
-                        Key
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
-                        Value
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {(product.attributes || []).map((attr, index) => (
-                      attr.value && (
-                      <tr key={index} className="hover:bg-accent/50 transition-colors duration-200">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground font-medium">
-                          {attr.attribute}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-foreground">
-                          {attr.value}
-                        </td>
+            {/* Cool Attributes Table */}
+            {product?.attributes && product.attributes.length > 0 && (
+              <div className="mt-8 hidden md:block">
+                <h2 className="text-2xl font-bold mb-4 text-primary text-center">
+                  Product Attributes
+                </h2>
+                <div className="overflow-hidden rounded-lg shadow-modern border border-border">
+                  <table className="min-w-full bg-card">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                          Key
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                          Value
+                        </th>
                       </tr>
-                      )
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {(product.attributes || []).map(
+                        (attr, index) =>
+                          attr.value && (
+                            <tr
+                              key={index}
+                              className="hover:bg-accent/50 transition-colors duration-200"
+                            >
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground font-medium">
+                                {attr.attribute}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-foreground">
+                                {attr.value}
+                              </td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-          )}
+            )}
             {/* End of Attributes Table */}
           </div>
 
@@ -330,9 +360,11 @@ export default function ProductInteractive({ product }) {
             <div className="space-y-2 hidden md:block">
               <div className="flex items-center space-x-2">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-primary to-primary/60" />
-                <span className="font-medium text-foreground">{product.brandName}</span>
+                <span className="font-bold text-foreground">
+                  {product.brandName}
+                </span>
               </div>
-              <h2 className="text-3xl font-bold text-foreground">
+              <h2 className="text-2xl font-bold text-foreground">
                 {product.name}
               </h2>
               <div className="flex items-center space-x-2">
@@ -351,35 +383,27 @@ export default function ProductInteractive({ product }) {
                 </span>
               </div>
             </div>
-            <div className="flex gap-3">
-            <div className="text-xl md:text-3xl text-primary font-bold">
-              RS. {product.price.toFixed(2)}
-            </div>
-            {product.before_deal_price && (
-            <strike className="text-xl md:text-2xl text-amber-600 font-bold">
-              RS. {product.before_deal_price?.toFixed(2)}
-            </strike>
-            )}
-            {product.old_price && (
-            <strike className="text-xl md:text-2xl text-muted-foreground font-bold">
-              RS. {product.old_price?.toFixed(2)}
-            </strike>
+            <div className="flex items-baseline gap-3">
+              {product.before_deal_price && (
+                <strike className="text-xl md:text-sm text-amber-600 font-bold">
+                  RS. {product.before_deal_price?.toFixed(2)}
+                </strike>
               )}
-
-            </div>
-
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <p className=" font-bold">
-                  Category: {product.category}
-                </p>
-                <p className="text-muted-foreground font-bold">Series: {product.series}</p>
+              {product.old_price && (
+                <strike className="text-xl md:text-sm text-muted-foreground font-bold">
+                  RS. {product.old_price?.toFixed(2)}
+                </strike>
+              )}
+              <div className="text-xl md:text-2xl text-primary font-bold">
+                RS. {product.price.toFixed(2)}
               </div>
             </div>
-            {/* Color Picker below main image */}
+
             {colorOptions.length > 0 && (
               <div className="flex items-center gap-3 mt-4 mb-2">
-                <span className="text-sm font-semibold text-black">Pick a color:</span>
+                <span className="text-sm font-semibold text-black">
+                  Pick a color:
+                </span>
                 {colorOptions.map((opt) => (
                   <button
                     key={opt.color}
@@ -388,7 +412,13 @@ export default function ProductInteractive({ product }) {
                         ? "border-primary ring-2 ring-primary"
                         : "border-gray-300 hover:border-primary"
                     }`}
-                    style={{ background: opt.hex || (opt.color_name ? opt.color_name.toLowerCase() : "#eee") }}
+                    style={{
+                      background:
+                        opt.hex ||
+                        (opt.color_name
+                          ? opt.color_name.toLowerCase()
+                          : "#eee"),
+                    }}
                     title={opt.color_name || "Color"}
                     aria-label={opt.color_name || "Color"}
                     onClick={() => setSelectedColor(opt.color)}
@@ -400,12 +430,13 @@ export default function ProductInteractive({ product }) {
                 ))}
                 {/* Show color name of selected */}
                 <span className="ml-2 text-xs font-bold text-foreground">
-                  {colorOptions.find((c) => c.color === selectedColor)?.color_name}
+                  {
+                    colorOptions.find((c) => c.color === selectedColor)
+                      ?.color_name
+                  }
                 </span>
               </div>
             )}
-
-
 
             <div className="flex space-x-2 bg-card/50 border border-border rounded-lg p-4 md:space-x-4 shadow-sm">
               <Button
@@ -437,45 +468,47 @@ export default function ProductInteractive({ product }) {
 
             <div className="flex items-center text-sm text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-lg p-3">
               <Truck className="w-4 h-4 mr-2" />
-              <span className="font-medium">Free delivery on orders over RS. 150</span>
+              <span className="font-medium">
+                Free delivery on orders over RS. 150
+              </span>
             </div>
 
             {product?.attributes && product.attributes.length > 0 && (
-             <div className="mt-8 block md:hidden">
-              <h2 className="text-2xl font-bold mb-4 text-red-500">
-                Product Attributes
-              </h2>
-              <div className="overflow-hidden rounded-lg shadow-modern border border-border">
-                <table className="min-w-full bg-card">
-                  <thead className="bg-muted/50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
-                        Key
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
-                        Value
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {(product.attributes || []).map((attr, index) => (
-                      attr.value &&(
-                      <tr key={index} className="">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm ">
-                          {attr.attribute}
-                        </td>
-                        <td className="px-6 py-4 text-sm ">
-                          {attr.value}
-                        </td>
-                      </tr>)
-
-                    ))}
-                  </tbody>
-                </table>
+              <div className="mt-8 block md:hidden">
+                <h2 className="text-2xl font-bold mb-4 text-red-500">
+                  Product Attributes
+                </h2>
+                <div className="overflow-hidden rounded-lg shadow-modern border border-border">
+                  <table className="min-w-full bg-card">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                          Key
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                          Value
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {(product.attributes || []).map(
+                        (attr, index) =>
+                          attr.value && (
+                            <tr key={index} className="">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm ">
+                                {attr.attribute}
+                              </td>
+                              <td className="px-6 py-4 text-sm ">
+                                {attr.value}
+                              </td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-          )}
-
+            )}
 
             {/* Tabs for additional information */}
             <Tabs defaultValue="details" className="w-full">
@@ -556,69 +589,64 @@ export default function ProductInteractive({ product }) {
                 </div>
 
                 {/* List of Individual Rating Reviews */}
-                {product.ratings.data &&
-                  product.ratings.data.length > 0 && (
-                    <div className="mt-6 space-y-4">
-                      {product.ratings.data.map((rate) => (
-                        <div
-                          key={rate.id}
-                          className="bg-gray-900 text-white rounded-lg p-4 space-y-2"
-                        >
-                          <div className="flex items-center space-x-2">
-                            {!rate.user_dp && (
-                              <Avatar>
-                                <AvatarFallback className="bg-black">
-                                  {rate.user[0].toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
-                            )}
-                            {rate.user_dp && (
-                              <Image
-                                src={rate.user_dp}
-                                alt="User avatar"
-                                width={32}
-                                height={32}
-                                className="rounded-full"
-                              />
-                            )}
-                            <div className="flex flex-col">
-                              <span className="font-medium">
-                                {rate.user}
-                              </span>
-                              <div className="flex">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star
-                                    key={i}
-                                    className={`w-4 h-4 ${
-                                      i < rate.rating
-                                        ? "text-yellow-400 fill-yellow-400"
-                                        : "text-gray-600 fill-gray-600"
-                                    }`}
-                                  />
-                                ))}
-                              </div>
+                {product.ratings.data && product.ratings.data.length > 0 && (
+                  <div className="mt-6 space-y-4">
+                    {product.ratings.data.map((rate) => (
+                      <div
+                        key={rate.id}
+                        className="bg-gray-900 text-white rounded-lg p-4 space-y-2"
+                      >
+                        <div className="flex items-center space-x-2">
+                          {!rate.user_dp && (
+                            <Avatar>
+                              <AvatarFallback className="bg-black">
+                                {rate.user[0].toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                          )}
+                          {rate.user_dp && (
+                            <Image
+                              src={rate.user_dp}
+                              alt="User avatar"
+                              width={32}
+                              height={32}
+                              className="rounded-full"
+                            />
+                          )}
+                          <div className="flex flex-col">
+                            <span className="font-medium">{rate.user}</span>
+                            <div className="flex">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`w-4 h-4 ${
+                                    i < rate.rating
+                                      ? "text-yellow-400 fill-yellow-400"
+                                      : "text-gray-600 fill-gray-600"
+                                  }`}
+                                />
+                              ))}
                             </div>
                           </div>
-                          {rate.comment && (
-                            <p className="">{rate.comment}</p>
-                          )}
-                          {/* Display the image thumbnail if available */}
-                          {rate.image && (
-                            <div className="mt-2">
-                              <Image
-                                src={rate.image}
-                                alt="Review image"
-                                width={400}
-                                height={300}
-                                className="object-cover rounded cursor-pointer"
-                                onClick={() => setModalImage(rate.image)}
-                              />
-                            </div>
-                          )}
                         </div>
-                      ))}
-                    </div>
-                  )}
+                        {rate.comment && <p className="">{rate.comment}</p>}
+                        {/* Display the image thumbnail if available */}
+                        {rate.image && (
+                          <div className="mt-2">
+                            <Image
+                              src={rate.image}
+                              alt="Review image"
+                              width={400}
+                              height={300}
+                              className="object-cover rounded cursor-pointer"
+                              onClick={() => setModalImage(rate.image)}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </TabsContent>
 
               {/* Discussion Tab */}
@@ -647,11 +675,11 @@ export default function ProductInteractive({ product }) {
                         />
                       )}
                       <div className="flex-1 space-y-1">
-                        <p className="font-medium ">
-                          {comment.user}
-                        </p>
+                        <p className="font-medium ">{comment.user}</p>
                         <p className="text-sm text-white/50">
-                          {new Date(comment.published_date).toLocaleDateString()}
+                          {new Date(
+                            comment.published_date
+                          ).toLocaleDateString()}
                         </p>
                         <p className="">{comment.text}</p>
                       </div>
@@ -680,11 +708,11 @@ export default function ProductInteractive({ product }) {
                               />
                             )}
                             <div className="flex-1 space-y-1">
-                              <p className="font-medium ">
-                                {reply.user}
-                              </p>
+                              <p className="font-medium ">{reply.user}</p>
                               <p className="text-sm text-gray-400">
-                                {new Date(reply.published_date).toLocaleDateString()}
+                                {new Date(
+                                  reply.published_date
+                                ).toLocaleDateString()}
                               </p>
                               <p className="">{reply.text}</p>
                             </div>
@@ -706,65 +734,61 @@ export default function ProductInteractive({ product }) {
                       className="w-full p-2 rounded border  text-white"
                       placeholder="Write your comment..."
                     />
-                    <Button type="submit" className="mt-2 bg-red-700 hover:bg-red-700">
+                    <Button
+                      type="submit"
+                      className="mt-2 bg-red-700 hover:bg-red-700"
+                    >
                       Post Comment
                     </Button>
                   </form>
                 </div>
               </TabsContent>
             </Tabs>
-
           </div>
 
           {/* Amazon-style Zoom Window (Desktop only) - Modal Overlay */}
-          {showZoom && !isMobile && (
-            <div className="fixed inset-0 pointer-events-none z-50">
-              <div className="absolute right-0 top-0 h-full w-1/2 bg-black bg-opacity-20 backdrop-blur-sm">
-                <div className="flex items-center justify-center h-full p-8">
-                  <div className="w-full max-w-lg h-96 border-2 border-gray-600 rounded-lg overflow-hidden bg-white shadow-2xl pointer-events-auto">
-                    <div
-                      className="w-full h-full transition-all duration-75 ease-out"
-                      style={{
-                        backgroundImage: `url(${selectedImage})`,
-                        backgroundSize: '400%',
-                        backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                        backgroundRepeat: 'no-repeat',
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-auto">
-                  <p className="text-white text-sm font-medium drop-shadow-lg">
-                    🔍 Zoomed View
-                  </p>
-                  <p className="text-gray-300 text-xs drop-shadow-lg">
-                    Move mouse over image to zoom
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
-        {/* Modal for enlarged image */}
+        {/* Modal for enlarged image - Fullscreen Slideshow */}
         {modalImage && (
           <div
-            className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50"
+            className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm z-50"
             onClick={() => setModalImage(null)}
           >
-            <div className="relative" onClick={(e) => e.stopPropagation()}>
+            <div className="relative w-full h-full flex items-center justify-center overflow-hidden" onClick={(e) => e.stopPropagation()}>
+              {/* Close Button */}
               <button
-                className="absolute top-2 right-2 text-white z-10"
+                className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-50 p-2 bg-black/40 hover:bg-black/60 rounded-full"
                 onClick={() => setModalImage(null)}
+                aria-label="Close image"
               >
-                <X size={24} />
+                <X size={28} />
               </button>
-              <Image
-                src={modalImage}
-                alt="Enlarged review image"
-                width={800}
-                height={600}
-                className="object-contain rounded"
-              />
+
+              {/* Carousel for Modal */}
+              <Carousel className="w-full max-w-4xl" opts={{ loop: true }}>
+                <CarouselContent>
+                  {allImages.map((img, idx) => (
+                    <CarouselItem key={idx} className="flex items-center justify-center">
+                      <div className="relative w-full aspect-square md:aspect-auto md:h-[80vh] flex items-center justify-center">
+                        <Image
+                          src={img}
+                          alt={`Image ${idx + 1}`}
+                          fill
+                          className="object-contain p-4"
+                          priority={idx === 0}
+                          sizes="(max-width: 768px) 100vw, 80vw"
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                {allImages.length > 1 && (
+                  <>
+                    <CarouselPrevious className="left-4 bg-black/50 hover:bg-black/70 text-white border-0 h-12 w-12" />
+                    <CarouselNext className="right-4 bg-black/50 hover:bg-black/70 text-white border-0 h-12 w-12" />
+                  </>
+                )}
+              </Carousel>
             </div>
           </div>
         )}
