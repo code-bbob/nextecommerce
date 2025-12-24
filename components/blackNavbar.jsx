@@ -332,7 +332,7 @@ export default function BlackNavBar({ color = "black" }) {
             }}
           />
           <div
-            className="fixed top-2 left-1/2 -translate-x-1/2 w-11/12 max-w-xl z-50"
+            className="fixed top-2 left-1/2 -translate-x-1/2 w-full z-50"
             onClick={(e) => e.stopPropagation()}
           >
             <form

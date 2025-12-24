@@ -91,60 +91,79 @@ export default function CartSidebar({ isOpen, onClose }) {
   return (
     <>
       <Toaster position="top-center" reverseOrder={false}/>
-      {isOpen && <div className="fixed  bg-background/80 backdrop-blur-sm z-40" onClick={onClose}></div>}
+      {isOpen && <div className="fixed bg-black/40 backdrop-blur-sm z-40" onClick={onClose}></div>}
 
       <div
         ref={sidebarRef}
-        className={`fixed top-0 right-0 w-80 md:w-96 h-screen bg-card/95 backdrop-blur-md text-foreground shadow-modern border-l border-border transform transition-transform duration-300 z-50 flex flex-col
+        className={`fixed top-0 right-0 w-80 md:w-96 h-screen bg-white dark:bg-slate-950 text-foreground shadow-2xl border-l border-slate-200 dark:border-slate-800 transform transition-transform duration-300 z-50 flex flex-col
           ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-border">
-          <h2 className="text-xl font-bold text-foreground">My Cart</h2>
-          <button onClick={onClose} aria-label="Close Cart Sidebar" className="hover:text-primary transition-colors duration-200">
-            <X className="text-foreground h-5 w-5" />
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-slate-800">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Cart</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{items.length} {items.length === 1 ? 'item' : 'items'}</p>
+          </div>
+          <button onClick={onClose} aria-label="Close Cart Sidebar" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-full transition-colors duration-200">
+            <X className="text-slate-600 dark:text-slate-400 h-5 w-5" />
           </button>
         </div>
 
+        {/* Items Container */}
         <div className="flex-grow overflow-y-auto">
-          <div className="p-4 flex flex-col gap-4">
+          <div className="px-4 py-6 flex flex-col gap-3">
             {items.length === 0 ? (
-              <p className="text-muted-foreground">Your cart is empty.</p>
+              <div className="flex flex-col items-center justify-center py-12 px-4">
+                <div className="text-5xl mb-4">🛒</div>
+                <p className="text-slate-500 dark:text-slate-400 text-center">Your cart is empty</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500 text-center mt-2">Add items to get started</p>
+              </div>
             ) : (
               items.map((item) => (
-                <div key={item.product_id} className="flex items-center gap-4 p-3 bg-card/50 rounded-lg border border-border/30 hover:bg-accent/50 transition-colors duration-200">
-                  <div className="relative w-24 h-24 flex-shrink-0">
+                <div key={item.product_id} className="group flex gap-3 p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900/60 transition-all duration-200 border border-slate-100 dark:border-slate-800">
+                  {/* Product Image */}
+                  <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-white dark:bg-slate-800">
                     <Image
                       src={getCDNImageUrl(item.image) || "/placeholder.svg"}
                       alt={item.name}
                       fill
                       style={{ objectFit: "contain" }}
-                      className="object-cover rounded"
-                      sizes="64px"
+                      className="object-cover p-1"
+                      sizes="80px"
                     />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-foreground truncate">{item.name}</p>
-                    <p className="text-sm text-primary font-medium">RS. {item.price?.toFixed(2)}</p>
-                    <div className="flex items-center mt-1 space-x-2">
-                      <button
-                        onClick={() => handleUpdateQuantity(item.product_id, -1)}
-                        className="text-muted-foreground hover:text-primary transition-colors duration-200"
-                        aria-label="Decrease quantity"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </button>
-                      <span className="text-sm font-medium text-foreground bg-muted px-2 py-1 rounded">{item.quantity}</span>
-                      <button
-                        onClick={() => handleUpdateQuantity(item.product_id, 1)}
-                        className="text-muted-foreground hover:text-primary transition-colors duration-200"
-                        aria-label="Increase quantity"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-                      {/* Delete icon for remove from cart */}
+
+                  {/* Product Details */}
+                  <div className="flex-1 min-w-0 flex flex-col justify-between">
+                    <div>
+                      <p className="font-semibold text-sm text-slate-900 dark:text-white truncate">{item.name}</p>
+                      <p className="text-sm font-bold text-red-600 dark:text-red-500 mt-1">RS. {item.price?.toFixed(2)}</p>
+                    </div>
+
+                    {/* Quantity Controls */}
+                    <div className="flex items-center gap-2 mt-2">
+                      <div className="flex items-center gap-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1">
+                        <button
+                          onClick={() => handleUpdateQuantity(item.product_id, -1)}
+                          className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-150 p-0.5"
+                          aria-label="Decrease quantity"
+                        >
+                          <Minus className="h-3.5 w-3.5" />
+                        </button>
+                        <span className="text-xs font-semibold text-slate-900 dark:text-white min-w-6 text-center">{item.quantity}</span>
+                        <button
+                          onClick={() => handleUpdateQuantity(item.product_id, 1)}
+                          className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-150 p-0.5"
+                          aria-label="Increase quantity"
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+
+                      {/* Remove Button */}
                       <button
                         onClick={() => handleRemoveItem(item.product_id)}
-                        className="text-destructive hover:text-destructive/80 transition-colors duration-200"
+                        className="text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-500 transition-colors duration-200 p-0.5 ml-auto"
                         aria-label="Remove item"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -157,22 +176,47 @@ export default function CartSidebar({ isOpen, onClose }) {
           </div>
         </div>
 
-        <div className="p-4 border-t border-gray-700">
-          <div className="flex justify-between mb-2">
-            <span className="text-muted-foreground">Subtotal</span>
-            <span className="font-semibold text-foreground">RS. {subtotal.toFixed(2)}</span>
+        {/* Footer - Summary Section */}
+        <div className="border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/30">
+          <div className="p-6 space-y-4">
+            {/* Summary Details */}
+            <div className="space-y-2.5">
+              <div className="flex justify-between items-center">
+                <span className="text-slate-600 dark:text-slate-400 text-sm">Subtotal</span>
+                <span className="font-semibold text-slate-900 dark:text-white">RS. {subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-600 dark:text-slate-400 text-sm">Shipping</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400">Calculated at checkout</span>
+              </div>
+            </div>
+
+            {/* Total */}
+            <div className="border-t border-slate-200 dark:border-slate-700 pt-3">
+              <div className="flex justify-between items-center mb-4">
+                <span className="font-semibold text-slate-900 dark:text-white">Total</span>
+                <span className="text-xl font-bold text-red-600 dark:text-red-500">RS. {subtotal.toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* Checkout Button */}
+            <Button 
+              variant="default" 
+              disabled={items.length === 0} 
+              onClick={() => handleCheckout()} 
+              className="w-full bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+            >
+              Checkout
+            </Button>
+
+            {/* Continue Shopping */}
+            <button
+              onClick={onClose}
+              className="w-full py-2.5 text-center text-slate-700 dark:text-slate-300 font-medium text-sm hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors duration-200"
+            >
+              Continue Shopping
+            </button>
           </div>
-          <div className="flex justify-between mb-2">
-            <span className="text-muted-foreground">Taxes</span>
-            <span className="text-muted-foreground">Calculated at Checkout</span>
-          </div>
-          <div className="flex justify-between mb-2">
-            <span className="text-muted-foreground">Shipping</span>
-            <span className="text-muted-foreground">Calculated at Checkout</span>
-          </div>
-          <Button variant="default" disabled={items.length===0} onClick = {()=>handleCheckout()} className="w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-futuristic shadow-md hover:shadow-lg transition-all duration-200">
-            Proceed to Checkout
-          </Button>
         </div>
       </div>
     </>
