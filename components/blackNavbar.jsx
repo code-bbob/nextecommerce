@@ -418,7 +418,7 @@ export default function BlackNavBar({ color = "black" }) {
       {/* Main Nav Bar (fixed) */}
       <header className="bg-white backdrop-blur-md text-foreground fixed top-0 left-0 right-0 w-full z-40 border-b border-gray-200">
         {/* Premium Banner - New Year Sale */}
-        <div className="h-10 bg-black  text-white flex items-center justify-between px-4">
+        <div className="h-10 bg-black hidden md:flex text-white items-center justify-between px-4">
           <div className=" flex items-center gap-6">
             <div className="hidden md:flex font-bold items-center gap-4 text-xs">
               <a
@@ -606,15 +606,15 @@ export default function BlackNavBar({ color = "black" }) {
                 className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000] md:hidden"
                 onClick={() => setIsSidePanelOpen(false)}
               />
-              <div className="fixed left-0 top-0 h-full w-11/12 max-w-sm bg-white text-gray-900 z-[1001] md:hidden overflow-y-auto shadow-2xl border-r border-gray-200">
+              <div className="fixed left-0 top-0 h-full w-9/12 max-w-xs bg-white text-gray-900 z-[1001] md:hidden overflow-y-auto shadow-2xl border-r border-gray-200">
                 <div className="relative px-5 pt-5 pb-4 bg-gradient-to-r from-slate-100 to-white border-b border-gray-200">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Image
                         src="/images/digi.jpg"
                         alt="DGTech"
-                        width={36}
-                        height={36}
+                        width={28}
+                        height={28}
                         className="rounded"
                       />
                       <div>
@@ -686,7 +686,7 @@ export default function BlackNavBar({ color = "black" }) {
                   </div>
                 </div>
 
-                <nav className="px-2 py-2">
+                <div className="px-2 py-2">
                   {[
                     { href: "/store", label: "Store" },
                     { href: "/blog", label: "Blogs" },
@@ -702,7 +702,7 @@ export default function BlackNavBar({ color = "black" }) {
                       className="flex items-center justify-between px-3 py-3 rounded-md hover:bg-gray-50 text-base"
                       onClick={() => setIsSidePanelOpen(false)}
                     >
-                      <span>{link.label}</span>
+                      <div>{link.label}</div>
                       <ChevronRight className="h-4 w-4 text-gray-400" />
                     </Link>
                   ))}
@@ -718,14 +718,14 @@ export default function BlackNavBar({ color = "black" }) {
                       <User className="h-4 w-4" /> Logout
                     </button>
                   )}
-                </nav>
+                </div>
               </div>
             </>,
             document.body
           )}
 
         {/* Desktop Category Bar + Mega Menu (merged from CatBar) */}
-        <div className="relative flex items-center justify-center max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-10 h-12">
+        <div className="relative hidden md:flex items-center justify-center max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-10 h-12">
           <div
             className="relative"
             onMouseLeave={() => {
@@ -761,7 +761,7 @@ export default function BlackNavBar({ color = "black" }) {
       </header>
 
       {/* Spacer to account for fixed navbar height (10 + 16 + 12 = 38rem + borders) */}
-      <div className="h-[calc(2.5rem+4rem+3rem)]" />
+      <div className="h-[calc(4rem)] md:h-[calc(2.5rem+4rem+3rem)]" />
     </>
   );
 }

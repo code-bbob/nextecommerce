@@ -7,7 +7,13 @@ import CartSidebar from "@/components/cartSidebar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, sendCartToServer } from "@/redux/cartSlice";
 import customFetch from "@/utils/customFetch";
@@ -58,7 +64,9 @@ export default function ProductInteractive({ product }) {
   // Get all unique images to enable sliding
   const allImages = useMemo(() => {
     if (!product?.images || !Array.isArray(product.images)) return [];
-    return product.images.map(img => getCDNImageUrl(img.image)).filter(Boolean);
+    return product.images
+      .map((img) => getCDNImageUrl(img.image))
+      .filter(Boolean);
   }, [product?.images]);
 
   // Mobile detection
@@ -181,20 +189,23 @@ export default function ProductInteractive({ product }) {
   };
 
   // Slider navigation handlers
-  const handleGridImageClick = useCallback((clickedImage) => {
-    const clickedIndex = allImages.indexOf(clickedImage);
-    if (clickedIndex !== -1 && carouselApi.current) {
-      carouselApi.current.scrollTo(clickedIndex);
-      setCurrentImageIndex(clickedIndex);
-      setSelectedImage(clickedImage);
-    }
-  }, [allImages]);
+  const handleGridImageClick = useCallback(
+    (clickedImage) => {
+      const clickedIndex = allImages.indexOf(clickedImage);
+      if (clickedIndex !== -1 && carouselApi.current) {
+        carouselApi.current.scrollTo(clickedIndex);
+        setCurrentImageIndex(clickedIndex);
+        setSelectedImage(clickedImage);
+      }
+    },
+    [allImages]
+  );
 
   return (
     <div>
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
       <main className="mx-auto w-full px-4 py-8">
-        <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
+        <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 px-4 auto-rows-max">
           {/* Product Images */}
           <div className="space-y-4">
             <div className="md:hidden space-y-4">
@@ -223,7 +234,7 @@ export default function ProductInteractive({ product }) {
                 </span>
               </div>
             </div>
-            <Carousel 
+            <Carousel
               className="w-full rounded-lg overflow-hidden bg-card/30"
               setApi={(api) => {
                 carouselApi.current = api;
@@ -244,8 +255,11 @@ export default function ProductInteractive({ product }) {
             >
               <CarouselContent className="h-60 md:h-[70vh]">
                 {allImages.map((img, idx) => (
-                  <CarouselItem key={idx} className="flex items-center justify-center">
-                    <div 
+                  <CarouselItem
+                    key={idx}
+                    className="flex items-center justify-center"
+                  >
+                    <div
                       className="relative w-full h-full cursor-pointer"
                       onClick={() => {
                         if (!isDragging) {
@@ -277,8 +291,7 @@ export default function ProductInteractive({ product }) {
                 let coloredImage = false;
                 return (product.images || [])
                   .filter((img) => {
-                    if (!img.color)
-                      return true;
+                    if (!img.color) return true;
                     else {
                       if (!coloredImage) {
                         coloredImage = true;
@@ -313,47 +326,6 @@ export default function ProductInteractive({ product }) {
                   });
               })()}
             </div>
-            {/* Cool Attributes Table */}
-            {product?.attributes && product.attributes.length > 0 && (
-              <div className="mt-8 hidden md:block">
-                <h2 className="text-2xl font-bold mb-4 text-primary text-center">
-                  Product Attributes
-                </h2>
-                <div className="overflow-hidden rounded-lg shadow-modern border border-border">
-                  <table className="min-w-full bg-card">
-                    <thead className="bg-muted/50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
-                          Key
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
-                          Value
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {(product.attributes || []).map(
-                        (attr, index) =>
-                          attr.value && (
-                            <tr
-                              key={index}
-                              className="hover:bg-accent/50 transition-colors duration-200"
-                            >
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground font-medium">
-                                {attr.attribute}
-                              </td>
-                              <td className="px-6 py-4 text-sm text-foreground">
-                                {attr.value}
-                              </td>
-                            </tr>
-                          )
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-            {/* End of Attributes Table */}
           </div>
 
           {/* Product Details */}
@@ -386,7 +358,7 @@ export default function ProductInteractive({ product }) {
             </div>
             <div className="flex items-baseline gap-3">
               {product.before_deal_price && (
-                <strike className="text-xl md:text-sm text-amber-600 font-bold">
+                <strike className="text-xl md:text-sm text-muted-foreground font-bold">
                   RS. {product.before_deal_price?.toFixed(2)}
                 </strike>
               )}
@@ -435,7 +407,7 @@ export default function ProductInteractive({ product }) {
                   ))}
                 </div>
               </div>
-            )} 
+            )}
 
             {/* Choose Size */}
             <div className="mt-4 mb-4">
@@ -455,7 +427,9 @@ export default function ProductInteractive({ product }) {
             {/* Quantity and Add to Cart */}
             <div className="flex flex-col gap-4 mt-6">
               <div className="flex items-center gap-4">
-                <span className="text-sm font-semibold text-foreground">Quantity</span>
+                <span className="text-sm font-semibold text-foreground">
+                  Quantity
+                </span>
                 <div className="flex items-center border border-border rounded-lg">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -467,7 +441,9 @@ export default function ProductInteractive({ product }) {
                   <input
                     type="number"
                     value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                    onChange={(e) =>
+                      setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                    }
                     className="w-12 text-center border-0 bg-transparent focus:outline-none"
                   />
                   <button
@@ -494,13 +470,13 @@ export default function ProductInteractive({ product }) {
                   size="lg"
                 >
                   <div className="flex items-center justify-center space-x-2">
-                  <Heart
-                    size={20}
-                    className="text-destructive hover:text-destructive/80"
-                    fill="currentColor"
+                    <Heart
+                      size={20}
+                      className="text-destructive hover:text-destructive/80"
+                      fill="currentColor"
                     />
                     <p>Add to WishList</p>
-                    </div>
+                  </div>
                 </Button>
               </div>
             </div>
@@ -512,52 +488,65 @@ export default function ProductInteractive({ product }) {
               </span>
             </div>
 
-            {product?.attributes && product.attributes.length > 0 && (
-              <div className="mt-8 block md:hidden">
-                <h2 className="text-2xl font-bold mb-4 text-red-500">
-                  Product Attributes
-                </h2>
-                <div className="overflow-hidden rounded-lg shadow-modern border border-border">
-                  <table className="min-w-full bg-card">
-                    <thead className="bg-muted/50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
-                          Key
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
-                          Value
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {(product.attributes || []).map(
-                        (attr, index) =>
-                          attr.value && (
-                            <tr key={index} className="">
-                              <td className="px-6 py-4 whitespace-nowrap text-sm ">
-                                {attr.attribute}
-                              </td>
-                              <td className="px-6 py-4 text-sm ">
-                                {attr.value}
-                              </td>
-                            </tr>
-                          )
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+            <div>
+              <h4>Product Details:</h4>
+              {/* Details Tab */}
+              <div
+                className="prose prose-invert max-w-none text-sm text-foreground/90"
+                dangerouslySetInnerHTML={{ __html: product.description }}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="grid px-4 grid-cols-6 gap-8">
+          {/* ATTRIBUTES TABLE - BELOW EVERYTHING */}
+          {product?.attributes && product.attributes.length > 1 && (
+            <div className="mt-12 mb-12 col-span-4">
+              <h2 className="text-3xl text- font-bold mb-6 ">
+                Product Specifications
+              </h2>
+              <div className="overflow-hidden rounded-lg shadow-modern border border-border">
+                <table className="w-full bg-card">
+                  <thead className="bg-muted/50">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-foreground uppercase tracking-wider">
+                        Attribute
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-foreground uppercase tracking-wider">
+                        Value
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {(product.attributes || []).map(
+                      (attr, index) =>
+                        attr.value && (
+                          <tr
+                            key={index}
+                            className="hover:bg-accent/50 transition-colors duration-200"
+                          >
+                            <td className="px-6 py-4 text-sm text-foreground font-medium">
+                              {attr.attribute}
+                            </td>
+                            <td className="px-6 py-4 text-sm text-foreground">
+                              {attr.value}
+                            </td>
+                          </tr>
+                        )
+                    )}
+                  </tbody>
+                </table>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Tabs for additional information */}
-            <Tabs defaultValue="details" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 bg-muted/50 border border-border text-foreground">
-                <TabsTrigger
-                  value="details"
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200"
-                >
-                  Details
-                </TabsTrigger>
+          {/* REVIEWS TAB */}
+          <div className="mt-12 mb-12 col-span-2">
+            <h2 className="text-3xl font-bold mb-6 ">
+              Reviews and Discussions
+            </h2>
+            <Tabs defaultValue="reviews" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 bg-muted/50 border border-border text-foreground">
                 <TabsTrigger
                   value="reviews"
                   className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200"
@@ -572,40 +561,39 @@ export default function ProductInteractive({ product }) {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="details" className=" space-y-4 mt-4">
-                <div
-                  dangerouslySetInnerHTML={{ __html: product.description }}
-                />
-              </TabsContent>
-
               {/* Reviews Tab */}
-              <TabsContent value="reviews" className="space-y-4 mt-4">
+              <TabsContent value="reviews" className="space-y-6 mt-4">
                 {/* Aggregated Rating */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-2xl font-bold">
+                <div className="flex items-center justify-between bg-card border border-border rounded-lg p-6">
+                  <div className="flex items-center space-x-4">
+                    <span className="text-4xl font-bold text-primary">
                       {product.ratings.stats.avg_rating}
                     </span>
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.round(product.ratings.stats.avg_rating)
-                              ? "text-yellow-400 fill-yellow-400"
-                              : "text-gray-600 fill-gray-600"
-                          }`}
-                        />
-                      ))}
+                    <div className="flex flex-col space-y-2">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-5 h-5 ${
+                              i < Math.round(product.ratings.stats.avg_rating)
+                                ? "text-yellow-400 fill-yellow-400"
+                                : "text-gray-600 fill-gray-600"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-sm text-muted-foreground">
+                        Based on {product.ratings.stats.total_ratings} reviews
+                      </span>
                     </div>
                   </div>
-                  <span className="text-sm text-muted-foreground">
-                    {product.ratings.stats.total_ratings} reviews
-                  </span>
                 </div>
 
                 {/* Rating Distribution Bars */}
-                <div className="space-y-2">
+                <div className="bg-card border border-border rounded-lg p-6 space-y-4">
+                  <h3 className="font-semibold text-foreground">
+                    Rating Distribution
+                  </h3>
                   {[5, 4, 3, 2, 1].map((star) => {
                     const widthPercent =
                       product.ratings.stats.total_ratings > 0
@@ -614,28 +602,33 @@ export default function ProductInteractive({ product }) {
                           100
                         : 0;
                     return (
-                      <div key={star} className="flex items-center space-x-2">
-                        <span className="w-4">{star}</span>
+                      <div key={star} className="flex items-center space-x-3">
+                        <span className="w-8 text-sm font-medium">
+                          {star} ⭐
+                        </span>
                         <div className="flex-1 h-2 bg-gray-500 rounded-full overflow-hidden">
                           <div
                             className="h-full bg-yellow-400"
                             style={{ width: `${widthPercent}%` }}
                           />
                         </div>
+                        <span className="w-12 text-xs text-muted-foreground">
+                          {widthPercent.toFixed(0)}%
+                        </span>
                       </div>
                     );
                   })}
                 </div>
 
-                {/* List of Individual Rating Reviews */}
+                {/* Rated Reviews */}
                 {product.ratings.data && product.ratings.data.length > 0 && (
-                  <div className="mt-6 space-y-4">
+                  <div className="space-y-4">
                     {product.ratings.data.map((rate) => (
                       <div
                         key={rate.id}
-                        className="bg-gray-900 text-white rounded-lg p-4 space-y-2"
+                        className="bg-gray-900 text-white rounded-lg p-4 space-y-3"
                       >
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-3">
                           {!rate.user_dp && (
                             <Avatar>
                               <AvatarFallback className="bg-black">
@@ -647,14 +640,14 @@ export default function ProductInteractive({ product }) {
                             <Image
                               src={rate.user_dp}
                               alt="User avatar"
-                              width={32}
-                              height={32}
+                              width={36}
+                              height={36}
                               className="rounded-full"
                             />
                           )}
-                          <div className="flex flex-col">
-                            <span className="font-medium">{rate.user}</span>
-                            <div className="flex">
+                          <div className="flex-1">
+                            <p className="font-medium">{rate.user}</p>
+                            <div className="flex space-x-1 mt-1">
                               {[...Array(5)].map((_, i) => (
                                 <Star
                                   key={i}
@@ -668,8 +661,9 @@ export default function ProductInteractive({ product }) {
                             </div>
                           </div>
                         </div>
-                        {rate.comment && <p className="">{rate.comment}</p>}
-                        {/* Display the image thumbnail if available */}
+                        {rate.comment && (
+                          <p className="text-sm">{rate.comment}</p>
+                        )}
                         {rate.image && (
                           <div className="mt-2">
                             <Image
@@ -677,7 +671,7 @@ export default function ProductInteractive({ product }) {
                               alt="Review image"
                               width={400}
                               height={300}
-                              className="object-cover rounded cursor-pointer"
+                              className="object-cover rounded cursor-pointer max-w-xs"
                               onClick={() => setModalImage(rate.image)}
                             />
                           </div>
@@ -689,93 +683,104 @@ export default function ProductInteractive({ product }) {
               </TabsContent>
 
               {/* Discussion Tab */}
-              <TabsContent value="discussion" className="space-y-1 mt-4">
-                {/* Display Comments */}
-                {comments.map((comment) => (
-                  <div
-                    key={comment.id}
-                    className="bg-gray-900 text-white rounded-lg p-4 space-y-4"
-                  >
-                    <div className="flex items-start space-x-4">
-                      {!comment.user_dp && (
-                        <Avatar>
-                          <AvatarFallback className="bg-black">
-                            {comment.user[0].toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                      {comment.user_dp && (
-                        <Image
-                          src={comment.user_dp}
-                          alt="User"
-                          width={32}
-                          height={32}
-                          className="rounded-full"
-                        />
-                      )}
-                      <div className="flex-1 space-y-1">
-                        <p className="font-medium ">{comment.user}</p>
-                        <p className="text-sm text-white/50">
-                          {new Date(
-                            comment.published_date
-                          ).toLocaleDateString()}
-                        </p>
-                        <p className="">{comment.text}</p>
-                      </div>
-                    </div>
-                    {comment?.replies && comment.replies.length > 0 && (
-                      <div className="ml-12 space-y-4">
-                        {comment.replies.map((reply, index) => (
-                          <div
-                            key={index}
-                            className="flex items-start space-x-4"
-                          >
-                            {!reply.user_dp && (
-                              <Avatar>
-                                <AvatarFallback className="bg-black">
-                                  {reply.user[0].toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
-                            )}
-                            {reply.user_dp && (
-                              <Image
-                                src={reply.user_dp}
-                                alt="User"
-                                width={32}
-                                height={32}
-                                className="rounded-full"
-                              />
-                            )}
-                            <div className="flex-1 space-y-1">
-                              <p className="font-medium ">{reply.user}</p>
-                              <p className="text-sm text-gray-400">
-                                {new Date(
-                                  reply.published_date
-                                ).toLocaleDateString()}
-                              </p>
-                              <p className="">{reply.text}</p>
-                            </div>
+              <TabsContent value="discussion" className="space-y-6 mt-4">
+                {/* Discussion Comments */}
+                {comments.length > 0 && (
+                  <div className="space-y-4">
+                    {comments.map((comment) => (
+                      <div
+                        key={comment.id}
+                        className="bg-gray-900 text-white rounded-lg p-4 space-y-3"
+                      >
+                        <div className="flex items-start space-x-3">
+                          {!comment.user_dp && (
+                            <Avatar>
+                              <AvatarFallback className="bg-black">
+                                {comment.user[0].toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                          )}
+                          {comment.user_dp && (
+                            <Image
+                              src={comment.user_dp}
+                              alt="User"
+                              width={36}
+                              height={36}
+                              className="rounded-full"
+                            />
+                          )}
+                          <div className="flex-1 space-y-1">
+                            <p className="font-medium">{comment.user}</p>
+                            <p className="text-xs text-white/50">
+                              {new Date(
+                                comment.published_date
+                              ).toLocaleDateString()}
+                            </p>
+                            <p className="text-sm">{comment.text}</p>
                           </div>
-                        ))}
+                        </div>
+                        {comment?.replies && comment.replies.length > 0 && (
+                          <div className="ml-8 space-y-3 border-l border-white/20 pl-4">
+                            {comment.replies.map((reply, index) => (
+                              <div
+                                key={index}
+                                className="flex items-start space-x-3"
+                              >
+                                {!reply.user_dp && (
+                                  <Avatar>
+                                    <AvatarFallback className="bg-black">
+                                      {reply.user[0].toUpperCase()}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                )}
+                                {reply.user_dp && (
+                                  <Image
+                                    src={reply.user_dp}
+                                    alt="User"
+                                    width={32}
+                                    height={32}
+                                    className="rounded-full"
+                                  />
+                                )}
+                                <div className="flex-1 space-y-1">
+                                  <p className="font-medium text-sm">
+                                    {reply.user}
+                                  </p>
+                                  <p className="text-xs text-gray-400">
+                                    {new Date(
+                                      reply.published_date
+                                    ).toLocaleDateString()}
+                                  </p>
+                                  <p className="text-sm">{reply.text}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
+                )}
+
                 {/* Comment Form */}
-                <div className=" rounded-lg p-4">
+                <div className="rounded-lg border border-border p-6 bg-card">
+                  <h3 className="font-semibold text-foreground mb-4">
+                    Share Your Thoughts
+                  </h3>
                   <form
                     onSubmit={handleCommentSubmit}
-                    className="flex flex-col"
+                    className="flex flex-col space-y-3"
                   >
                     <textarea
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
-                      className="w-full p-2 rounded border  text-white"
-                      placeholder="Write your comment..."
+                      className="w-full p-3 rounded border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Share your thoughts about this product..."
+                      rows={4}
                     />
                     <Button
                       type="submit"
-                      className="mt-2 bg-red-700 hover:bg-red-700"
+                      className="bg-primary hover:bg-primary/90"
                     >
                       Post Comment
                     </Button>
@@ -784,16 +789,18 @@ export default function ProductInteractive({ product }) {
               </TabsContent>
             </Tabs>
           </div>
-
-          {/* Amazon-style Zoom Window (Desktop only) - Modal Overlay */}
         </div>
+
         {/* Modal for enlarged image - Fullscreen Slideshow */}
         {modalImage && (
           <div
             className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm z-50"
             onClick={() => setModalImage(null)}
           >
-            <div className="relative w-full h-full flex items-center justify-center overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="relative w-full h-full flex items-center justify-center overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
               {/* Close Button */}
               <button
                 className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-50 p-2 bg-black/40 hover:bg-black/60 rounded-full"
@@ -807,7 +814,10 @@ export default function ProductInteractive({ product }) {
               <Carousel className="w-full max-w-4xl" opts={{ loop: true }}>
                 <CarouselContent>
                   {allImages.map((img, idx) => (
-                    <CarouselItem key={idx} className="flex items-center justify-center">
+                    <CarouselItem
+                      key={idx}
+                      className="flex items-center justify-center"
+                    >
                       <div className="relative w-full aspect-square md:aspect-auto md:h-[100vh] flex items-center justify-center">
                         <Image
                           src={img}

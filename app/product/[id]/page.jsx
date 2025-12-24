@@ -1,7 +1,6 @@
 // app/product/[id]/page.jsx
 import BlackNavBar from "@/components/blackNavbar";
 import Footer from "@/components/Footer.server";
-import NavBar from "@/components/navbar";
 import ProductInteractive from "@/components/productInteractive";
 import { notFound } from "next/navigation";
 // Removed next/script usage; JSON-LD is injected server-side
