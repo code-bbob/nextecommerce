@@ -166,11 +166,20 @@ export default function BlackNavBar({ color = "black" }) {
   useEffect(() => {
     if (!mounted) return;
     const prev = document.body.style.overflow;
-    if (isSidePanelOpen) document.body.style.overflow = "hidden";
+    const htmlPrev = document.documentElement.style.overflow;
+    if (isSidePanelOpen || searchOpen) {
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+      document.body.style.height = "100vh";
+    }
     return () => {
+      document.documentElement.style.overflow = htmlPrev;
       document.body.style.overflow = prev;
+      document.body.style.touchAction = "auto";
+      document.body.style.height = "auto";
     };
-  }, [mounted, isSidePanelOpen]);
+  }, [mounted, isSidePanelOpen, searchOpen]);
 
   useEffect(() => {
     const onDocClick = () => setShowSuggestions(false);
@@ -322,97 +331,180 @@ export default function BlackNavBar({ color = "black" }) {
   return (
     <>
       {/* Mobile Search Overlay */}
-      {searchOpen && (
+      {searchOpen && createPortal(
         <>
           <div
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40"
+            className="fixed inset-0 bg-black/50 z-40 animate-fadeIn md:hidden pointer-events-auto"
             onClick={() => {
               setSearchOpen(false);
               setShowSuggestions(false);
             }}
           />
           <div
-            className="fixed top-2 left-1/2 -translate-x-1/2 w-full z-50"
+            className="fixed top-0 left-0 right-0 z-50 flex flex-col md:hidden animate-slideDown bg-white pointer-events-auto"
             onClick={(e) => e.stopPropagation()}
+            style={{ height: "70vh" }}
           >
-            <form
-              onSubmit={handleSearch}
-              className="bg-white rounded-sm px-4 py-4 flex items-center relative"
-            >
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search products..."
-                className="flex-grow bg-transparent text-black focus:outline-none placeholder-gray-500"
-                onFocus={() => setShowSuggestions(true)}
-                autoFocus
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleSearch(e);
-                  }
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchOpen(false);
-                  setShowSuggestions(false);
-                }}
-                className="text-gray-600 hover:text-gray-800 mr-2"
-                aria-label="Close search"
+            {/* Search Bar */}
+            <div className="bg-gradient-to-b from-white to-slate-50 pt-4 px-4 pb-3 border-b border-slate-200 flex-shrink-0 pointer-events-auto">
+              <form
+                onSubmit={handleSearch}
+                className="flex items-center gap-3 bg-white rounded-lg px-4 py-3 border border-slate-200 shadow-sm"
               >
-                <X className="h-5 w-5" />
-              </button>
-              <button
-                type="submit"
-                className="text-gray-600 hover:text-gray-800"
-              >
-                <Search className="h-5 w-5" />
-              </button>
-            </form>
+                <Search className="h-5 w-5 text-slate-400 flex-shrink-0 pointer-events-none" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search for products, brands..."
+                  className="flex-grow bg-transparent text-slate-900 focus:outline-none placeholder-slate-400 text-sm"
+                  onFocus={() => setShowSuggestions(true)}
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSearch(e);
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery("");
+                    setSuggestions([]);
+                  }}
+                  className={`text-slate-400 hover:text-slate-600 transition-colors duration-200 flex-shrink-0 ${query ? "" : "hidden"}`}
+                  aria-label="Clear search"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchOpen(false);
+                    setShowSuggestions(false);
+                  }}
+                  className="text-slate-500 hover:text-slate-700 transition-colors duration-200 ml-2 flex-shrink-0"
+                  aria-label="Close search"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </form>
+            </div>
 
-            {showSuggestions && suggestions.length > 0 && (
-              <div
-                className="mt-2 bg-card/95 backdrop-blur-md text-foreground rounded-lg shadow-modern overflow-hidden border border-border"
-                onClick={(e) => e.stopPropagation()}
-                role="listbox"
-              >
-                {suggestions.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-accent cursor-pointer border-b border-border/50 last:border-b-0 transition-colors duration-200"
-                    onClick={() => handleSuggestionClick(item.id)}
-                    role="option"
-                  >
-                    <div className="relative w-12 h-12 flex-shrink-0">
-                      <Image
-                        src={getCDNImageUrl(item.image)}
-                        alt={item.name}
-                        fill
-                        className="object-cover rounded"
-                        sizes="48px"
-                      />
-                    </div>
-                    <div className="flex flex-col overflow-hidden">
-                      <span className="font-medium truncate">{item.name}</span>
-                      <span className="text-sm text-gray-700">
-                        Rs. {item.price}
-                      </span>
+            {/* Results Container - scrollable */}
+            <div className="flex-1 overflow-hidden bg-white min-h-0 pointer-events-auto">
+              <div className="h-full overflow-y-auto">
+              {/* Loading State */}
+              {isLoading && (
+                <div className="flex items-center justify-center py-12">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="w-10 h-10 border-3 border-slate-200 border-t-red-600 rounded-full animate-spin"></div>
+                    <p className="text-sm text-slate-600">Searching...</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Results Found */}
+              {!isLoading && showSuggestions && suggestions.length > 0 && (
+                <div className="px-4 py-4">
+                  <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold mb-3">
+                    {suggestions.length} Result{suggestions.length !== 1 ? "s" : ""} Found
+                  </p>
+                  <div className="space-y-2">
+                    {suggestions.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg hover:bg-slate-100 cursor-pointer transition-all duration-200 border border-slate-100 hover:border-slate-200 active:scale-95"
+                        onClick={() => handleSuggestionClick(item.id)}
+                      >
+                        <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-white border border-slate-100">
+                          <Image
+                            src={getCDNImageUrl(item.image)}
+                            alt={item.name}
+                            fill
+                            className="object-contain"
+                            sizes="64px"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-slate-900 truncate">{item.name}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            {item.before_deal_price && (
+                              <span className="text-xs text-slate-400 line-through">
+                                Rs. {item.before_deal_price}
+                              </span>
+                            )}
+                            <span className="text-sm font-bold text-red-600">
+                              Rs. {item.price}
+                            </span>
+                          </div>
+                        </div>
+                        <ChevronRight className="h-4 w-4 text-slate-400 flex-shrink-0" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* No Results State */}
+              {!isLoading && showSuggestions && query.trim() && suggestions.length === 0 && (
+                <div className="flex items-center justify-center py-16 px-4">
+                  <div className="text-center">
+                    <div className="text-5xl mb-4">🔍</div>
+                    <h3 className="text-lg font-semibold text-slate-900 mb-2">No Products Found</h3>
+                    <p className="text-sm text-slate-500 mb-6">
+                      We couldn't find any products matching "<span className="font-medium">{query}</span>"
+                    </p>
+                    <div className="space-y-2 text-sm text-slate-600">
+                      <p>Try:</p>
+                      <ul className="space-y-1 text-slate-500">
+                        <li>• Checking your spelling</li>
+                        <li>• Using different keywords</li>
+                        <li>• Browse by category instead</li>
+                      </ul>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+                </div>
+              )}
 
-            {isLoading && (
-              <div className="mt-2 p-3 bg-card/95 backdrop-blur-md text-foreground rounded-lg shadow-modern text-center border border-border">
-                Loading results...
+              {/* Initial State (Empty Query) */}
+              {!isLoading && !query.trim() && (
+                <div className="flex items-center justify-center py-16 px-4">
+                  <div className="text-center">
+                    <div className="text-5xl mb-4">✨</div>
+                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Start Searching</h3>
+                    <p className="text-sm text-slate-500 mb-6">
+                      Find your favorite products easily
+                    </p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      <button
+                        onClick={() => {
+                          router.push("/store");
+                          setSearchOpen(false);
+                        }}
+                        className="px-3 py-1 text-xs bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors duration-200"
+                      >
+                        Browse Store
+                      </button>
+                      <button
+                        onClick={() => {
+                          router.push("/deals");
+                          setSearchOpen(false);
+                        }}
+                        className="px-3 py-1 text-xs bg-slate-200 hover:bg-slate-300 text-slate-900 rounded-full transition-colors duration-200"
+                      >
+                        View Deals
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
               </div>
-            )}
+            </div>
           </div>
-        </>
+        </>,
+        document.body
       )}
 
       {/* Main Nav Bar (fixed) */}

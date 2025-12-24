@@ -82,6 +82,10 @@ export default {
 			  "0%": { opacity: "0", transform: "translateY(10px)" },
 			  "100%": { opacity: "1", transform: "translateY(0)" },
 			},
+			slideDown: {
+			  "0%": { transform: "translateY(-100%)", opacity: "0" },
+			  "100%": { transform: "translateY(0)", opacity: "1" },
+			},
 		  },
 		  animation: {
 			"gradient-neon": "neonGradientGlow 4s ease-in-out infinite",
@@ -89,6 +93,8 @@ export default {
 			"shimmer": "shimmer 1.5s ease-in-out infinite",
 			"pulse-soft": "pulse 3s ease-in-out infinite",
 			"fade-in": "fadeIn 0.6s ease-out forwards",
+			"fadeIn": "fadeIn 0.4s ease-out forwards",
+			"slideDown": "slideDown 0.5s ease-out forwards",
 		  },
 		  boxShadow: {
 			"neon-gradient-soft": "0 0 15px rgba(255, 0, 102, 0.6), 0 0 20px rgba(0, 102, 255, 0.5), 0 0 25px rgba(128, 0, 128, 0.4)",
