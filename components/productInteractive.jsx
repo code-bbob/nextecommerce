@@ -498,7 +498,7 @@ export default function ProductInteractive({ product }) {
             </div>
           </div>
         </div>
-        <div className="grid px-4 grid-cols-6 gap-8">
+        <div className="md:grid px-4 md:grid-cols-6 gap-8">
           {/* ATTRIBUTES TABLE - BELOW EVERYTHING */}
           {product?.attributes && product.attributes.length > 1 && (
             <div className="mt-12 mb-12 col-span-4">

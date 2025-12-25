@@ -77,7 +77,6 @@ export default function ProductPageLayout({
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-white via-white to-slate-50/50 text-foreground h-full">
       <BlackNavBar color="inherit" />
-      <div className="h-6 bg-white"></div>
 
       {/* Main Content Area - Sidebar and Content Side by Side from Top */}
       <div className="flex-grow bg-gray-0 flex flex-row relative">
@@ -113,7 +112,7 @@ export default function ProductPageLayout({
         {/* Main Content - Page Title and Products */}
         <main className="flex-1 flex flex-col">
           {/* Hero Section - Premium */}
-          <section className=" border-b border-border/5 px-6 md:px-10 lg:px-12 pt-8 md:pt-8">
+          <section className="border-b border-border/5 px-3 sm:px-4 md:px-10 lg:px-12 pt-4 md:pt-8">
             <div className="max-w-6xl">
               {/* Breadcrumb */}
               {breadcrumbItems.length > 0 && (
@@ -137,12 +136,12 @@ export default function ProductPageLayout({
 
               {/* Title Section - Elegant */}
               {pageTitle && (
-                <div >
-                  <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2 tracking-tight">
+                <div>
+                  <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-2 tracking-tight">
                     {pageTitle}
                   </h1>
                   {pageDescription && (
-                    <p className="text-base text-muted-foreground font-light">
+                    <p className="text-xs sm:text-sm md:text-base text-muted-foreground font-light">
                       {pageDescription}
                     </p>
                   )}
@@ -169,7 +168,7 @@ export default function ProductPageLayout({
           </section>
 
           {/* Products Section */}
-          <section className="flex-1 px-4 py-4">
+          <section className="flex-1 px-2 sm:px-4 md:px-6 lg:px-8 py-4 md:py-6">
             <ProductGrid products={products} isLoading={isLoading} gridCols={gridCols} />
 
             {/* Pagination Section */}

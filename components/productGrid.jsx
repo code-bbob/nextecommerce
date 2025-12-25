@@ -24,7 +24,7 @@ function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters
   // Skeleton loader component
   const SkeletonCard = () => (
     <div className="flex flex-col bg-white border border-border/5 rounded-xl overflow-hidden animate-pulse h-full shadow-sm">
-      <div className="relative sm:h-56 bg-slate-200" />
+      <div className="relative h-40 sm:h-56 bg-slate-200" />
       <div className="p-1 sm:p-2 flex flex-col flex-grow space-y-3">
         <div className="h-4 bg-slate-200 rounded w-3/4" />
         <div className="h-4 bg-slate-200 rounded w-1/2" />
@@ -74,13 +74,13 @@ function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters
 
   // Determine the grid columns class based on gridCols prop
   const gridColumnsClass = gridCols === 4
-    ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-    : "grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
+    ? "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+    : "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
 
   return (
     <>
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-      <div className={`grid ${gridColumnsClass} gap-4`}>
+      <div className={`grid ${gridColumnsClass} gap-2 sm:gap-3 md:gap-4`}>
         {isLoading ? (
           // Show skeleton loaders while loading
           Array.from({ length: 10 }).map((_, i) => (
@@ -104,14 +104,14 @@ function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters
             )}
 
             {/* Image Container */}
-            <div className="relative sm:h-56 overflow-hidden">
+            <div className="relative h-40 sm:h-56 overflow-hidden bg-gray-50">
               <Image
                 src={getCDNImageUrl(product.images[0]?.image) || "/placeholder.svg"}
                 alt={product.name}
                 fill
                 style={{ objectFit: "contain" }}
-                className="group-hover:opacity-90  md:py-4 transition-opacity duration-200"
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
+                className="group-hover:opacity-90 md:py-4 transition-opacity duration-200 p-2 sm:p-0"
+                sizes="(max-width: 640px) 100px, (max-width: 1024px) 150px, 200px"
                 priority={false}
                 loading="lazy"
                 // width={500}
@@ -122,14 +122,14 @@ function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters
             </div>
 
             {/* Content Container */}
-            <div className="p-1 sm:p-2 flex flex-col flex-grow">
+            <div className="p-2 sm:p-2 md:p-3 flex flex-col flex-grow">
               {/* Product Title */}
-              <h3 className="text-sm font-semibold text-foreground line-clamp-2 mb-3 leading-snug">
+              <h3 className="text-xs sm:text-sm font-semibold text-foreground line-clamp-2 mb-2 sm:mb-3 leading-snug">
                 {product.name}
               </h3>
 
               {/* Rating Section */}
-              <div className="flex items-center gap-1 mb-4">
+              <div className="flex items-center gap-1 mb-2 sm:mb-4">
                 <div className="flex gap-0.5">
                   {[...Array(5)].map((_, i) => (
                     <span
@@ -150,7 +150,7 @@ function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters
               </div>
 
               {/* Price Section */}
-              <div className="mb-4 pb-4 border-b border-border/5">
+              <div className="mb-2 sm:mb-4 pb-2 sm:pb-4 border-b border-border/5">
                 <div className="flex items-baseline gap-2">
                   {product.old_price && (
                     <span className="text-xs line-through text-muted-foreground font-medium">

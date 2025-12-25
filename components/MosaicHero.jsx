@@ -163,33 +163,15 @@ export default function MosaicHero() {
 
         {/* Right mosaic */}
         <div className="order-1 md:order-2">
-          <h1 className="text-3xl mt-2 md:hidden font-extrabold leading-tight tracking-tight">
-            Celebrate Savings This Dashain Tihar 2082
-            <span className="block bg-gradient-to-r from-rose-600 via-amber-600 to-sky-700 bg-clip-text text-transparent">
-              <div className="flex text-2xl items-center gap-2">
-                Up to 20% OFF
-                <div className="flex w-fit items-center gap-2 rounded-xl border border-dashed border-amber-300 bg-amber-50 px-3 py-2 text-amber-800 relative">
-                  <BadgePercent className="h-4 w-4" />
-                  <span className="text-sm font-semibold"></span>
-                  <code className="bg-amber-100 text-sm px-2 py-0.5 rounded">
-                    {couponCode}
-                  </code>
-                  <button
-                    onClick={copyCoupon}
-                    className="ml-1 text-amber-700 hover:text-amber-900 flex items-center"
-                    style={{ position: "relative" }}
-                    aria-label="Copy coupon code"
-                  >
-                    <Clipboard className="h-5 w-5" />
-                  </button>
-                  {toast && (
-                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black text-white px-4 py-2 rounded shadow-lg text-sm animate-fadein z-50">
-                      {toast}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </span>
+          <h1 className="text-2xl mt-2 md:hidden font-extrabold leading-tight tracking-tight">
+            <div className="text-center ">
+              Celebrate this New Year 2026 with Digitech Enterprises Banner here
+            </div>
+            <div className="block bg-red-600 text-3xl text-center bg-clip-text text-transparent">
+            </div>
+            <div className="block bg-red-600 bg-clip-text text-transparent">
+             
+            </div>
           </h1>
           <div className=" grid grid-cols-5 grid-rows-3 md:grid-cols-3 md:grid-rows-3 gap-4 h-[320px] md:h-[520px] mt-5">
             {tiles.map((t, i) => (
