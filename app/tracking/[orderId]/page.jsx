@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { TrackingTimeline, buildSteps } from "@/components/TrackingTimeline";
 import { STATUS_ORDER, fetchTracking } from "@/utils/trackingApi";
 import { Loader2 } from "lucide-react";
-import NavBar from "@/components/navbar";
 
 export default function TrackingPage() {
     const router = useRouter();

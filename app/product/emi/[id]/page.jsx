@@ -1,5 +1,4 @@
 // app/product/[id]/page.jsx
-import NavBar from "@/components/navbar";
 import OtherForm from "@/components/otherEmiForm";
 import ProductInteractive from "@/components/productInteractive";
 import RealmeForm from "@/components/realmeEmiForm";

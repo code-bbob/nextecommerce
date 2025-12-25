@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import customFetch from "@/utils/customFetch";
 import { fetchCartFromServer } from "@/redux/cartSlice";
-import NavBar from "@/components/navbar";
 import { resetCheckout } from "@/redux/checkoutSlice";
 import BlackNavBar from "@/components/blackNavbar";
 import toast from "react-hot-toast";

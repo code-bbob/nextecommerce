@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense, useState, useEffect } from "react";
-import NavBar from "@/components/navbar";
 import ProductGrid from "@/components/productGrid";
 import FilterSidebar from "@/components/filterSidebar";
 import customFetch from "@/utils/customFetch";
