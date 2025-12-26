@@ -63,11 +63,44 @@ const Login = () => {
 
       if (response.status === 200) {
         const data = await response.json();
-        Cookies.set('accessToken', data.token.access, { expires: 1, path: '/' });
-        Cookies.set('refreshToken', data.token.refresh, { expires: 1, path: '/' });
+        console.log('Login response:', data); // Debug
+        
+        // Backend returns auth_token as string representation of dict: "{'refresh': '...', 'access': '...'}"
+        let tokens;
+        if (typeof data.auth_token === 'string') {
+          console.log('auth_token is string:', data.auth_token); // Debug
+          // Handle both formats: direct JSON or Python dict string
+          try {
+            tokens = JSON.parse(data.auth_token);
+          } catch (e) {
+            // If JSON.parse fails, it's Python dict format, convert it
+            const cleanStr = data.auth_token
+              .replace(/^{/, '').replace(/}$/, '') // Remove outer braces
+              .replace(/'/g, '"'); // Replace single quotes with double quotes
+            tokens = JSON.parse('{' + cleanStr + '}');
+          }
+        } else {
+          tokens = data.auth_token;
+        }
+        
+        console.log('Parsed tokens:', tokens); // Debug
+        
+        // Ensure tokens are valid JWT strings before storing
+        if (tokens.access && tokens.refresh) {
+          Cookies.set('accessToken', tokens.access.trim(), { expires: 1, path: '/' });
+          Cookies.set('refreshToken', tokens.refresh.trim(), { expires: 1, path: '/' });
+        } else {
+          throw new Error('Invalid token format received from server');
+        }
         dispatch(login());
         toast.success("Login successful!");
-        router.replace("/");
+        
+        // Check if user is staff or superuser and redirect to admin
+        if (data.user && (data.user.is_staff || data.user.is_superuser)) {
+          router.replace("/admin");
+        } else {
+          router.replace("/");
+        }
       } else if (response.status === 400) {
         setError("Invalid email or password");
         toast.error("Login failed. Please try again.");
