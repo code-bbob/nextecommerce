@@ -70,7 +70,9 @@ export default function CheckoutPage() {
           <div className="flex-1 space-y-8">
             <nav className="text-sm mb-8">
               <ol className="flex items-center space-x-2">
+             <div className="w-16 mr-4 ">
                 <Image src="/images/digi.png" alt="logo" width={50} height={30} />
+              </div>
                 <li className="text-white">Information</li>
                 <li>›</li>
                 <li className="text-gray-500">Shipping</li>
@@ -128,7 +130,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="firstName">First name (optional)</Label>
+                    <Label htmlFor="firstName">First name</Label>
                     <Input
                       id="firstName"
                       type="text"
@@ -157,6 +159,8 @@ export default function CheckoutPage() {
                   />
                   {errors.shippingAddress?.address && <p className="text-red-500 text-xs mt-1">{errors.shippingAddress.address.message}</p>}
                 </div>
+                <div className="md:grid md:gap-4 md:grid-cols-2">
+
                 <div>
                   <Label htmlFor="apartment">Tol/Area/Apartment (optional)</Label>
                   <Input
@@ -164,18 +168,9 @@ export default function CheckoutPage() {
                     type="text"
                     {...register("shippingAddress.apartment")}
                     className="mt-1 bg-transparent border-gray-700"
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label htmlFor="municipality">Municipality</Label>
-                    <Input
-                      id="municipality"
-                      type="text"
-                      {...register("shippingAddress.municipality")}
-                      className="mt-1 bg-transparent border-gray-700"
                     />
-                  </div>
+                </div>
+                  
                   <div>
                     <Label htmlFor="city">City</Label>
                     <Input
@@ -183,20 +178,10 @@ export default function CheckoutPage() {
                       type="text"
                       {...register("shippingAddress.city", { required: "City is required" })}
                       className={`mt-1 bg-transparent border-gray-700 ${errors.shippingAddress?.city ? "border-red-500" : ""}`}
-                    />
+                      />
                     {errors.shippingAddress?.city && <p className="text-red-500 text-xs mt-1">{errors.shippingAddress.city.message}</p>}
                   </div>
-                  <div>
-                    <Label htmlFor="state">State</Label>
-                    <Input
-                      id="state"
-                      type="text"
-                      {...register("shippingAddress.state", { required: "State is required" })}
-                      className={`mt-1 bg-transparent border-gray-700 ${errors.shippingAddress?.state ? "border-red-500" : ""}`}
-                    />
-                    {errors.shippingAddress?.state && <p className="text-red-500 text-xs mt-1">{errors.shippingAddress.state.message}</p>}
-                  </div>
-                </div>
+                      </div>
               </div>
             </section>
             <div className="flex justify-end">

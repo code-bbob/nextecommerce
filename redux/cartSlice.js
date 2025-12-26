@@ -141,10 +141,14 @@ const cartSlice = createSlice({
         item => item.product_id !== action.payload.product_id
       );
     },
-        // Sets the cart state from a payload (for rehydrating from local storage)
-        setCart: (state, action) => {
-            state.items = action.payload;
-          }
+    // Sets the cart state from a payload (for rehydrating from local storage)
+    setCart: (state, action) => {
+      state.items = action.payload;
+    },
+    // Clears the entire cart
+    clearCart: (state) => {
+      state.items = [];
+    }
     
   },
 
@@ -206,5 +210,5 @@ const cartSlice = createSlice({
   }
 });
 
-export const { addToCart, updateQuantity, removeFromCart, setCart } = cartSlice.actions;
+export const { addToCart, updateQuantity, removeFromCart, setCart, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;

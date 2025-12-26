@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 
 const shippingMethods = [
   // { id: "Urgent", name: "Urgent", price: 100, duration: "Same day" },
-  { id: "standard", name: "Standard", price: "Free", duration: "1 to 2 business days" },
+  { id: "standard", name: "Standard", price: 100, duration: "1 to 2 business days" },
 ];
 
 export default function ShippingPage() {
@@ -31,7 +31,7 @@ export default function ShippingPage() {
   }, [checkout.email, checkout.shippingAddress.address, router]);
 
   const [selectedMethod, setSelectedMethod] = useState(checkout.shippingMethod || "standard");
-  const [selectedCost, setSelectedCost] = useState(checkout.shippingCost || 0);
+  const [selectedCost, setSelectedCost] = useState(checkout.shippingCost || 100);
 
   useEffect(() => {
     dispatch(updateShippingMethod(selectedMethod));
@@ -48,7 +48,9 @@ export default function ShippingPage() {
           <div className="flex-1 space-y-8">
             <nav className="text-sm mb-8">
               <ol className="flex items-center space-x-2">
+              <div className="w-16 mr-4 ">
                 <Image src="/images/digi.png" alt="logo" width={50} height={30} />
+              </div> 
                 <li>
                   <Link href="/checkout" className="text-blue-500 hover:text-blue-400">
                     Information
@@ -105,10 +107,10 @@ export default function ShippingPage() {
                       <RadioGroupItem className="text-white border-white" value={method.id} id={method.id} />
                     <div className=" ">
                           <p>{method.name}</p>
-                          <p className="text-sm text-gray-400">{method.duration}</p>
+                          <p className="text-sm mt-1 text-gray-400">{method.duration}</p>
                         </div>
                     </div>
-                    <span>{method.price} </span>
+                    <span>Rs. {method.price} </span>
                   </div>
                       </Label>
                 ))}

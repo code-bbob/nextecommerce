@@ -7,7 +7,7 @@ export function middleware(req) {
   const { pathname } = req.nextUrl;
 
   // Define your protected routes. Here "/" is included.
-  const protectedRoutes = ['/checkout', '/repair'];
+  const protectedRoutes = ['/repair'];
 
   // Check if any protected route is a prefix of the current pathname
   const isProtectedRoute = protectedRoutes.some((route) => {

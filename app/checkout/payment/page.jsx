@@ -8,16 +8,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import customFetch from "@/utils/customFetch";
-import { fetchCartFromServer } from "@/redux/cartSlice";
+import { fetchCartFromServer, clearCart } from "@/redux/cartSlice";
 import { resetCheckout } from "@/redux/checkoutSlice";
 import BlackNavBar from "@/components/blackNavbar";
 import toast from "react-hot-toast";
+import { clearLocalCart } from "@/utils/localCart";
 
 export default function PaymentPage() {
   const dispatch = useDispatch();
   const router = useRouter();
   const checkout = useSelector((state) => state.checkout);
   const cartItems = useSelector((state) => state.cart.items);
+  const isLoggedIn = useSelector((state) => state.access?.isAuthenticated);
 
   const { subtotal, shippingCost, discount, email, shippingAddress, shippingMethod, phone } = checkout;
   const total = subtotal + shippingCost - discount;
@@ -33,17 +35,21 @@ export default function PaymentPage() {
   const handleNext = async () => {
     setLoading(true);
     try {
-      const carts = cartItems.map((item) => item.id);
-      const orderRes = await customFetch(`cart/api/order/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ carts }),
-      });
-      const orderResponse = await orderRes.json();
-      const order_id = orderResponse.id;
+      // Prepare items data from cart items
+      const items = cartItems.map((item) => ({
+        product_id: item.product_id,
+        quantity: item.quantity,
+      }));
 
-      const deliveryPayload = {
-        order: order_id,
+      if (items.length === 0) {
+        toast.error("Cart is empty");
+        setLoading(false);
+        return;
+      }
+
+      // Prepare checkout payload with order and delivery info
+      const checkoutPayload = {
+        items,
         phone_number: phone,
         first_name: shippingAddress.firstName,
         last_name: shippingAddress.lastName,
@@ -59,21 +65,34 @@ export default function PaymentPage() {
         payment_amount: total,
       };
 
-      const res = await customFetch(`cart/api/delivery/`, {
+      // Single API call to create order and delivery in one request
+      const res = await customFetch(`cart/api/checkout/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(deliveryPayload),
+        body: JSON.stringify(checkoutPayload),
       });
 
-      await dispatch(fetchCartFromServer());
-      await dispatch(resetCheckout());
-      if (res.status == 200) {
-        toast.success("Order placed successfully!");
+      if (!res.ok) {
+        throw new Error("Failed to place order");
       }
+
+      // Clear cart for both logged-in and guest users
+      if (isLoggedIn) {
+        // For logged-in users, cart is already cleared by backend
+        await dispatch(fetchCartFromServer());
+      } else {
+        // For guest users, clear local cart and localStorage
+        dispatch(clearCart());
+        clearLocalCart();
+      }
+
+      // Reset checkout form
+      await dispatch(resetCheckout());
+      toast.success("Order placed successfully!");
       router.push(`/`);
     } catch (err) {
       console.error(err);
-      // Handle the error (e.g., show an error message to the user)
+      toast.error(err.message || "Failed to place order");
     } finally {
       setLoading(false);
     }
@@ -103,7 +122,9 @@ export default function PaymentPage() {
           <div className="flex-1 space-y-8">
             <nav className="text-sm mb-8">
               <ol className="flex items-center space-x-2">
+                 <div className="w-16 mr-4 ">
                 <Image src="/images/digi.png" alt="logo" width={50} height={30} />
+              </div>
                 <li>
                   <Link href="/checkout" className="text-blue-500 hover:text-blue-400">
                     Information
@@ -132,7 +153,7 @@ export default function PaymentPage() {
               <div className="p-4 flex justify-between items-center border-b border-gray-800">
                 <div>
                   <span className="text-gray-400">Ship to</span>
-                  <p className="text-sm mt-1">
+                  <p className="text-sm mt-1 capitalize">
                     {shippingAddress.address || "123 Street Name, City, State ZIP"}
                   </p>
                 </div>
@@ -146,7 +167,7 @@ export default function PaymentPage() {
                   <p className="text-sm mt-1">
                     {shippingMethod === "Urgent"
                       ? "Urgent · RS. 8.90"
-                      : "Standard · Free"}
+                      : "Standard · Rs. 100"}
                   </p>
                 </div>
                 <Link href="/checkout/shipping" className="text-blue-500 text-sm hover:text-blue-400">

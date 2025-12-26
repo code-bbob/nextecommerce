@@ -151,15 +151,15 @@ function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters
 
               {/* Price Section */}
               <div className="mb-2 sm:mb-4 pb-2 sm:pb-4 border-b border-border/5">
-                <div className="flex items-baseline gap-2">
+                <div className="md:flex items-baseline gap-2">
                   {product.old_price && (
-                    <span className="text-xs line-through text-muted-foreground font-medium">
+                    <div className="text-xs line-through text-muted-foreground font-medium">
                       Rs {product.old_price.toLocaleString()}
-                    </span>
+                    </div>
                   )}
-                  <span className="text-lg font-bold text-foreground">
+                  <div className="text-lg font-bold text-foreground">
                     Rs {product.price.toLocaleString()}
-                  </span>
+                  </div>
                 </div>
               </div>
 

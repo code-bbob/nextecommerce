@@ -26,13 +26,9 @@ export default function CartSidebar({ isOpen, onClose }) {
     if (isLoggedIn){
       // Redirect to the checkout page
       dispatch(fetchCartFromServer());
-      window.open('/checkout','_blank');
-    } else {
-      //toast you need to be logged in to continue
-      toast.error("You need to be logged in to continue");
-      // Redirect to the login page
-      router.push("/auth/login");
     }
+    // Allow checkout for both logged in and guest users
+    window.open('/checkout','_blank');
   }
 
   useEffect(() => {

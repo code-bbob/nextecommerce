@@ -700,31 +700,28 @@ export default function BlackNavBar({ color = "black" }) {
               />
               <div className="fixed left-0 top-0 h-full w-9/12 max-w-xs bg-white text-gray-900 z-[1001] md:hidden overflow-y-auto shadow-2xl border-r border-gray-200">
                 <div className="relative px-5 pt-5 pb-4 bg-gradient-to-r from-slate-100 to-white border-b border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                  <div className="flex justify-center">
+                    <div className="h-24 w-24">
                       <Image
                         src="/images/digi.jpg"
                         alt="DGTech"
-                        width={28}
-                        height={28}
+                        width={32}
+                        height={32}
                         className="rounded"
                       />
-                      <div>
-                        <p className="text-xs text-gray-500">Welcome to</p>
-                        <p className="text-sm font-bold tracking-wide">
-                          Digitech Enterprises
-                        </p>
-                      </div>
                     </div>
                     <button
-                      className="p-2 rounded-full hover:bg-gray-100"
+                      className="p-2 absolute right-0 top-0 hover:bg-gray-100"
                       onClick={() => setIsSidePanelOpen(false)}
                       aria-label="Close menu"
                     >
                       <X className="h-5 w-5" />
                     </button>
                   </div>
-                  <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
+                  <div className="text-center mt-2">
+                  Digitech Enterprises
+                  </div>
+                  {/* <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
                     <Link
                       href="/"
                       onClick={() => setIsSidePanelOpen(false)}
@@ -746,10 +743,10 @@ export default function BlackNavBar({ color = "black" }) {
                     >
                       <Gift className="h-4 w-4" /> Deals
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
 
-                <div className="px-5 py-4 border-b border-gray-200">
+                {/* <div className="px-5 py-4 border-b border-gray-200">
                   <p className="text-xs font-semibold text-gray-500 mb-2">
                     Shop by category
                   </p>
@@ -776,7 +773,7 @@ export default function BlackNavBar({ color = "black" }) {
                       </Link>
                     ))}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="px-2 py-2">
                   {[
