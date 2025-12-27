@@ -25,8 +25,8 @@ const Login = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const googleAuthEndpoint = "api/auth/google/"; 
-  const loginEndpoint = "api/auth/login/";
+  const googleAuthEndpoint = "/api/auth/google/"; 
+  const loginEndpoint = "/api/auth/login/";
 
   useEffect(() => {
     const fetchAuthUrl = async () => {

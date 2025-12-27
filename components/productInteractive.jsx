@@ -340,6 +340,9 @@ export default function ProductInteractive({ product }) {
               <h2 className="text-2xl font-bold text-foreground">
                 {product.name}
               </h2>
+              <h3 className="text-lg font-semibold text-orange-500">
+                {product.seriesName} series
+                </h3>
               <div className="flex items-center space-x-2">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -356,6 +359,7 @@ export default function ProductInteractive({ product }) {
                 </span>
               </div>
             </div>
+  
             <div className="flex items-baseline gap-3">
               {product.before_deal_price && (
                 <strike className="text-xl md:text-sm text-muted-foreground font-bold">
@@ -410,7 +414,7 @@ export default function ProductInteractive({ product }) {
             )}
 
             {/* Choose Size */}
-            <div className="mt-4 mb-4">
+            {/* <div className="mt-4 mb-4">
               <span className="text-sm font-semibold text-foreground block mb-3">
                 Choose Size
               </span>
@@ -423,6 +427,7 @@ export default function ProductInteractive({ product }) {
                 </button>
               </div>
             </div>
+            */}
 
             {/* Quantity and Add to Cart */}
             <div className="flex flex-col gap-4 mt-6">

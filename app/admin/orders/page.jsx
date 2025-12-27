@@ -9,6 +9,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
+import Cookies from 'js-cookie';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
@@ -30,7 +31,7 @@ function AdminOrdersContent() {
   const fetchOrders = async (page = 1, search = '', status = '') => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('auth_token');
+      const token = Cookies.get('accessToken');
       
       // Build query parameters
       const params = new URLSearchParams();
@@ -43,13 +44,14 @@ function AdminOrdersContent() {
       }
       
       const response = await fetch(`${API_BASE_URL}/cart/api/order/?${params}`, {
-        headers: { 'Authorization': `Token ${token}` },
+        headers: { 'Authorization': `Bearer ${token}` },
       });
 
       if (response.ok) {
         const data = await response.json();
-        setAllOrders(data.results || []);
-        setDisplayedOrders(data.results || []);
+        console.log('Fetched orders data:', data);
+        setAllOrders(data || []);
+        setDisplayedOrders(data|| []);
         setCurrentPage(data.current_page || page);
         setTotalPages(data.total_pages || 1);
         setTotalCount(data.count || 0);
@@ -70,12 +72,15 @@ function AdminOrdersContent() {
     
     // Client-side filtering
     if (value.trim()) {
-      const filtered = allOrders.filter((order) =>
-        order.delivery?.first_name?.toLowerCase().includes(value.toLowerCase()) ||
-        order.delivery?.last_name?.toLowerCase().includes(value.toLowerCase()) ||
-        order.delivery?.email?.toLowerCase().includes(value.toLowerCase()) ||
-        order.id.toLowerCase().includes(value.toLowerCase())
-      );
+      const filtered = allOrders.filter((order) => {
+        return (
+          order.delivery?.first_name?.toLowerCase().includes(value.toLowerCase()) ||
+          order.delivery?.last_name?.toLowerCase().includes(value.toLowerCase()) ||
+          order.delivery?.email?.toLowerCase().includes(value.toLowerCase()) ||
+          order.user_name?.toLowerCase().includes(value.toLowerCase()) ||
+          order.id.toLowerCase().includes(value.toLowerCase())
+        );
+      });
       setDisplayedOrders(filtered);
       setIsBackendSearch(false);
     } else {
@@ -208,7 +213,8 @@ function AdminOrdersContent() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                      {displayedOrders.map((order) => (
+                      {displayedOrders.map((order) => {
+                        return (
                         <tr key={order.id} className="hover:bg-gray-50 transition-colors">
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className="text-sm text-gray-600">
@@ -217,11 +223,13 @@ function AdminOrdersContent() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className="text-sm text-gray-900">
-                              {order.delivery?.first_name} {order.delivery?.last_name}
+                              {order.delivery?.first_name && order.delivery?.last_name 
+                                ? `${order.delivery.first_name} ${order.delivery.last_name}`
+                                : order.user_name || 'N/A'}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="text-sm text-gray-600">{order.delivery?.email}</span>
+                            <span className="text-sm text-gray-600">{order.delivery?.email || 'N/A'}</span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className="text-sm font-medium text-gray-900">
@@ -248,7 +256,8 @@ function AdminOrdersContent() {
                             </Link>
                           </td>
                         </tr>
-                      ))}
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
