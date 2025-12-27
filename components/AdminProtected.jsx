@@ -27,7 +27,7 @@ export function AdminProtected({ children }) {
       }
 
       // Verify user is admin by calling the users/me endpoint with Bearer token (JWT)
-      const response = await fetch(`${API_BASE_URL}/api/auth/me/`, {
+      const response = await fetch(`${API_BASE_URL}api/auth/me/`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
