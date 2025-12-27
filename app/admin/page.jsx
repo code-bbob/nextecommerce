@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { AdminProtected } from '@/components/AdminProtected';
+import customFetch from '@/utils/customFetch';
 import {
   Users,
   ShoppingCart,
@@ -12,8 +13,6 @@ import {
   CheckCircle,
   Eye,
 } from 'lucide-react';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 function AdminDashboardContent() {
   const [stats, setStats] = useState(null);
@@ -27,18 +26,11 @@ function AdminDashboardContent() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('auth_token');
 
       const [usersRes, ordersRes, productsRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/userauth/api/users/`, {
-          headers: { 'Authorization': `Token ${token}` },
-        }),
-        fetch(`${API_BASE_URL}/cart/api/order/`, {
-          headers: { 'Authorization': `Token ${token}` },
-        }),
-        fetch(`${API_BASE_URL}/shop/api/`, {
-          headers: { 'Authorization': `Token ${token}` },
-        }),
+        customFetch('userauth/api/users/'),
+        customFetch('cart/api/order/'),
+        customFetch('shop/api/'),
       ]);
 
       const usersData = await usersRes.json();

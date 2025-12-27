@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { AdminProtected } from '@/components/AdminProtected';
+import customFetch from '@/utils/customFetch';
 import {
   Plus,
   Edit2,
@@ -20,8 +21,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 export default function AdminProducts() {
   const [allProducts, setAllProducts] = useState([]);
@@ -44,7 +43,6 @@ export default function AdminProducts() {
   const fetchProducts = async (page = 1, search = '') => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('auth_token');
       
       // Build query parameters
       const params = new URLSearchParams();
@@ -53,9 +51,7 @@ export default function AdminProducts() {
         params.append('search', search);
       }
       
-      const response = await fetch(`${API_BASE_URL}/shop/api/admin/search/?${params}`, {
-        headers: { 'Authorization': `Token ${token}` },
-      });
+      const response = await customFetch(`shop/api/admin/search/?${params}`);
 
       const data = await response.json();
       setAllProducts(data.results || []);
@@ -109,10 +105,8 @@ export default function AdminProducts() {
 
     try {
       setIsDeleting(true);
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch(`${API_BASE_URL}/shop/api/${deleteDialog.productId}/`, {
+      const response = await customFetch(`/shop/api/${deleteDialog.productId}/`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Token ${token}` },
       });
 
       if (response.ok) {
@@ -120,9 +114,6 @@ export default function AdminProducts() {
         setDisplayedProducts(updated);
         setAllProducts(allProducts.filter((p) => p.product_id !== deleteDialog.productId));
         setDeleteDialog({ open: false });
-      } else {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('Failed to delete product:', errorData);
       }
     } catch (error) {
       console.error('Error deleting product:', error);

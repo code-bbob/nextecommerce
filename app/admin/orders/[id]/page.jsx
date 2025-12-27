@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { AdminProtected } from '@/components/AdminProtected';
+import customFetch from '@/utils/customFetch';
 import {
   ArrowLeft,
   Edit2,
@@ -32,10 +33,7 @@ function OrderDetailContent() {
   const fetchOrderDetails = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch(`${API_BASE_URL}/cart/api/${orderId}/`, {
-        headers: { 'Authorization': `Token ${token}` },
-      });
+      const response = await customFetch(`cart/api/${orderId}/`);
 
       if (response.ok) {
         const data = await response.json();
@@ -69,12 +67,10 @@ function OrderDetailContent() {
     try {
       setIsSaving(true);
       setError('');
-      const token = localStorage.getItem('auth_token');
 
-      const response = await fetch(`${API_BASE_URL}/cart/api/${orderId}/`, {
+      const response = await customFetch(`/cart/api/${orderId}/`, {
         method: 'PATCH',
         headers: {
-          'Authorization': `Token ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({

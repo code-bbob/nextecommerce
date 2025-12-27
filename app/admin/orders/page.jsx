@@ -3,15 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { AdminProtected } from '@/components/AdminProtected';
+import customFetch from '@/utils/customFetch';
 import {
   Eye,
   Search,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
-import Cookies from 'js-cookie';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 function AdminOrdersContent() {
   const [allOrders, setAllOrders] = useState([]);
@@ -31,7 +29,6 @@ function AdminOrdersContent() {
   const fetchOrders = async (page = 1, search = '', status = '') => {
     try {
       setLoading(true);
-      const token = Cookies.get('accessToken');
       
       // Build query parameters
       const params = new URLSearchParams();
@@ -43,9 +40,7 @@ function AdminOrdersContent() {
         params.append('status', status);
       }
       
-      const response = await fetch(`${API_BASE_URL}/cart/api/order/?${params}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
+      const response = await customFetch(`cart/api/order/?${params}`);
 
       if (response.ok) {
         const data = await response.json();
