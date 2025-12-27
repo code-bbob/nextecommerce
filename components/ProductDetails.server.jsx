@@ -37,7 +37,7 @@ export default function ProductDetails({ product }) {
         </div>
 
         {/* Details */}
-        <div className="space-y-6">
+        <div className="">
           <div className="space-y-2">
             {product?.brandName && (
               <div className="flex items-center space-x-2">
@@ -58,6 +58,12 @@ export default function ProductDetails({ product }) {
               </h2>
             )}
 
+             {product?.stock != null && (
+              <div className="text-sm my-4 text-black">
+                <span className="font-bold">In Stock:</span> {product.stock}
+              </div>
+            )}
+
             <div className="flex items-center gap-3">
               <Stars value={avgRating} />
               <span className="text-sm text-muted-foreground">
@@ -67,7 +73,7 @@ export default function ProductDetails({ product }) {
           </div>
 
           {/* Price */}
-          <div className="space-y-1">
+          <div className="space-y-1 mt-6">
             {product?.old_price ? (
               <div className="text-sm line-through text-muted-foreground">
                 Rs {Number(product.old_price).toLocaleString()}
@@ -76,19 +82,16 @@ export default function ProductDetails({ product }) {
             <div className="text-3xl font-extrabold text-foreground">
               Rs {Number(product?.price || 0).toLocaleString()}
             </div>
-            {product?.stock != null && (
-              <div className="text-sm text-muted-foreground">
-                Stock: {product.stock}
-              </div>
-            )}
           </div>
+
+         
 
           {/* Actions (client) */}
           <ProductActions product={product} />
 
           {/* Description */}
           {product?.description && (
-            <section className="space-y-2">
+            <section className="space-y-3 mt-10">
               <h3 className="text-lg font-semibold text-foreground">
                 Product Details
               </h3>
