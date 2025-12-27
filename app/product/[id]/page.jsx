@@ -9,27 +9,27 @@ import ProductJsonLd from "@/components/ProductJsonLd.server";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd.server";
 import RelatedProducts from "@/components/RelatedProducts.server";
 import { Suspense } from "react";
+import { cache } from "react";
 
 // ISR: Revalidate every 1 hour for fast caching
 export const revalidate = 3600;
 
+const backendBase = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+const getProduct = cache(async (id) => {
+  if (!backendBase) return null;
+  const backendUrl = `${backendBase}shop/api/${id}/`;
+  const res = await fetch(backendUrl, { next: { revalidate: 3600 } });
+  if (!res.ok) return null;
+  return res.json();
+});
+
 // Generate dynamic metadata based on the product data
 export async function generateMetadata({ params }) {
   const { id } = await params;
-  const backendUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}shop/api/${id}/`;
   
   try {
-    const res = await fetch(backendUrl, {
-      next: { revalidate: 3600 }  // ISR: Revalidate every 1 hour
-    });
-    if (!res.ok) {
-      return {
-        title: "Product Not Found",
-        description: "The product you are looking for does not exist.",
-      };
-    }
-    
-    const product = await res.json();
+    const product = await getProduct(id);
     if (!product) {
       return {
         title: "Product Not Found",
@@ -85,30 +85,39 @@ export async function generateMetadata({ params }) {
 
 // Add this function to generate static paths
 export async function generateStaticParams() {
+  if (process.env.GENERATE_PRODUCT_STATIC_PARAMS !== "true") {
+    return [];
+  }
+
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}shop/api/`, { 
-      next: { revalidate: 3600 },  // ISR: Revalidate every 1 hour
-      headers: {
-        'Accept': 'application/json'
+    if (!backendBase) return [];
+
+    const ids = [];
+    const pageSize = 100; // backend max_page_size
+    let page = 1;
+    let totalPages = 1;
+
+    while (page <= totalPages) {
+      const res = await fetch(`${backendBase}shop/api/?page=${page}&page_size=${pageSize}`, {
+        next: { revalidate: 3600 },
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) break;
+      const data = await res.json();
+      const results = Array.isArray(data?.results) ? data.results : [];
+
+      totalPages = Number(data?.total_pages || 1);
+      for (const product of results) {
+        const pid = product?.product_id?.toString();
+        if (pid) ids.push({ id: pid });
       }
-    });
-    
-    if (!res.ok) {
-      console.error('Failed to fetch products for static params');
-      return [];
+      page += 1;
+
+      // Hard safety limit (avoid runaway builds)
+      if (ids.length > 5000) break;
     }
 
-    const data = await res.json();
-    
-    // Handle the paginated response format
-    if (!data.results || !Array.isArray(data.results)) {
-      console.error('API did not return expected results array');
-      return [];
-    }
-
-    return data.results.map((product) => ({
-      id: product.product_id?.toString() || ''
-    })).filter(param => param.id);
+    return ids;
   } catch (error) {
     console.error('Error generating static params:', error);
     return [];
@@ -117,47 +126,15 @@ export async function generateStaticParams() {
 
 export default async function ProductPage({ params }) {
   const { id } = await params;
-  const backendUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}shop/api/${id}/`;
-  let product = {};
+  let product = null;
   
   // Fetch product data from backend with caching
   try {
-    // ISR: Revalidate every 1 hour
-    const res = await fetch(backendUrl, { 
-      next: { revalidate: 3600 }
-    });
-    if (!res.ok) {
-      notFound();
-    }
-    product = await res.json();
-    if (!product) {
-      notFound();
-    }
+    product = await getProduct(id);
+    if (!product) notFound();
   } catch (error) {
     console.error(error);
     notFound();
-  }
-  
-  // Fetch related products with timeout to avoid slow loads
-  let related = [];
-  try {
-    const relUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}shop/api/related/${id}/`;
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 2000); // 2 second timeout
-    
-    const relRes = await fetch(relUrl, { 
-      next: { revalidate: 3600 },
-      signal: controller.signal
-    });
-    clearTimeout(timeout);
-    
-    if (relRes.ok) {
-      const relData = await relRes.json();
-      related = Array.isArray(relData?.results) ? relData.results : Array.isArray(relData) ? relData : [];
-    }
-  } catch (error) {
-    // If related products timeout or fail, continue without them
-    console.warn('Related products fetch failed, continuing without them');
   }
   
   const site = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
@@ -172,7 +149,7 @@ export default async function ProductPage({ params }) {
       <ProductInteractive product={product} />
       {/* Internal linking to related products (lazy loaded) */}
       <Suspense fallback={null}>
-        <RelatedProducts products={related} />
+        <RelatedProducts productId={id} />
       </Suspense>
       {/* JSON-LD Structured Data (SSR) */}
       <ProductJsonLd product={product} siteUrl={site} />

@@ -87,10 +87,13 @@ function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters
         ) : (
           // Show products when loaded
           products?.map((product) => (
-          <div
+          <Link
             key={product.product_id}
+            href={`/product/${product.product_id}`}
+            prefetch
+            onMouseEnter={() => router.prefetch(`/product/${product.product_id}`)}
+            onFocus={() => router.prefetch(`/product/${product.product_id}`)}
             className="flex flex-col bg-white border border-border/5 rounded-xl overflow-hidden hover:shadow-xl hover:border-gray-200 text-foreground relative group h-full shadow-sm cursor-pointer transition-shadow duration-300"
-            onClick={() => router.push(`/product/${product.product_id}`)}
           >
             {/* Deal Badge - Top Left */}
             {product.deal && (
@@ -171,7 +174,7 @@ function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters
                 Add to Cart
               </Button>
             </div>
-          </div>
+          </Link>
           ))
         )}
 
