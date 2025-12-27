@@ -1,7 +1,7 @@
 // app/product/[id]/page.jsx
 import BlackNavBar from "@/components/blackNavbar";
 import Footer from "@/components/Footer.server";
-import ProductInteractive from "@/components/productInteractive";
+import ProductDetails from "@/components/ProductDetails.server";
 import { notFound } from "next/navigation";
 // Removed next/script usage; JSON-LD is injected server-side
 import { getCDNImageUrl } from "@/utils/imageUtils";
@@ -145,8 +145,7 @@ export default async function ProductPage({ params }) {
       <header className="sr-only">
         <h1>{product.name} price in Nepal | Buy {product.brand?.name ? `${product.brand.name} ` : ""}{product.name}</h1>
       </header>
-      {/* Pass product data to a client component for interactivity (code-split) */}
-      <ProductInteractive product={product} />
+      <ProductDetails product={product} />
       {/* Internal linking to related products (lazy loaded) */}
       <Suspense fallback={null}>
         <RelatedProducts productId={id} />

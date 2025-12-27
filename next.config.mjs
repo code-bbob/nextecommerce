@@ -25,6 +25,20 @@ const nextConfig = {
     experimental: {
       optimizePackageImports: ['lucide-react', '@radix-ui'],
     },
+
+    async headers() {
+      return [
+        {
+          source: '/search',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, s-maxage=300, stale-while-revalidate=3600',
+            },
+          ],
+        },
+      ];
+    },
   };
 
 export default nextConfig;

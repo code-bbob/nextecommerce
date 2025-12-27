@@ -91,7 +91,6 @@ export function SearchPageClient({ initialProducts, initialPagination, currentPa
 
       const res = await publicFetch(apiUrl);
       const data = await res.json();
-      console.log("Fetched products data:", data);
 
       if (data.results) {
         setProducts(data.results);

@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CartSidebar from "@/components/cartSidebar";
 import { logout } from "@/redux/accessSlice";
 import customFetch from "@/utils/customFetch";
+import publicFetch from "@/utils/publicFetch";
 import { getCDNImageUrl } from "@/utils/imageUtils";
 import { toSlug } from "@/utils/slugify";
 import { SiInstagram, SiFacebook, SiTiktok } from "react-icons/si";
@@ -144,7 +145,7 @@ export default function BlackNavBar({ color = "black" }) {
       setIsLoading(true);
       try {
         router.prefetch(`/search?q=${encodeURIComponent(debouncedQuery)}`);
-        const res = await customFetch(
+        const res = await publicFetch(
           `shop/api/navsearch/?search=${encodeURIComponent(debouncedQuery)}`
         );
         if (res.ok) {

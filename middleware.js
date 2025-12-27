@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
-import toast from 'react-hot-toast';
 
 export function middleware(req) {
-  // Use the built-in cookies API from the Edge runtime
-  const token = req.cookies.get('accessToken')?.value;
   const { pathname } = req.nextUrl;
 
   // Define your protected routes. Here "/" is included.
@@ -14,6 +11,15 @@ export function middleware(req) {
     return pathname.startsWith(route);
   });
 
+  // IMPORTANT: Do not read cookies unless needed.
+  // Reading cookies on every request can disable caching for public pages.
+  if (!isProtectedRoute) {
+    return NextResponse.next();
+  }
+
+  // Use the built-in cookies API from the Edge runtime
+  const token = req.cookies.get('accessToken')?.value;
+
   // If the current pathname is protected and there's no token, redirect to login
   if (isProtectedRoute && !token) {
     // toast.error('Please login to continue');
@@ -22,3 +28,7 @@ export function middleware(req) {
 
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: ['/repair/:path*'],
+};

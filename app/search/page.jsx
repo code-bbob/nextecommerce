@@ -4,6 +4,10 @@ import { SearchPageClient } from "./search-page-client"
 // ISR - Revalidate every 1 hour
 export const revalidate = 3600
 
+// Reduce Vercel cold-start/region latency for dynamic searches
+export const runtime = "edge"
+export const preferredRegion = ["bom1"]
+
 // Fetch products server-side
 async function getInitialProducts(searchQuery, page = 1) {
   try {
