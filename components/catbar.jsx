@@ -9,6 +9,7 @@ import CartSidebar from "@/components/cartSidebar";
 import { logout } from "@/redux/accessSlice";
 import customFetch from "@/utils/customFetch";
 import { getCDNImageUrl } from "@/utils/imageUtils";
+import { toSlug } from "@/utils/slugify";
 import { ChevronDown } from "lucide-react";
 
 function useDebounce(value, delay) {
@@ -170,7 +171,7 @@ export default function CatBar() {
                   <div key={idx}>
                     {/* Brand Title */}
                     <h3
-                      onClick={() => router.push(`/${activeCategory}/${brandObj.brand}`)}
+                      onClick={() => router.push(`/${toSlug(activeCategory)}/${toSlug(brandObj.brand)}`)}
                       className="font-semibold hover:font-bold mb-4 cursor-pointer  hover:text-red-700 transition-colors duration-150 text-sm uppercase tracking-wide"
                     >
                       {brandObj.brand}
@@ -184,7 +185,7 @@ export default function CatBar() {
                               <li
                                 key={item.id}
                                 className="cursor-pointer text-gray-800 hover:text-black hover:font-bold transition-colors duration-150 text-sm"
-                                onClick={() => router.push(`/${activeCategory}/${brandObj.brand}/${item.name}`)}
+                                onClick={() => router.push(`/${toSlug(activeCategory)}/${toSlug(brandObj.brand)}/${toSlug(item.name)}`)}
                               >
                                 {item.name}
                               </li>

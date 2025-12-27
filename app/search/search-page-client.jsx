@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProductPageLayout from "@/components/ProductPageLayout";
-import customFetch from "@/utils/customFetch";
+import publicFetch from "@/utils/publicFetch";
 
 export function SearchPageClient({ initialProducts, initialPagination, currentPage, searchQuery }) {
   const router = useRouter();
@@ -89,8 +89,9 @@ export function SearchPageClient({ initialProducts, initialPagination, currentPa
         ? `shop/api/search/?${queryParams.toString()}`
         : `shop/api/?${queryParams.toString()}`;
 
-      const res = await customFetch(apiUrl);
+      const res = await publicFetch(apiUrl);
       const data = await res.json();
+      console.log("Fetched products data:", data);
 
       if (data.results) {
         setProducts(data.results);

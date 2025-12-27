@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProductPageLayout from "@/components/ProductPageLayout";
-import customFetch from "@/utils/customFetch";
+import publicFetch from "@/utils/publicFetch";
 
 export function BrandPageClient({ initialProducts, initialPagination, currentPage, cat, brand }) {
   const router = useRouter();
@@ -60,7 +60,7 @@ export function BrandPageClient({ initialProducts, initialPagination, currentPag
 
       const apiUrl = `shop/api/catsearch/${cat}/brand/${brand}/?${queryParams.toString()}`;
 
-      const res = await customFetch(apiUrl);
+      const res = await publicFetch(apiUrl);
       const data = await res.json();
 
       if (data.results) {

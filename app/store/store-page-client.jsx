@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ProductPageLayout from "@/components/ProductPageLayout";
-import customFetch from "@/utils/customFetch";
+import publicFetch from "@/utils/publicFetch";
 
 export function StorePageClient({ initialProducts, currentPage }) {
   const router = useRouter();
@@ -50,19 +50,14 @@ export function StorePageClient({ initialProducts, currentPage }) {
       if (newFilters.brandName) queryString.set("brand_name", newFilters.brandName);
 
       const apiUrl = `shop/api/?${queryString.toString()}`;
-      console.log('Fetching from:', apiUrl);
-      const res = await customFetch(apiUrl);
+      const res = await publicFetch(apiUrl);
       const data = await res.json();
-      console.log('API Response:', data);
 
       if (data.results) {
-        console.log('Setting products:', data.results.length);
         setProducts(data.results);
       } else if (Array.isArray(data)) {
-        console.log('Response is array:', data.length);
         setProducts(data);
       } else {
-        console.warn('Unexpected API response structure:', data);
         setProducts([]);
       }
 

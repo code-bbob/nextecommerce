@@ -1,4 +1,4 @@
-import customFetch from "@/utils/customFetch"
+import publicFetch from "@/utils/publicFetch"
 import { BrandPageClient } from "./brand-page-client"
 import { Suspense } from "react"
 
@@ -9,7 +9,7 @@ export const revalidate = 3600 // ISR: Revalidate every 1 hour
 async function getInitialProducts(cat, brand, page = 1) {
   try {
     const apiUrl = `shop/api/catsearch/${cat}/brand/${brand}/?page=${page}`
-    const res = await customFetch(apiUrl)
+    const res = await publicFetch(apiUrl)
     const data = await res.json()
 
     if (data.results) {

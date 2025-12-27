@@ -3,13 +3,11 @@
 import { useState, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProductPageLayout from "@/components/ProductPageLayout";
-import customFetch from "@/utils/customFetch";
+import publicFetch from "@/utils/publicFetch";
 
 export function SeriesPageClient({ initialProducts, initialPagination, currentPage, cat, brand, series }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  console.log("SeriesPageClient initialized with:", { initialProducts, initialPagination, currentPage, cat, brand, series });
 
   const [products, setProducts] = useState(initialProducts || []);
   const [pagination, setPagination] = useState(initialPagination || {
@@ -61,15 +59,11 @@ export function SeriesPageClient({ initialProducts, initialPagination, currentPa
       queryParams.append("page", currentPage.toString());
 
       const apiUrl = `shop/api/catsearch/${cat}/${brand}/${series}/?${queryParams.toString()}`;
-      console.log("Fetching from URL:", apiUrl);
 
-      const res = await customFetch(apiUrl);
+      const res = await publicFetch(apiUrl);
       const data = await res.json();
-      console.log("API Response:", data);
-      console.log("Is array?", Array.isArray(data));
 
       if (data.results) {
-        console.log("Found data.results, count:", data.results.length);
         setProducts(data.results);
         setPagination({
           count: data.count,
@@ -79,10 +73,8 @@ export function SeriesPageClient({ initialProducts, initialPagination, currentPa
           previous: data.links.previous
         });
       } else if (Array.isArray(data)) {
-        console.log("Data is array, count:", data.length);
         setProducts(data);
       } else {
-        console.log("No products found, data:", data);
         setProducts(initialProducts || []);
       }
     } catch (err) {

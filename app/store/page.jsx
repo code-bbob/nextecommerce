@@ -1,4 +1,4 @@
-import customFetch from "@/utils/customFetch";
+import publicFetch from "@/utils/publicFetch";
 import { StorePageClient } from "./store-page-client";
 
 // ISR - Revalidate every 1 hour
@@ -7,7 +7,7 @@ export const revalidate = 3600;
 // Fetch products server-side
 async function getInitialProducts(page = 1) {
   try {
-    const response = await customFetch(`shop/api/?page=${page}`);
+    const response = await publicFetch(`shop/api/?page=${page}`);
     const data = await response.json();
     return data;
   } catch (error) {

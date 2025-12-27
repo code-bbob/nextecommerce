@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import ProductPageLayout from "@/components/ProductPageLayout"
 import { useRouter } from "next/navigation"
-import customFetch from "@/utils/customFetch"
+import publicFetch from "@/utils/publicFetch"
 
 export default function CatPageClient({ initialProducts, initialPagination, cat }) {
   const router = useRouter()
@@ -50,13 +50,10 @@ export default function CatPageClient({ initialProducts, initialPagination, cat 
       if (newFilters.brandName) queryString.set('brand_name', newFilters.brandName)
       
       const apiUrl = `shop/api/catsearch/${cat}/?${queryString.toString()}`
-      console.log('Fetching from:', apiUrl)
-      const res = await customFetch(apiUrl)
+      const res = await publicFetch(apiUrl)
       const data = await res.json()
-      console.log('API Response:', data)
 
       if (data.results) {
-        console.log('Setting products:', data.results.length)
         setProducts(data.results)
         setPagination({
           count: data.count,
@@ -66,10 +63,8 @@ export default function CatPageClient({ initialProducts, initialPagination, cat 
           previous: data.links?.previous
         })
       } else if (Array.isArray(data)) {
-        console.log('Response is array:', data.length)
         setProducts(data)
       } else {
-        console.warn('Unexpected API response structure:', data)
         setProducts([])
       }
     } catch (error) {

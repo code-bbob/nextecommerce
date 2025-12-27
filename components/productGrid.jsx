@@ -19,8 +19,6 @@ function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters
   const isLoggedIn = useSelector((state) => state.access.isAuthenticated)
   const router = useNavigationProgress()
 
-  console.log("ProductGrid received:", { count: products?.length, products, isLoading });
-
   // Skeleton loader component
   const SkeletonCard = () => (
     <div className="flex flex-col bg-white border border-border/5 rounded-xl overflow-hidden animate-pulse h-full shadow-sm">

@@ -1,4 +1,4 @@
-import customFetch from "@/utils/customFetch"
+import publicFetch from "@/utils/publicFetch"
 import { SeriesPageClient } from "./series-page-client"
 import { Suspense } from "react"
 
@@ -8,18 +8,11 @@ export const revalidate = 3600 // ISR: Revalidate every 1 hour
 
 async function getInitialProducts(cat, brand, series, page = 1) {
   try {
-    const apiUrl = `shop/api/catsearch/${cat}/${series}/?page=${page}`
-    console.log("[Server] Fetching from:", apiUrl);
-    
-    const res = await customFetch(apiUrl)
+    const apiUrl = `shop/api/catsearch/${cat}/${brand}/${series}/?page=${page}`
+    const res = await publicFetch(apiUrl)
     const data = await res.json()
-    
-    console.log("[Server] API Response:", data);
-    console.log("[Server] Has results?", !!data.results);
-    console.log("[Server] Is array?", Array.isArray(data.results));
 
     if (data.results && Array.isArray(data.results)) {
-      console.log("[Server] ✅ Returning products, count:", data.results.length);
       return {
         products: data.results,
         pagination: {
@@ -31,7 +24,6 @@ async function getInitialProducts(cat, brand, series, page = 1) {
         }
       }
     }
-    console.log("[Server] ❌ Conditions not met, returning empty");
     return {
       products: [],
       pagination: {
@@ -108,12 +100,8 @@ export default async function SeriesPage({ params, searchParams }) {
   const brand = params.brand
   const series = params.series
   const page = parseInt(searchParams.page || '1', 10)
-  
-  console.log("[SeriesPage] Params:", { cat, brand, series, page });
-  
+
   const { products, pagination } = await getInitialProducts(cat, brand, series, page)
-  
-  console.log("[SeriesPage] Fetched data:", { productsCount: products.length, pagination });
 
   return (
     <Suspense fallback={<SkeletonLoader />}>

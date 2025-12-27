@@ -24,6 +24,7 @@ import CartSidebar from "@/components/cartSidebar";
 import { logout } from "@/redux/accessSlice";
 import customFetch from "@/utils/customFetch";
 import { getCDNImageUrl } from "@/utils/imageUtils";
+import { toSlug } from "@/utils/slugify";
 import { SiInstagram, SiFacebook, SiTiktok } from "react-icons/si";
 
 const NAV_CATEGORIES = [
@@ -142,6 +143,7 @@ export default function BlackNavBar({ color = "black" }) {
       }
       setIsLoading(true);
       try {
+        router.prefetch(`/search?q=${encodeURIComponent(debouncedQuery)}`);
         const res = await customFetch(
           `shop/api/navsearch/?search=${encodeURIComponent(debouncedQuery)}`
         );
@@ -280,7 +282,7 @@ export default function BlackNavBar({ color = "black" }) {
                   <div key={idx}>
                     <h3
                       onClick={() =>
-                        router.push(`/${activeCategory}/${brandObj.brand}`)
+                        router.push(`/${toSlug(activeCategory)}/${toSlug(brandObj.brand)}`)
                       }
                       className="font-semibold hover:font-bold mb-4 cursor-pointer hover:text-red-700 transition-colors duration-150 text-sm uppercase tracking-wide"
                     >
@@ -301,7 +303,7 @@ export default function BlackNavBar({ color = "black" }) {
                                 className="cursor-pointer text-gray-800 hover:text-black hover:font-bold transition-colors duration-150 text-sm"
                                 onClick={() =>
                                   router.push(
-                                    `/${activeCategory}/${brandObj.brand}/${item.name}`
+                                    `/${toSlug(activeCategory)}/${toSlug(brandObj.brand)}/${toSlug(item.name)}`
                                   )
                                 }
                               >
@@ -825,7 +827,7 @@ export default function BlackNavBar({ color = "black" }) {
               {NAV_CATEGORIES.map((cat) => (
                 <Link
                   key={cat}
-                  href={`/${cat}`}
+                  href={`/${toSlug(cat)}`}
                   className="px-4 py-2 rounded-sm text-sm font-semibold hover:bg-gray-100 transition-all duration-150 whitespace-nowrap"
                   onMouseEnter={() => setActiveCategory(cat)}
                 >

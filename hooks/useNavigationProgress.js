@@ -43,11 +43,16 @@ export function useNavigationProgress() {
     router.refresh()
   }, [router])
 
+  const prefetch = useCallback((href) => {
+    return router.prefetch(href)
+  }, [router])
+
   return {
     push,
     replace,
     back,
     forward,
     refresh,
+    prefetch,
   }
 }
