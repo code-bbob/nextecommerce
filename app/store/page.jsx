@@ -1,6 +1,10 @@
 import publicFetch from "@/utils/publicFetch";
 import { StorePageClient } from "./store-page-client";
 
+// Ensure query-based pagination works in production (`pnpm build && pnpm start`).
+// We still keep the data fast by caching the fetch per-URL via `next.revalidate` below.
+export const dynamic = "force-dynamic";
+
 // ISR - cache each URL (including ?page=...) for 1 hour
 export const revalidate = 3600;
 

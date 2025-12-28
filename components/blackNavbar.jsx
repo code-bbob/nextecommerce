@@ -78,6 +78,11 @@ export default function BlackNavBar({ color = "black" }) {
     setMounted(true);
   }, []);
 
+  // Warm the Store route so first click feels instant.
+  useEffect(() => {
+    router.prefetch?.("/store");
+  }, [router]);
+
   // Pre-fetch category data on mount (for mega menu)
   useEffect(() => {
     let isCancelled = false;
