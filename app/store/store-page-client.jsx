@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import ProductPageLayout from "@/components/ProductPageLayout";
 import publicFetch from "@/utils/publicFetch";
+import { useNavigationProgress } from "@/hooks/useNavigationProgress";
 
 export function StorePageClient({ initialProducts, currentPage }) {
-  const router = useRouter();
+  const router = useNavigationProgress();
+  const searchParams = useSearchParams();
   const [products, setProducts] = useState(initialProducts.results || initialProducts);
   const [pagination, setPagination] = useState({
     count: initialProducts.count,
@@ -25,6 +27,20 @@ export function StorePageClient({ initialProducts, currentPage }) {
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  // Keep local filter state in sync with URL (important for pagination)
+  useEffect(() => {
+    if (!searchParams) return;
+    setFilters((prev) => ({
+      ...prev,
+      ordering: searchParams.get("ordering") || "",
+      rating: searchParams.get("rating") || "",
+      minRating: searchParams.get("min_rating") || "",
+      minPrice: searchParams.get("min_price") || "",
+      maxPrice: searchParams.get("max_price") || "",
+      brandName: searchParams.get("brand") || "",
+    }));
+  }, [searchParams]);
+
   // Update state when initialProducts changes (when page changes)
   useEffect(() => {
     setProducts(initialProducts.results || initialProducts);
@@ -35,7 +51,37 @@ export function StorePageClient({ initialProducts, currentPage }) {
       next: initialProducts.links?.next,
       previous: initialProducts.links?.previous,
     });
+    // Stop any client-side loading state once new data arrives
+    setIsLoading(false);
   }, [initialProducts, currentPage]);
+
+  const buildQueryParams = (page) => {
+    const params = new URLSearchParams();
+    params.set("page", page.toString());
+    if (filters.ordering) params.set("ordering", filters.ordering);
+    if (filters.rating) params.set("rating", filters.rating);
+    if (filters.minRating) params.set("min_rating", filters.minRating);
+    if (filters.minPrice) params.set("min_price", filters.minPrice);
+    if (filters.maxPrice) params.set("max_price", filters.maxPrice);
+    if (filters.brandName) params.set("brand", filters.brandName);
+    return params;
+  };
+
+  // Prefetch adjacent pages (Next/Prev) to make pagination feel instant
+  useEffect(() => {
+    const current = pagination.current_page || currentPage || 1;
+    const total = pagination.total_pages || 1;
+
+    if (current < total) {
+      const nextParams = buildQueryParams(current + 1);
+      router.prefetch?.(`?${nextParams.toString()}`);
+    }
+    if (current > 1) {
+      const prevParams = buildQueryParams(current - 1);
+      router.prefetch?.(`?${prevParams.toString()}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pagination.current_page, pagination.total_pages, currentPage, filters]);
 
   const fetchFilteredProducts = async (newFilters, page = 1) => {
     setIsLoading(true);
@@ -47,7 +93,8 @@ export function StorePageClient({ initialProducts, currentPage }) {
       if (newFilters.minRating) queryString.set("min_rating", newFilters.minRating);
       if (newFilters.minPrice) queryString.set("min_price", newFilters.minPrice);
       if (newFilters.maxPrice) queryString.set("max_price", newFilters.maxPrice);
-      if (newFilters.brandName) queryString.set("brand_name", newFilters.brandName);
+      // Backend expects `brand` key
+      if (newFilters.brandName) queryString.set("brand", newFilters.brandName);
 
       const apiUrl = `shop/api/?${queryString.toString()}`;
       const res = await publicFetch(apiUrl);
@@ -77,15 +124,11 @@ export function StorePageClient({ initialProducts, currentPage }) {
   };
 
   const handlePageChange = (newPage) => {
-    const params = new URLSearchParams();
-    params.set("page", newPage.toString());
-    if (filters.ordering) params.set("ordering", filters.ordering);
-    if (filters.rating) params.set("rating", filters.rating);
-    if (filters.minRating) params.set("min_rating", filters.minRating);
-    if (filters.minPrice) params.set("min_price", filters.minPrice);
-    if (filters.maxPrice) params.set("max_price", filters.maxPrice);
-    if (filters.brandName) params.set("brand_name", filters.brandName);
-    router.push(`?${params.toString()}`);
+    setIsLoading(true);
+    const params = buildQueryParams(newPage);
+    const href = `?${params.toString()}`;
+    router.prefetch?.(href);
+    router.push(href);
   };
 
   const handleOrderingChange = (value) => {
