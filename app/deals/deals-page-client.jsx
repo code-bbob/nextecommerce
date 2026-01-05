@@ -47,7 +47,7 @@ export function DealsPageClient({ initialProducts, currentPage }) {
       if (newFilters.minRating) queryString.set("min_rating", newFilters.minRating);
       if (newFilters.minPrice) queryString.set("min_price", newFilters.minPrice);
       if (newFilters.maxPrice) queryString.set("max_price", newFilters.maxPrice);
-      if (newFilters.brandName) queryString.set("brand_name", newFilters.brandName);
+      if (newFilters.brandName) queryString.set("brand", newFilters.brandName);
 
       const apiUrl = `shop/api/deals/?${queryString.toString()}`;
       const res = await publicFetch(apiUrl);
@@ -84,7 +84,7 @@ export function DealsPageClient({ initialProducts, currentPage }) {
     if (filters.minRating) params.set("min_rating", filters.minRating);
     if (filters.minPrice) params.set("min_price", filters.minPrice);
     if (filters.maxPrice) params.set("max_price", filters.maxPrice);
-    if (filters.brandName) params.set("brand_name", filters.brandName);
+    if (filters.brandName) params.set("brand", filters.brandName);
     router.push(`?${params.toString()}`);
   };
 

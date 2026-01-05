@@ -2,12 +2,30 @@ import publicFetch from "@/utils/publicFetch"
 import CatPageClient from "./cat-page-client"
 import { Suspense } from "react"
 
+// Force dynamic rendering so query-based pagination works in production
+export const dynamic = "force-dynamic"
+
 export const revalidate = 3600 // ISR: Revalidate every 1 hour
 
-async function getInitialProducts(cat, page = 1) {
+async function getInitialProducts(cat, params) {
   try {
-    const apiUrl = `shop/api/catsearch/${cat}/?page=${page}`
-    const res = await publicFetch(apiUrl)
+    const qs = new URLSearchParams()
+    const page = parseInt(params?.page) || 1
+    qs.set("page", page.toString())
+    
+    // Add filters
+    if (params?.ordering) qs.set("ordering", params.ordering)
+    if (params?.min_rating) qs.set("min_rating", params.min_rating)
+    if (params?.min_price) qs.set("min_price", params.min_price)
+    if (params?.max_price) qs.set("max_price", params.max_price)
+    const brand = params?.brand ?? params?.brand_name
+    if (brand) qs.set("brand", brand)
+    
+    const apiUrl = `shop/api/catsearch/${cat}/?${qs.toString()}`
+    console.log('Fetching category products from:', apiUrl)
+    const res = await publicFetch(apiUrl, {
+      next: { revalidate: 3600 },
+    })
     const data = await res.json()
 
     if (data.results) {
@@ -49,9 +67,10 @@ async function getInitialProducts(cat, page = 1) {
 
 export default async function CatPage({ params, searchParams }) {
   const cat = params.cat
-  const page = parseInt(searchParams.page || '1', 10)
+  const resolvedParams = await searchParams
+  const page = parseInt(resolvedParams?.page || '1', 10)
   
-  const { products, pagination } = await getInitialProducts(cat, page)
+  const { products, pagination } = await getInitialProducts(cat, resolvedParams)
 
   return (
     <Suspense fallback={<div className="text-white">Loading page...</div>}>

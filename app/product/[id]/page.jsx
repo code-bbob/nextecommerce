@@ -8,11 +8,14 @@ import { getCDNImageUrl } from "@/utils/imageUtils";
 import ProductJsonLd from "@/components/ProductJsonLd.server";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd.server";
 import RelatedProducts from "@/components/RelatedProducts.server";
+import Recommendations from "@/components/Recommendations";
+import RecentlyViewed from "@/components/RecentlyViewed";
+import RecentlyViewedTracker from "@/components/RecentlyViewedTracker";
 import { Suspense } from "react";
 import { cache } from "react";
 
 // ISR: Revalidate every 1 hour for fast caching
-export const revalidate = 3600;
+export const revalidate = 10;
 
 const backendBase = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -145,11 +148,27 @@ export default async function ProductPage({ params }) {
       <header className="sr-only">
         <h1>{product.name} price in Nepal | Buy {product.brand?.name ? `${product.brand.name} ` : ""}{product.name}</h1>
       </header>
+      
+      {/* Track this product view in localStorage */}
+      <RecentlyViewedTracker product={product} />
+      
       <ProductDetails product={product} />
+      
+      {/* Smart Recommendations Section */}
+      {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Recommendations productId={id} />
+      </div>
+       */}
       {/* Internal linking to related products (lazy loaded) */}
-      <Suspense fallback={null}>
+      {/* <Suspense fallback={null}>
         <RelatedProducts productId={id} />
       </Suspense>
+       */}
+      {/* Recently Viewed Products */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <RecentlyViewed currentProductId={id} />
+      </div>
+      
       {/* JSON-LD Structured Data (SSR) */}
       <ProductJsonLd product={product} siteUrl={site} />
       <BreadcrumbJsonLd

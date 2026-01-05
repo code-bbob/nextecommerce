@@ -1,13 +1,31 @@
 import publicFetch from "@/utils/publicFetch";
 import { DealsPageClient } from "./deals-page-client";
 
+// Force dynamic rendering so query-based pagination works in production
+export const dynamic = "force-dynamic";
+
 // ISR - Revalidate every 1 hour
 export const revalidate = 3600;
 
-// Fetch deals server-side
-async function getInitialDeals(page = 1) {
+// Fetch deals server-side with full query support
+async function getInitialDeals(queryParams) {
   try {
-    const response = await publicFetch(`shop/api/deals/?page=${page}`);
+    const qs = new URLSearchParams();
+    const page = parseInt(queryParams?.page) || 1;
+    qs.set("page", page.toString());
+
+    // Map filters from URL to backend API expectations
+    if (queryParams?.ordering) qs.set("ordering", queryParams.ordering);
+    if (queryParams?.rating) qs.set("rating", queryParams.rating);
+    if (queryParams?.min_rating) qs.set("min_rating", queryParams.min_rating);
+    if (queryParams?.min_price) qs.set("min_price", queryParams.min_price);
+    if (queryParams?.max_price) qs.set("max_price", queryParams.max_price);
+    const brand = queryParams?.brand ?? queryParams?.brand_name;
+    if (brand) qs.set("brand", brand);
+
+    const response = await publicFetch(`shop/api/deals/?${qs.toString()}`, {
+      next: { revalidate: 3600 },
+    });
     const data = await response.json();
     return data;
   } catch (error) {
@@ -24,16 +42,12 @@ async function getInitialDeals(page = 1) {
 
 // Server Component - Fetches data instantly
 export default async function DealsPage({ searchParams }) {
-  // Read page number from URL query params (?page=2)
-  // In Next.js 15, searchParams is a Promise, so we need to await it
+  // In Next.js 15, searchParams is a Promise
   const params = await searchParams;
   const pageNum = parseInt(params?.page) || 1;
-  
-  // Data is fetched on the server before page renders
-  // This means products are ALREADY LOADED when page reaches client
-  const initialDeals = await getInitialDeals(pageNum);
 
-  // Pass pre-fetched data to client component
-  // Client renders immediately with NO loading state
+  // Fetch server-side using current query params so pagination + filters persist
+  const initialDeals = await getInitialDeals(params);
+
   return <DealsPageClient initialProducts={initialDeals} currentPage={pageNum} />;
 }

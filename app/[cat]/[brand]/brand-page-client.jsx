@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProductPageLayout from "@/components/ProductPageLayout";
 import publicFetch from "@/utils/publicFetch";
@@ -29,6 +29,18 @@ export function BrandPageClient({ initialProducts, initialPagination, currentPag
 
   // Debounce timer refs
   const debounceTimer = useRef(null);
+
+  // Update state when server sends fresh data (e.g., on page navigation)
+  useEffect(() => {
+    setProducts(initialProducts || []);
+    setPagination(initialPagination || {
+      count: 0,
+      total_pages: 1,
+      current_page: 1,
+      next: null,
+      previous: null
+    });
+  }, [initialProducts, initialPagination]);
 
   // Fetch products with current filters
   const fetchProducts = useCallback(async (filterParams) => {

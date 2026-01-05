@@ -1,5 +1,9 @@
 import ProductActions from "@/components/ProductActions.client";
 import ProductImageCarousel from "@/components/ProductImageCarousel.client";
+import RelatedProducts from "@/components/RelatedProducts.server";
+import CompleteSetup from "@/components/CompleteSetup.server";
+import Recommendations from "@/components/Recommendations.server";
+import { Suspense } from "react";
 
 function Stars({ value = 0 }) {
   const rounded = Math.round(Number(value) || 0);
@@ -102,6 +106,13 @@ export default function ProductDetails({ product }) {
             </section>
           )}
         </div>
+      </div>
+
+      {/* Recommendations - Between Description and Specifications */}
+      <div className="max-w-7xl mx-auto px-4 mt-8">
+        <Suspense fallback={null}>
+          <CompleteSetup productId={product.product_id} />
+        </Suspense>
       </div>
 
       {/* Specs */}

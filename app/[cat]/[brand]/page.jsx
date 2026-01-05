@@ -2,15 +2,32 @@ import publicFetch from "@/utils/publicFetch"
 import { BrandPageClient } from "./brand-page-client"
 import { Suspense } from "react"
 
+// Force dynamic rendering so query-based pagination works in production
+export const dynamic = "force-dynamic"
+
 export const revalidate = 3600 // ISR: Revalidate every 1 hour
 
 // Metadata is handled in app/[cat]/[brand]/layout.jsx
 
-async function getInitialProducts(cat, brand, page = 1) {
+async function getInitialProducts(cat, brand, params) {
   try {
-    const apiUrl = `shop/api/catsearch/${cat}/brand/${brand}/?page=${page}`
-    const res = await publicFetch(apiUrl)
+    const qs = new URLSearchParams()
+    const page = parseInt(params?.page) || 1
+    qs.set("page", page.toString())
+    
+    // Add filters
+    if (params?.ordering) qs.set("ordering", params.ordering)
+    if (params?.min_rating) qs.set("min_rating", params.min_rating)
+    if (params?.min_price) qs.set("min_price", params.min_price)
+    if (params?.max_price) qs.set("max_price", params.max_price)
+    
+    const apiUrl = `shop/api/catsearch/${cat}/brand/${brand}/?${qs.toString()}`
+    console.log('Fetching category products from:', apiUrl)
+    const res = await publicFetch(apiUrl, {
+      next: { revalidate: 3600 },
+    })
     const data = await res.json()
+    console.log('Fetched data:', data)
 
     if (data.results) {
       return {
@@ -98,9 +115,10 @@ const SkeletonLoader = () => (
 export default async function BrandPage({ params, searchParams }) {
   const cat = params.cat
   const brand = params.brand
-  const page = parseInt(searchParams.page || '1', 10)
+  const resolvedParams = await searchParams
+  const page = parseInt(resolvedParams?.page || '1', 10)
   
-  const { products, pagination } = await getInitialProducts(cat, brand, page)
+  const { products, pagination } = await getInitialProducts(cat, brand, resolvedParams)
 
   return (
     <Suspense fallback={<SkeletonLoader />}>

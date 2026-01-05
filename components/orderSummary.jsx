@@ -11,10 +11,11 @@ import {
   updatePaymentAmount,
   updateSubtotal,
   updateDiscount,
+  updateCouponCode,
 } from "@/redux/checkoutSlice";
 import { getCDNImageUrl } from "@/utils/imageUtils";
 
-const CouponInput = memo(function CouponInput({ subtotal, shippingCost, onApplyCoupon }) {
+const CouponInput = memo(function CouponInput({ subtotal, shippingCost, onApplyCoupon, dispatch }) {
   const [couponCode, setCouponCode] = useState("");
   const [couponMessage, setCouponMessage] = useState("");
 
@@ -33,14 +34,25 @@ const CouponInput = memo(function CouponInput({ subtotal, shippingCost, onApplyC
           discountValue = ((subtotal + shippingCost) * data.percentage) / 100;
         }
         onApplyCoupon(discountValue);
+        dispatch(updateCouponCode(couponCode.trim()));
         setCouponMessage("Coupon applied successfully!");
       } else {
-        setCouponMessage(data.message || "Coupon is not valid.");
+        const errorMsg = data.message || data.detail || "Coupon is not valid.";
+        setCouponMessage(errorMsg);
         onApplyCoupon(0);
+        dispatch(updateCouponCode(null));
       }
     } catch (error) {
       setCouponMessage("An error occurred. Please try again.");
       onApplyCoupon(0);
+      dispatch(updateCouponCode(null));
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      applyCoupon(e);
     }
   };
 
@@ -55,6 +67,7 @@ const CouponInput = memo(function CouponInput({ subtotal, shippingCost, onApplyC
           id="coupon"
           value={couponCode}
           onChange={(e) => setCouponCode(e.target.value)}
+          onKeyPress={handleKeyPress}
           placeholder="Enter coupon code"
           className="flex-1 px-3 py-2 rounded border border-gray-700 bg-black text-gray-100 focus:outline-none"
         />
@@ -152,6 +165,7 @@ export function OrderSummary() {
             subtotal={reduxSubtotal}
             shippingCost={shippingCost}
             onApplyCoupon={(discountValue) => dispatch(updateDiscount(discountValue))}
+            dispatch={dispatch}
           />
         <div className="space-y-4">
           <div className="flex justify-between">

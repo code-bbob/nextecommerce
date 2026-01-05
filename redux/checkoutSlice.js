@@ -4,6 +4,7 @@ const initialState = {
   email: "",
   phone: "",
   newsOptIn: false,
+  couponCode: null,
   shippingAddress: {
     country: "US",
     firstName: "",
@@ -66,6 +67,9 @@ const checkoutSlice = createSlice({
     updateShippingCost(state, action) {
       state.shippingCost = action.payload;
     },
+    updateCouponCode(state, action) {
+      state.couponCode = action.payload;
+    },
     updateCheckoutData(state, action) {
       const data = action.payload;
       if (data.email !== undefined) state.email = data.email;
@@ -79,6 +83,7 @@ const checkoutSlice = createSlice({
       state.email = "";
       state.phone = "";
       state.newsOptIn = false;
+      state.couponCode = null;
       state.shippingAddress = { ...initialState.shippingAddress };
       state.shippingMethod = initialState.shippingMethod;
       state.subtotal = 0;
@@ -91,5 +96,5 @@ const checkoutSlice = createSlice({
   }
 });
 
-export const { updateFirstName, updateLastName, updatePaymentAmount, updatePaymentMethod, updateMunicipality, updateEmail, updatePhone, updateNewsOptIn, updateShippingAddress, updateShippingMethod, updateShippingCost, updateCheckoutData, updateDiscount, updateSubtotal, resetCheckout } = checkoutSlice.actions;
+export const { updateFirstName, updateLastName, updatePaymentAmount, updatePaymentMethod, updateMunicipality, updateEmail, updatePhone, updateNewsOptIn, updateShippingAddress, updateShippingMethod, updateShippingCost, updateCheckoutData, updateDiscount, updateSubtotal, resetCheckout, updateCouponCode } = checkoutSlice.actions;
 export default checkoutSlice.reducer;
