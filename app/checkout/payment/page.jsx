@@ -159,6 +159,28 @@ export default function PaymentPage() {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    // Validate form data first
+    const errors = validateCheckoutData({
+      email,
+      phone,
+      shippingAddress,
+      shippingMethod,
+      cartItems,
+    });
+
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      toast.error(`Please fix ${errors.length} validation error(s)`);
+      return;
+    }
+
+    // Show confirmation dialog
+    setShowConfirmation(true);
+  };
+
   if (loading) {
     return (
       <div className="h-screen">
