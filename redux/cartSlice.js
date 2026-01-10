@@ -117,9 +117,19 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     // Adds a product to the cart. If it already exists, increases its quantity.
+    // Exception: First auction item is separate, subsequent full-price items merge.
     addToCart: (state, action) => {
+      const { product_id, price, isAuctionPrice } = action.payload;
+      
+      // For auction items at auction price, always create new entry (don't merge)
+      if (isAuctionPrice) {
+        state.items.push({ ...action.payload, quantity: 1 });
+        return;
+      }
+      
+      // For regular items or subsequent full-price auction items, merge by product_id
       const existingItem = state.items.find(
-        item => item.product_id === action.payload.product_id
+        item => item.product_id === product_id && !item.isAuctionPrice
       );
       if (existingItem) {
         existingItem.quantity += 1;

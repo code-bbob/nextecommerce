@@ -4,11 +4,12 @@ import "./rocket-loader.css";
 import { Providers } from "./providers";
 import CartInitializer from "@/utils/cartInitializer";
 import ProgressBar from "@/components/ProgressBar";
+import VisitCounter from "@/components/VisitCounter";
 import { Sora, Merriweather, Outfit } from 'next/font/google'
 import { Shadows_Into_Light } from "next/font/google";
- import { Playfair_Display } from "next/font/google";
- import { Newsreader } from "next/font/google";
- import { Poppins } from "next/font/google";
+import { Playfair_Display } from "next/font/google";
+import { Newsreader } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { Suspense } from 'react';
 
 // Premium body font - Modern and clean
@@ -77,8 +78,8 @@ export const metadata = {
         alt: "Digitech Enterprises",
       },
     ],
-  locale: "en_NP",
-  alternateLocales: ["en_US"],
+    locale: "en_NP",
+    alternateLocales: ["en_US"],
   },
   twitter: {
     card: "summary_large_image",
@@ -86,15 +87,15 @@ export const metadata = {
     description:
       "Buy laptops, smartphones, and accessories in Nepal. Kathmandu, Pokhara delivery. EMI and official warranties.",
     images: ["/images/digi.jpg"],
-  site: "@digitech_nepal",
-  creator: "@digitech_nepal",
+    site: "@digitech_nepal",
+    creator: "@digitech_nepal",
   },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${sora.variable} ${merriweather.variable} ${outfit.variable}`}>
-  <body className="bg-background min-h-screen antialiased font-sora">
+      <body className="bg-background min-h-screen antialiased font-sora">
         <Suspense fallback={null}>
           <ProgressBar />
         </Suspense>
@@ -129,15 +130,15 @@ export default function RootLayout({ children }) {
             contactPoint: phone
               ? [
                 {
-                    "@type": "ContactPoint",
-                    telephone: phone,
-                    contactType: "customer service",
-                    areaServed: "NP",
-                    availableLanguage: ["en", "ne"],
-                  },
-                ]
+                  "@type": "ContactPoint",
+                  telephone: phone,
+                  contactType: "customer service",
+                  areaServed: "NP",
+                  availableLanguage: ["en", "ne"],
+                },
+              ]
               : undefined,
-              currenciesAccepted: "NPR",
+            currenciesAccepted: "NPR",
             paymentAccepted: "Cash, Card, EMI",
             areaServed: ["Kathmandu", "Pokhara", "Nepal"],
             sameAs: []
@@ -162,9 +163,10 @@ export default function RootLayout({ children }) {
           );
         })()}
         <Providers>
-        <CartInitializer />
+          <CartInitializer />
+          <VisitCounter />
           {children}
-          </Providers>
+        </Providers>
       </body>
     </html>
   );

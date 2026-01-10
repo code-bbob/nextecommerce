@@ -43,10 +43,6 @@ const validateCheckoutData = (data) => {
     errors.push("City is required");
   }
 
-  if (!data.shippingAddress.municipality || !data.shippingAddress.municipality.trim()) {
-    errors.push("Municipality is required");
-  }
-
   if (!data.shippingMethod || !data.shippingMethod.trim()) {
     errors.push("Shipping method is required");
   }
@@ -71,6 +67,7 @@ export default function PaymentPage() {
   const [loading, setLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [auctionErrors, setAuctionErrors] = useState([]);
 
   useEffect(() => {
     if (!email || !shippingAddress.address) {
@@ -93,12 +90,27 @@ export default function PaymentPage() {
   const handleCODPayment = async () => {
     try {
       setLoading(true);
+      setAuctionErrors([]); // Reset auction errors
       
-      // Prepare items data from cart items
-      const items = cartItems.map((item) => ({
-        product_id: item.product_id,
-        quantity: item.quantity,
-      }));
+      // Prepare items data from cart items - aggregate by product_id + price
+      // This prevents duplicate (order, product, price) entries
+      const itemsMap = new Map();
+      cartItems.forEach((item) => {
+        const key = `${item.product_id}|${item.price}`;
+        if (itemsMap.has(key)) {
+          // Merge quantities if same product at same price
+          const existing = itemsMap.get(key);
+          existing.quantity += item.quantity;
+        } else {
+          itemsMap.set(key, {
+            product_id: item.product_id,
+            quantity: item.quantity,
+            price: item.price,
+          });
+        }
+      });
+      
+      const items = Array.from(itemsMap.values());
 
       // Prepare checkout payload with order and delivery info
       const checkoutPayload = {
@@ -128,6 +140,14 @@ export default function PaymentPage() {
 
       if (!res.ok) {
         const errorData = await res.json();
+        
+        // Check for auction-specific errors
+        if (errorData?.auction_errors && errorData.auction_errors.length > 0) {
+          setAuctionErrors(errorData.auction_errors);
+          toast.error('Some auction items are no longer available');
+          return;
+        }
+        
         const couponError = errorData?.coupon_error;
         if (couponError) {
           throw new Error(`Coupon Error: ${couponError}. Please reload and try again.`);
@@ -245,6 +265,30 @@ export default function PaymentPage() {
               </div>
             )}
 
+            {/* Display Auction Errors */}
+            {auctionErrors.length > 0 && (
+              <div className="bg-yellow-900/20 border border-yellow-700 rounded-lg p-4 space-y-2">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 space-y-2">
+                    <h3 className="font-semibold text-yellow-600">⏰ Auction Items No Longer Available</h3>
+                    <p className="text-sm text-yellow-700 mb-2">The following auction items have already been purchased:</p>
+                    <div className="space-y-2">
+                      {auctionErrors.map((error, idx) => (
+                        <div key={idx} className="bg-black/30 rounded p-3 border border-yellow-700/50">
+                          <p className="font-medium text-yellow-500">{error.product_name}</p>
+                          <p className="text-sm text-yellow-600">{error.message}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs text-yellow-600 mt-3 border-t border-yellow-700/50 pt-3">
+                      Please remove these items from your cart and try again, or check out other amazing products!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="border border-gray-800 rounded-lg">
               <div className="p-4 flex justify-between items-center border-b border-gray-800">
                 <div>
@@ -335,7 +379,7 @@ export default function PaymentPage() {
                     <button
                       type="submit"
                       disabled={loading || validationErrors.length > 0}
-                      className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full bg-green-600 hover:bg-green-700 text-white justify-center font-semibold py-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {loading ? "Processing..." : "Place Order (COD)"}
                     </button>
@@ -417,7 +461,7 @@ export default function PaymentPage() {
                   await handleCODPayment();
                 }}
                 disabled={loading}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-green-600 flex justify-center hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Processing..." : "Confirm & Place Order"}
               </button>
@@ -425,7 +469,7 @@ export default function PaymentPage() {
                 type="button"
                 onClick={() => setShowConfirmation(false)}
                 disabled={loading}
-                className="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gray-800 flex justify-center hover:bg-gray-700 text-white font-semibold py-2.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
