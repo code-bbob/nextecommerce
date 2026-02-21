@@ -1,7 +1,7 @@
 export default function Head() {
   const site = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
   const backend = process.env.NEXT_PUBLIC_BACKEND_URL || "";
-  const cdn = "https://digitech-ecommerce.blr1.cdn.digitaloceanspaces.com";
+  const cdn = "https://cdn.dgtech.com.np";
   return (
     <>
       <meta name="theme-color" content="#000000" />

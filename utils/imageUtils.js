@@ -22,12 +22,12 @@ export function getCDNImageUrl(imageUrl) {
   }
   
   // If already a CDN URL, cache and return as is
-  if (imageUrl.includes('digitech-ecommerce.blr1.cdn.digitaloceanspaces.com')) {
+  if (imageUrl.includes('cdn.dgtech.com.np')) {
     urlCache.set(imageUrl, imageUrl);
     return imageUrl;
   }
   
-  const CDN_BASE_URL = 'https://digitech-ecommerce.blr1.cdn.digitaloceanspaces.com';
+  const CDN_BASE_URL = 'https://cdn.dgtech.com.np';
   let transformedUrl;
   
   // Handle full URLs from backend

@@ -6,7 +6,7 @@ const nextConfig = {
       remotePatterns: [
         {
           protocol: 'https',
-          hostname: 'digitech-ecommerce.blr1.cdn.digitaloceanspaces.com',
+          hostname: 'cdn.dgtech.com.np',
           port: '',
           pathname: '/**',
         },
