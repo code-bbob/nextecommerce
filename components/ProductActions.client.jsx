@@ -19,6 +19,11 @@ export default function ProductActions({ product }) {
 
   const handleAddToCart = useCallback(() => {
     if (!product?.product_id) return;
+    
+    // Prevent adding out of stock items
+    if (!product.in_stock) {
+      return;
+    }
 
     const cartItem = {
       product_id: product.product_id,
@@ -83,10 +88,11 @@ export default function ProductActions({ product }) {
         <Button
           size="lg"
           onClick={handleAddToCart}
-          className="bg-foreground hover:bg-foreground/90 text-background shadow-md"
+          disabled={!product.in_stock}
+          className="bg-foreground hover:bg-foreground/90 text-background shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           <ShoppingCart className="mr-2 h-5 w-5" />
-          Add to cart
+          {product.in_stock ? 'Add to cart' : 'Out of Stock'}
         </Button>
       </div>
     </>

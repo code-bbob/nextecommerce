@@ -20,6 +20,11 @@ export default function ProductCard(product) {
     e.stopPropagation();
     e.preventDefault();
 
+    // Prevent adding out of stock items
+    if (!product.in_stock) {
+      return;
+    }
+
     const cartItem = {
       product_id: product.product_id,
       price: product.price,
@@ -130,10 +135,11 @@ export default function ProductCard(product) {
         <Button
           size="sm"
           onClick={handleAddToCart}
-          className="text-sm bg-gray-900 hover:bg-gray-800 text-white w-full py-2.5 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 font-semibold mt-auto"
+          disabled={!product.in_stock}
+          className="text-sm bg-gray-900 hover:bg-gray-800 text-white w-full py-2.5 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 font-semibold mt-auto disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           <ShoppingCart className="mr-2 h-4 w-4" />
-          Add to Cart
+          {product.in_stock ? 'Add to Cart' : 'Out of Stock'}
         </Button>
       </div>
     </Link>

@@ -40,6 +40,12 @@ function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters
   const handleAddToCart = (e, product) => {
     e.stopPropagation()
     e.preventDefault()
+    
+    // Prevent adding out of stock items
+    if (!product.in_stock) {
+      return;
+    }
+    
     setIsCartOpen(true)
 
     const cartItem = {
@@ -168,10 +174,11 @@ function ProductGrid({ products, isLoading = false, gridCols = 5, onResetFilters
               <Button
                 size="sm"
                 onClick={(e) => handleAddToCart(e, product)}
-                className="text-xs sm:text-sm bg-foreground hover:bg-foreground/85 text-background w-full py-2.5 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 font-semibold mt-auto"
+                disabled={!product.in_stock}
+                className="text-xs sm:text-sm bg-foreground hover:bg-foreground/85 text-background w-full py-2.5 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 font-semibold mt-auto disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
                 <ShoppingCart className="mr-2 h-4 w-4" />
-                Add to Cart
+                {product.in_stock ? 'Add to Cart' : 'Out of Stock'}
               </Button>
             </div>
           </Link>

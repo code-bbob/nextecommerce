@@ -119,11 +119,11 @@ const cartSlice = createSlice({
     // Adds a product to the cart. If it already exists, increases its quantity.
     // Exception: First auction item is separate, subsequent full-price items merge.
     addToCart: (state, action) => {
-      const { product_id, price, isAuctionPrice } = action.payload;
+      const { product_id, price, isAuctionPrice, quantity } = action.payload;
       
       // For auction items at auction price, always create new entry (don't merge)
       if (isAuctionPrice) {
-        state.items.push({ ...action.payload, quantity: 1 });
+        state.items.push({ ...action.payload, quantity: quantity || 1 });
         return;
       }
       
@@ -132,9 +132,9 @@ const cartSlice = createSlice({
         item => item.product_id === product_id && !item.isAuctionPrice
       );
       if (existingItem) {
-        existingItem.quantity += 1;
+        existingItem.quantity += (quantity || 1);
       } else {
-        state.items.push({ ...action.payload, quantity: 1 });
+        state.items.push({ ...action.payload, quantity: quantity || 1 });
       }
     },
     // Updates the quantity in Redux state (local update)

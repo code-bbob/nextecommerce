@@ -69,6 +69,12 @@ export default function DealsOfDay() {
     e.preventDefault();
     e.stopPropagation();
     if (!p) return;
+    
+    // Prevent adding out of stock items
+    if (!p.in_stock) {
+      return;
+    }
+    
     const cartItem = {
       product_id: p.id,
       price: p.price,
@@ -221,8 +227,13 @@ export default function DealsOfDay() {
                             )}
                           </div>
                           <div className="mt-3">
-                            <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-sm" onClick={(e) => handleAdd(e, p)}>
-                              <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
+                            <Button 
+                              size="sm" 
+                              className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-sm disabled:bg-gray-400 disabled:cursor-not-allowed" 
+                              onClick={(e) => handleAdd(e, p)}
+                              disabled={!p.in_stock}
+                            >
+                              <ShoppingCart className="mr-2 h-4 w-4" /> {p.in_stock ? 'Add to Cart' : 'Out of Stock'}
                             </Button>
                           </div>
                         </div>

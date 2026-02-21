@@ -129,12 +129,17 @@ export default function ProductInteractive({ product }) {
   }, [selectedColor, product?.images]);
 
   const handleAddToCart = useCallback(() => {
+    // Prevent adding out of stock items
+    if (!product.in_stock) {
+      return;
+    }
+    
     const cartItem = {
       product_id: product.product_id,
       price: product.price,
       image: getCDNImageUrl(product.images?.[0]?.image),
       name: product.name,
-      quantity: 1,
+      quantity,
     };
 
     dispatch(addToCart(cartItem));
@@ -148,14 +153,14 @@ export default function ProductInteractive({ product }) {
       );
       if (existingIndex !== -1) {
         // Increase quantity if already exists
-        localCart[existingIndex].quantity += 1;
+        localCart[existingIndex].quantity += quantity;
       } else {
         localCart.push(cartItem);
       }
       setLocalCart(localCart);
     }
     setIsCartOpen(true);
-  }, [dispatch, isLoggedIn, product]);
+  }, [dispatch, isLoggedIn, product, quantity]);
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
@@ -463,11 +468,12 @@ export default function ProductInteractive({ product }) {
 
               <div className="flex space-x-2 bg-card/50 border border-border rounded-lg p-4 md:space-x-4 shadow-sm">
                 <Button
-                  className="w-64 bg-foreground shadow-md hover:bg-foreground/90 "
+                  className="w-64 bg-foreground shadow-md hover:bg-foreground/90 disabled:bg-gray-400 disabled:cursor-not-allowed"
                   size="lg"
                   onClick={handleAddToCart}
+                  disabled={!product.in_stock}
                 >
-                  Add to cart
+                  {product.in_stock ? 'Add to cart' : 'Out of Stock'}
                 </Button>
                 <Button
                   variant="outline"
