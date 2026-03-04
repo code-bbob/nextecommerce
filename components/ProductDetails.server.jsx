@@ -53,7 +53,7 @@ export default function ProductDetails({ product }) {
             )}
 
             <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-              {product?.name}
+              {product?.name} - Price in Nepal | Buy Online
             </h1>
 
             {product?.seriesName && (

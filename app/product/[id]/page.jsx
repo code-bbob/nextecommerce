@@ -144,10 +144,6 @@ export default async function ProductPage({ params }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans">
       <BlackNavBar color="inherit"/>
-      {/* Semantic header for SEO */}
-      <header className="sr-only">
-        <h1>{product.name} price in Nepal | Buy {product.brand?.name ? `${product.brand.name} ` : ""}{product.name}</h1>
-      </header>
       
       {/* Track this product view in localStorage */}
       <RecentlyViewedTracker product={product} />

@@ -20,11 +20,11 @@ export const revalidate = 3600;
 export async function generateMetadata() {
   return {
     title:
-      "Digitech Enterprises |EMI with Authorized, Authentic & Trusted Tech Store in Nepal",
+      "Buy Laptops & Smartphones on EMI in Nepal | Digitech Enterprises",
     description:
-      "Discover Nepal’s leading tech store at Digitech Enterprises. We offer emi on genuine products, expert support, company warranties, and unbeatable deals on laptops, smartphones, and more. Experience quality service, the latest technology trends, and innovative gadgets at your fingertips.",
+      "Nepal's most trusted tech store offering laptops, smartphones & accessories on EMI. Authorized brands, genuine products, official warranties. Fast delivery in Kathmandu & Pokhara. Shop now!",
     keywords:
-      "Digitech Enterprises, Digitech Nepal, Laptops on EMI, Mobile phones in EMI",
+      "Digitech Enterprises, Digitech Nepal, Laptops on EMI, Mobile phones on EMI, buy laptops Nepal, smartphones Kathmandu",
   };
 }
 

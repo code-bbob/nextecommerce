@@ -56,13 +56,6 @@ export const metadata = {
     "Pokhara smartphones",
     "tech store Nepal",
   ],
-  alternates: {
-    canonical: "/",
-    languages: {
-      "en-NP": "/",
-      "x-default": "/",
-    },
-  },
   openGraph: {
     type: "website",
     siteName: "Digitech Enterprises",

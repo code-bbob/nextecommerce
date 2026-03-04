@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { getCDNImageUrl } from "@/utils/imageUtils";
 
 export const metadata = {
-  title: 'Best Custom PC in Nepal. Best price Custom PC in Nepal. Cheapest Custom PC in Nepal',
-  description: 'Best Custom PC in Nepal. Best price Custom PC in Nepal. Cheapest Custom PC in Nepal',
-  keywords: 'Custom PC in Nepal, Custom PC Digitech',
+  title: 'Custom PC Builder Nepal | Build Your Dream PC from Rs. 50,000 | Digitech',
+  description: 'Build your dream custom PC in Nepal with premium components. Expert assembly, best prices, genuine parts. Gaming PCs, workstations & more. Starting at Rs. 50,000. Visit Digitech today!',
+  keywords: 'Custom PC Nepal, PC builder Nepal, gaming PC Nepal, custom computer Kathmandu, PC assembly Nepal, Digitech custom PC',
 }
 
 export default function Home() {
