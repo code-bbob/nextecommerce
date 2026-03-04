@@ -1,16 +1,18 @@
 export const dynamic = "force-static";
 
 export const metadata = {
-  title: "Buy Laptops & Smartphones in Nepal | Store",
+  title: "Shop All Products | Digitech Enterprises Nepal",
   description:
-    "Browse laptops, smartphones, and accessories in Nepal. Fast Kathmandu & Pokhara delivery. Authorized brands, EMI and warranties.",
+    "Browse our complete collection of laptops, smartphones, and accessories in Nepal. EMI available, authorized brands, official warranties. Fast delivery in Kathmandu & Pokhara.",
   keywords: [
+    "shop laptops Nepal",
+    "buy smartphones Nepal",
+    "tech store Nepal",
+    "online shopping Nepal",
     "Nepal laptops",
     "smartphones Nepal",
     "buy laptops Nepal",
     "laptop accessories Nepal",
-    "Kathmandu laptops",
-    "Pokhara smartphones",
   ],
   alternates: {
     canonical: "/store",

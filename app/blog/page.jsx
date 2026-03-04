@@ -4,6 +4,12 @@ import Footer from '@/components/Footer.server';
 
 export const revalidate = 120; // Cache the blog index for 2 minutes
 
+export const metadata = {
+  title: 'Tech Blog & News | Digitech Enterprises Nepal',
+  description: 'Latest tech news, product reviews, buying guides, and tips from Nepal\'s leading tech store. Stay updated with technology trends and expert advice.',
+  keywords: 'tech blog Nepal, laptop reviews Nepal, smartphone news Nepal, tech tips Nepal',
+}
+
 export default async function BlogPage() {
   const site = process.env.NEXT_PUBLIC_BACKEND_URL || '';
   let blog = [];
@@ -24,9 +30,9 @@ export default async function BlogPage() {
       <BlackNavBar color="inherit"/>
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ">
         <header className="mb-4 text-center">
-          {/* <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Latest from our blog</h1> */}
+          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Tech Blog & News from Nepal</h1>
           {mblogs?.length > 0 && (
-            <p className="text-sm md:text-base text-muted-foreground mt-2">Tips, news, and reviews from Nepal’s tech scene</p>
+            <p className="text-sm md:text-base text-muted-foreground mt-2">Tips, news, and reviews from Nepal's tech scene</p>
           )}
         </header>
         <BlogsView blogData={blog} />

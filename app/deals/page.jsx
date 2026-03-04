@@ -7,6 +7,14 @@ export const dynamic = "force-dynamic";
 // ISR - Revalidate every 1 hour
 export const revalidate = 3600;
 
+export async function generateMetadata() {
+  return {
+    title: 'Deals of the Day | Best Tech Offers in Nepal | Digitech',
+    description: 'Discover amazing daily deals on laptops, smartphones & accessories in Nepal. Limited time offers, huge discounts. EMI available. Shop now at Digitech Enterprises!',
+    keywords: 'laptop deals Nepal, smartphone offers Nepal, tech discounts Nepal, best prices laptops Nepal',
+  };
+}
+
 // Fetch deals server-side with full query support
 async function getInitialDeals(queryParams) {
   try {

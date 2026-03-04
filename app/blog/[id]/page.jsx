@@ -2,6 +2,33 @@
 import BlackNavBar from "@/components/blackNavbar";
 import Footer from "@/components/Footer.server";
 
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+  const site = process.env.NEXT_PUBLIC_BACKEND_URL || '';
+  
+  try {
+    const res = await fetch(`${site}blog/api/${id}`, { next: { revalidate: 300 } });
+    if (res.ok) {
+      const blog = await res.json();
+      const post = blog?.[0];
+      if (post) {
+        return {
+          title: `${post.title} | Digitech Blog`,
+          description: post.content?.replace(/<[^>]*>/g, '').substring(0, 160) || 'Read the latest tech news and reviews from Digitech Enterprises Nepal.',
+          keywords: `${post.category}, tech blog Nepal, ${post.title}`,
+        };
+      }
+    }
+  } catch (err) {
+    console.log('Failed to generate blog metadata', err);
+  }
+  
+  return {
+    title: 'Blog Post | Digitech Enterprises',
+    description: 'Read the latest tech news and reviews from Digitech Enterprises Nepal.',
+  };
+}
+
 export default async function SingleBlog({ params }) {
   const { id } = await params;
   const site = process.env.NEXT_PUBLIC_BACKEND_URL || '';

@@ -11,6 +11,25 @@ export const revalidate = 3600
 export const runtime = "edge"
 export const preferredRegion = ["bom1"]
 
+export async function generateMetadata({ searchParams }) {
+  const params = await searchParams;
+  const query = params?.q || params?.search || '';
+  
+  if (query) {
+    return {
+      title: `Search Results for "${query}" | Digitech Enterprises`,
+      description: `Find ${query} at Nepal's leading tech store. Browse laptops, smartphones & accessories. EMI available, official warranties, fast delivery.`,
+      keywords: `${query} Nepal, buy ${query} Nepal, ${query} price Nepal`,
+    };
+  }
+  
+  return {
+    title: 'Search Products | Digitech Enterprises Nepal',
+    description: 'Search for laptops, smartphones, and tech accessories in Nepal. Best prices, EMI available, official warranties.',
+    keywords: 'search products Nepal, find laptops Nepal, tech search Nepal',
+  };
+}
+
 // Fetch products server-side with full query support
 async function getInitialProducts(params) {
   try {

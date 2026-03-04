@@ -137,7 +137,7 @@ export default function ProductPageLayout({
               {pageTitle && (
                 <div>
                   <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-2 tracking-tight">
-                    {pageTitle}
+                    {pageTitle} in Nepal
                   </h1>
                   {pageDescription && (
                     <p className="text-xs sm:text-sm md:text-base text-muted-foreground font-light">
