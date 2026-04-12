@@ -50,6 +50,24 @@ export default function ProductInteractive({ product }) {
 
   const [selectedColor, setSelectedColor] = useState(null);
 
+  // Variant selection
+  const variants = useMemo(() => {
+    if (!product?.variants || !Array.isArray(product.variants)) return [];
+    return product.variants;
+  }, [product?.variants]);
+
+  const [selectedVariant, setSelectedVariant] = useState(() => {
+    if (product?.variants && product.variants.length > 0) return product.variants[0];
+    return null;
+  });
+
+  // Compute display price based on selected variant
+  const displayPrice = useMemo(() => {
+    const base = product?.price || 0;
+    const extra = selectedVariant?.additional_price || 0;
+    return base + extra;
+  }, [product?.price, selectedVariant]);
+
   // Default image - set directly without callback
   const defaultImageUrl = useMemo(() => {
     if (!product?.images || product.images.length === 0)
@@ -134,12 +152,18 @@ export default function ProductInteractive({ product }) {
       return;
     }
     
+    const selectedColorData = colorOptions.find(o => o.color === selectedColor);
+    const variantLabel = selectedVariant ? selectedVariant.name : null;
+    const colorLabel = selectedColorData ? selectedColorData.color_name : null;
+    const variantStr = [colorLabel, variantLabel].filter(Boolean).join(' / ');
+
     const cartItem = {
       product_id: product.product_id,
-      price: product.price,
+      price: displayPrice,
       image: getCDNImageUrl(product.images?.[0]?.image),
       name: product.name,
       quantity,
+      variant: variantStr || undefined,
     };
 
     dispatch(addToCart(cartItem));
@@ -377,62 +401,88 @@ export default function ProductInteractive({ product }) {
                 </strike>
               )}
               <div className="text-xl md:text-2xl text-primary font-bold">
-                RS. {product.price.toFixed(2)}
+                RS. {displayPrice.toFixed(2)}
               </div>
             </div>
 
             {colorOptions.length > 0 && (
-              <div className="mt-4 mb-4">
+              <div className="mt-4 mb-2">
                 <span className="text-sm font-semibold text-foreground block mb-3">
                   Choose Colour
                 </span>
-                <div className="flex flex-wrap gap-3">
-                  {colorOptions.map((opt) => (
-                    <button
-                      key={opt.color}
-                      className={`px-4 py-2 rounded-lg border-2 flex items-center gap-2 transition-all duration-150 focus:outline-none ${
-                        selectedColor === opt.color
-                          ? "border-primary bg-primary/10"
-                          : "border-border hover:border-primary bg-card"
-                      }`}
-                      title={opt.color_name || "Color"}
-                      aria-label={opt.color_name || "Color"}
-                      onClick={() => setSelectedColor(opt.color)}
-                    >
-                      <div
-                        className="w-5 h-5 rounded-full border-2 border-gray-300"
-                        style={{
-                          background:
-                            opt.hex ||
-                            (opt.color_name
-                              ? opt.color_name.toLowerCase()
-                              : "#eee"),
-                        }}
-                      />
-                      <span className="text-sm font-medium text-foreground">
-                        {opt.color_name || "Color"}
-                      </span>
-                    </button>
-                  ))}
+                <div className="flex flex-wrap gap-2">
+                  {colorOptions.map((opt) => {
+                    const isSelected = selectedColor === opt.color;
+                    return (
+                      <button
+                        key={opt.color}
+                        className={`relative px-4 py-2 rounded-lg border-2 flex items-center gap-2 transition-all duration-150 focus:outline-none ${
+                          isSelected
+                            ? "border-red-400 bg-white shadow-sm"
+                            : "border-gray-200 hover:border-gray-400 bg-white"
+                        }`}
+                        title={opt.color_name || "Color"}
+                        aria-label={opt.color_name || "Color"}
+                        onClick={() => setSelectedColor(opt.color)}
+                      >
+                        {isSelected && (
+                          <span className="text-red-500 text-xs font-bold">✓</span>
+                        )}
+                        {opt.hex && (
+                          <div
+                            className="w-4 h-4 rounded-full border border-gray-300 shrink-0"
+                            style={{ background: opt.hex }}
+                          />
+                        )}
+                        <span className="text-sm font-medium text-gray-800">
+                          {opt.color_name || "Color"}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
 
-            {/* Choose Size */}
-            {/* <div className="mt-4 mb-4">
-              <span className="text-sm font-semibold text-foreground block mb-3">
-                Choose Size
-              </span>
-              <div className="flex gap-3">
-                <button className="px-4 py-2 rounded-lg border-2 border-primary bg-primary/10 font-medium text-foreground">
-                  256GB
-                </button>
-                <button className="px-4 py-2 rounded-lg border-2 border-border hover:border-primary bg-card font-medium text-foreground">
-                  512GB
-                </button>
+            {/* Choose Variant/Size */}
+            {variants.length > 0 && (
+              <div className="mt-4 mb-2">
+                <span className="text-sm font-semibold text-foreground block mb-3">
+                  Choose Size
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {variants.map((variant) => {
+                    const isSelected = selectedVariant?.id === variant.id;
+                    const priceTag = variant.additional_price > 0
+                      ? `+RS.${variant.additional_price.toLocaleString()}`
+                      : variant.additional_price < 0
+                      ? `-RS.${Math.abs(variant.additional_price).toLocaleString()}`
+                      : null;
+                    return (
+                      <button
+                        key={variant.id}
+                        className={`relative px-4 py-2 rounded-lg border-2 flex items-center gap-2 transition-all duration-150 focus:outline-none ${
+                          isSelected
+                            ? "border-red-400 bg-white shadow-sm"
+                            : "border-gray-200 hover:border-gray-400 bg-white"
+                        }`}
+                        onClick={() => setSelectedVariant(variant)}
+                      >
+                        {isSelected && (
+                          <span className="text-red-500 text-xs font-bold">✓</span>
+                        )}
+                        <span className="text-sm font-medium text-gray-800">
+                          {variant.name}
+                        </span>
+                        {priceTag && (
+                          <span className="text-xs text-gray-400 ml-0.5">{priceTag}</span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-            */}
+            )}
 
             {/* Quantity and Add to Cart */}
             <div className="flex flex-col gap-4 mt-6">

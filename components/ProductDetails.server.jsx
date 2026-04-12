@@ -1,112 +1,13 @@
-import ProductActions from "@/components/ProductActions.client";
-import ProductImageCarousel from "@/components/ProductImageCarousel.client";
+import ProductTopSection from "@/components/ProductTopSection.client";
 import RelatedProducts from "@/components/RelatedProducts.server";
 import CompleteSetup from "@/components/CompleteSetup.server";
 import Recommendations from "@/components/Recommendations.server";
 import { Suspense } from "react";
 
-function Stars({ value = 0 }) {
-  const rounded = Math.round(Number(value) || 0);
-  return (
-    <div className="flex items-center gap-1">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <span
-          key={i}
-          className={
-            i < rounded
-              ? "text-yellow-600"
-              : "text-muted-foreground/40"
-          }
-        >
-          ★
-        </span>
-      ))}
-    </div>
-  );
-}
-
 export default function ProductDetails({ product }) {
-  const avgRating = product?.ratings?.stats?.avg_rating ?? 0;
-  const totalRatings = product?.ratings?.stats?.total_ratings ?? 0;
-
   return (
     <main className="mx-auto w-full px-4 py-8">
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-2 px-4 auto-rows-max">
-        {/* Images */}
-        <div className="space-y-4">
-          <ProductImageCarousel
-            productName={product?.name}
-            images={product?.images || []}
-          />
-        </div>
-
-        {/* Details */}
-        <div className="">
-          <div className="space-y-2">
-            {product?.brandName && (
-              <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-primary to-primary/60" />
-                <span className="font-bold text-foreground">
-                  {product.brandName}
-                </span>
-              </div>
-            )}
-
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-              {product?.name} - Price in Nepal | Buy Online
-            </h1>
-
-            {product?.seriesName && (
-              <h2 className="text-lg font-semibold text-orange-500">
-                {product.seriesName} series
-              </h2>
-            )}
-
-             {product?.stock != null && (
-              <div className="text-sm my-4 text-black">
-                <span className="font-bold">In Stock:</span> {product.stock}
-              </div>
-            )}
-
-            <div className="flex items-center gap-3">
-              <Stars value={avgRating} />
-              <span className="text-sm text-muted-foreground">
-                {Number(avgRating).toFixed(1)} ({totalRatings} reviews)
-              </span>
-            </div>
-          </div>
-
-          {/* Price */}
-          <div className="space-y-1 mt-6">
-            {product?.old_price ? (
-              <div className="text-sm line-through text-muted-foreground">
-                Rs {Number(product.old_price).toLocaleString()}
-              </div>
-            ) : null}
-            <div className="text-3xl font-extrabold text-foreground">
-              Rs {Number(product?.price || 0).toLocaleString()}
-            </div>
-          </div>
-
-         
-
-          {/* Actions (client) */}
-          <ProductActions product={product} />
-
-          {/* Description */}
-          {product?.description && (
-            <section className="space-y-3 mt-10">
-              <h3 className="text-lg font-semibold text-foreground">
-                Product Details
-              </h3>
-              <div
-                className="prose max-w-none text-sm text-foreground/90"
-                dangerouslySetInnerHTML={{ __html: product.description }}
-              />
-            </section>
-          )}
-        </div>
-      </div>
+      <ProductTopSection product={product} />
 
       {/* Recommendations - Between Description and Specifications */}
       <div className="max-w-7xl mx-auto px-4 mt-8">

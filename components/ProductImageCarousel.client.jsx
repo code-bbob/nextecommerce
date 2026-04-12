@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/carousel";
 import { getCDNImageUrl } from "@/utils/imageUtils";
 
-export default function ProductImageCarousel({ productName, images }) {
+export default function ProductImageCarousel({ productName, images, activeColorId = null }) {
   const carouselApi = useRef(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -52,6 +52,19 @@ export default function ProductImageCarousel({ productName, images }) {
       setCurrentImageIndex(clickedIndex);
     }
   }, [allImages]);
+
+  useEffect(() => {
+    if (activeColorId == null || !carouselApi.current || !Array.isArray(images)) return;
+    const colorImage = images.find((img) => img?.color === activeColorId && img?.image);
+    if (!colorImage) return;
+    const url = getCDNImageUrl(colorImage.image);
+    if (!url) return;
+    const idx = allImages.indexOf(url);
+    if (idx !== -1) {
+      carouselApi.current.scrollTo(idx);
+      setCurrentImageIndex(idx);
+    }
+  }, [activeColorId, images, allImages]);
 
   if (!allImages.length) {
     return (

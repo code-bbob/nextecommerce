@@ -10,6 +10,18 @@ const nextConfig = {
           port: '',
           pathname: '/**',
         },
+        {
+          protocol: 'http',
+          hostname: 'localhost',
+          port: '8000',
+          pathname: '/**',
+        },
+        {
+          protocol: 'https',
+          hostname: '*.dgtechcm.np',
+          port: '',
+          pathname: '/**',
+        },
       ],
       // Cache optimized images for 365 days
       minimumCacheTTL: 31536000,
@@ -29,11 +41,30 @@ const nextConfig = {
     async headers() {
       return [
         {
+          source: '/blog/:path*',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, s-maxage=3600, stale-while-revalidate=86400',
+            },
+          ],
+        },
+        {
           source: '/search',
           headers: [
             {
               key: 'Cache-Control',
               value: 'public, s-maxage=300, stale-while-revalidate=3600',
+            },
+          ],
+        },
+        {
+          // Cache blog images aggressively
+          source: '/api/og',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=31536000, immutable',
             },
           ],
         },
