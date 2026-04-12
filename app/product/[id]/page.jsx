@@ -22,7 +22,7 @@ const backendBase = process.env.NEXT_PUBLIC_BACKEND_URL;
 const getProduct = cache(async (id) => {
   if (!backendBase) return null;
   const backendUrl = `${backendBase}shop/api/${id}/`;
-  const res = await fetch(backendUrl, { next: { revalidate: 3600 } });
+  const res = await fetch(backendUrl, { next: { revalidate: 30 } });
   if (!res.ok) return null;
   return res.json();
 });
@@ -102,7 +102,7 @@ export async function generateStaticParams() {
 
     while (page <= totalPages) {
       const res = await fetch(`${backendBase}shop/api/?page=${page}&page_size=${pageSize}`, {
-        next: { revalidate: 3600 },
+        next: { revalidate: 30 },
         headers: { Accept: "application/json" },
       });
       if (!res.ok) break;

@@ -5,8 +5,8 @@ import { StorePageClient } from "./store-page-client";
 // We still keep the data fast by caching the fetch per-URL via `next.revalidate` below.
 export const dynamic = "force-dynamic";
 
-// ISR - cache each URL (including ?page=...) for 1 hour
-export const revalidate = 3600;
+// ISR - cache each URL (including ?page=...) for 30 seconds
+export const revalidate = 30;
 
 // Fetch products server-side with full query support
 async function getInitialProducts(queryParams) {
@@ -26,7 +26,7 @@ async function getInitialProducts(queryParams) {
     if (brand) qs.set("brand", brand);
 
     const response = await publicFetch(`shop/api/?${qs.toString()}`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 30 },
     });
     const data = await response.json();
     return data;

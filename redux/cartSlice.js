@@ -67,12 +67,12 @@ export const sendCartToServer = createAsyncThunk(
 // Async thunk to update an existing cart item on the server
 export const updateCartItemOnServer = createAsyncThunk(
   'cart/updateCartItemOnServer',
-  async ({ product_id, quantity }, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     try {
       const response = await customFetch('cart/api/cart/update/', {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ product_id, quantity })
+        body: JSON.stringify(payload)
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -88,12 +88,12 @@ export const updateCartItemOnServer = createAsyncThunk(
 // Async thunk to remove a cart item from the server
 export const removeCartItemOnServer = createAsyncThunk(
   'cart/removeCartItemOnServer',
-  async ({ product_id }, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     try {
       const response = await customFetch('cart/api/cart/', {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ product_id })
+        body: JSON.stringify(payload)
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -112,6 +112,24 @@ const initialState = {
   error: null
 };
 
+const normalize = (value) => (value === undefined ? null : value);
+
+const isSameCartLine = (item, target) => {
+  if (!item || !target) return false;
+
+  if (target.cart_item_id != null && item.id != null) {
+    return Number(item.id) === Number(target.cart_item_id);
+  }
+
+  const sameProduct = String(item.product_id) === String(target.product_id);
+  const sameColor = normalize(item.selected_color_id ?? item.color) === normalize(target.selected_color_id ?? target.color);
+  const sameVariantId = normalize(item.selected_variant_id ?? item.variant_id) === normalize(target.selected_variant_id ?? target.variant_id);
+  const sameAuctionMode = Boolean(item.isAuctionPrice) === Boolean(target.isAuctionPrice);
+  const sameVariantText = normalize(item.variant) === normalize(target.variant);
+
+  return sameProduct && sameColor && sameVariantId && sameAuctionMode && sameVariantText;
+};
+
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
@@ -119,17 +137,17 @@ const cartSlice = createSlice({
     // Adds a product to the cart. If it already exists, increases its quantity.
     // Exception: First auction item is separate, subsequent full-price items merge.
     addToCart: (state, action) => {
-      const { product_id, price, isAuctionPrice, quantity } = action.payload;
+      const { quantity } = action.payload;
       
       // For auction items at auction price, always create new entry (don't merge)
-      if (isAuctionPrice) {
+      if (action.payload.isAuctionPrice) {
         state.items.push({ ...action.payload, quantity: quantity || 1 });
         return;
       }
       
-      // For regular items or subsequent full-price auction items, merge by product_id
+      // For regular items, merge only exact same line (product + color + variant)
       const existingItem = state.items.find(
-        item => item.product_id === product_id && !item.isAuctionPrice
+        item => isSameCartLine(item, action.payload) && !item.isAuctionPrice
       );
       if (existingItem) {
         existingItem.quantity += (quantity || 1);
@@ -139,8 +157,8 @@ const cartSlice = createSlice({
     },
     // Updates the quantity in Redux state (local update)
     updateQuantity: (state, action) => {
-      const { product_id, change } = action.payload;
-      const item = state.items.find(item => item.product_id === product_id);
+      const { change, ...identity } = action.payload;
+      const item = state.items.find(item => isSameCartLine(item, identity));
       if (item) {
         item.quantity = Math.max(1, item.quantity + change);
       }
@@ -148,7 +166,7 @@ const cartSlice = createSlice({
     // Removes a product from the local cart
     removeFromCart: (state, action) => {
       state.items = state.items.filter(
-        item => item.product_id !== action.payload.product_id
+        item => !isSameCartLine(item, action.payload)
       );
     },
     // Sets the cart state from a payload (for rehydrating from local storage)

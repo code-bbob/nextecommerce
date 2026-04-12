@@ -92,13 +92,12 @@ export default function PaymentPage() {
       setLoading(true);
       setAuctionErrors([]); // Reset auction errors
       
-      // Prepare items data from cart items - aggregate by product_id + price
-      // This prevents duplicate (order, product, price) entries
+      // Prepare items data from cart items - aggregate by product + price + selected attributes
       const itemsMap = new Map();
       cartItems.forEach((item) => {
-        const key = `${item.product_id}|${item.price}`;
+        const key = `${item.product_id}|${item.price}|${item.selected_color_id ?? item.color ?? ''}|${item.selected_variant_id ?? item.variant_id ?? ''}|${item.variant ?? ''}`;
         if (itemsMap.has(key)) {
-          // Merge quantities if same product at same price
+          // Merge quantities only for exact same selection
           const existing = itemsMap.get(key);
           existing.quantity += item.quantity;
         } else {
@@ -106,6 +105,10 @@ export default function PaymentPage() {
             product_id: item.product_id,
             quantity: item.quantity,
             price: item.price,
+            selected_color_id: item.selected_color_id ?? item.color ?? null,
+            selected_variant_id: item.selected_variant_id ?? item.variant_id ?? null,
+            variant: item.variant ?? null,
+            isAuctionPrice: Boolean(item.isAuctionPrice),
           });
         }
       });

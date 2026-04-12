@@ -9,7 +9,7 @@ export async function generateMetadata({ params }) {
   const site = process.env.NEXT_PUBLIC_BACKEND_URL || '';
   
   try {
-    const res = await fetch(`${site}blog/api/${id}`, { next: { revalidate: 300 } });
+    const res = await fetch(`${site}blog/api/${id}`, { next: { revalidate: 30 } });
     if (res.ok) {
       const blog = await res.json();
       const post = blog?.[0];
@@ -82,7 +82,7 @@ export default async function SingleBlog({ params }) {
   let allBlogs = [];
   
   try {
-    const res = await fetch(`${site}blog/api/${id}`, { next: { revalidate: 300 } });
+    const res = await fetch(`${site}blog/api/${id}`, { next: { revalidate: 30 } });
     if (res.ok) {
       blog = await res.json();
     }
@@ -92,7 +92,7 @@ export default async function SingleBlog({ params }) {
 
   // Fetch all blogs for sidebar
   try {
-    const res = await fetch(`${site}blog/api/`, { next: { revalidate: 120 } });
+    const res = await fetch(`${site}blog/api/`, { next: { revalidate: 30 } });
     if (res.ok) {
       allBlogs = await res.json();
     }

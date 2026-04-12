@@ -21,6 +21,15 @@ export default function CartSidebar({ isOpen, onClose }) {
   const sidebarRef = useRef(null);
   const router = useRouter();
 
+  const buildIdentity = (item) => ({
+    cart_item_id: item.id ?? null,
+    product_id: item.product_id,
+    selected_color_id: item.selected_color_id ?? item.color ?? null,
+    selected_variant_id: item.selected_variant_id ?? item.variant_id ?? null,
+    variant: item.variant,
+    isAuctionPrice: item.isAuctionPrice,
+  });
+
 
   const handleCheckout=()=>{
     if (isLoggedIn){
@@ -46,37 +55,49 @@ export default function CartSidebar({ isOpen, onClose }) {
   }, [isOpen, onClose]);
 
   // Update quantity: calculate new quantity and update both locally and on the server.
-  const handleUpdateQuantity = (product_id, change) => {
-    const item = items.find(i => i.product_id === product_id);
+  const handleUpdateQuantity = (targetItem, change) => {
+    const item = targetItem;
     if (!item) return;
     const newQuantity = Math.max(1, item.quantity + change);
-    dispatch(updateQuantity({ product_id, change }));
+    const identity = buildIdentity(item);
+    dispatch(updateQuantity({ ...identity, change }));
     if (isLoggedIn){
-    dispatch(updateCartItemOnServer({ product_id, quantity: newQuantity }));
+    dispatch(updateCartItemOnServer({ ...identity, quantity: newQuantity }));
     }
     else {
           // Otherwise, update the local cart in localStorage
           const localCart = getLocalCart()
-          const existingIndex = localCart.findIndex(item => item.product_id === product_id)
+          const existingIndex = localCart.findIndex((entry) => (
+            entry.product_id === identity.product_id
+            && (entry.selected_color_id ?? entry.color ?? null) === (identity.selected_color_id ?? null)
+            && (entry.selected_variant_id ?? entry.variant_id ?? null) === (identity.selected_variant_id ?? null)
+            && (entry.variant ?? null) === (identity.variant ?? null)
+            && Boolean(entry.isAuctionPrice) === Boolean(identity.isAuctionPrice)
+          ))
           if (existingIndex !== -1) {
             // Increase quantity if already exists
-            localCart[existingIndex].quantity += change
-          } else {
-            localCart.push(cartItem)
+            localCart[existingIndex].quantity = Math.max(1, localCart[existingIndex].quantity + change)
           }
           setLocalCart(localCart)
         }
   };
 
   // Remove item: dispatch removal locally and then on the server.
-  const handleRemoveItem = (product_id) => {
-    dispatch(removeFromCart({ product_id }));
+  const handleRemoveItem = (item) => {
+    const identity = buildIdentity(item);
+    dispatch(removeFromCart(identity));
     if (isLoggedIn){
-    dispatch(removeCartItemOnServer({ product_id }));
+    dispatch(removeCartItemOnServer(identity));
     }
     else {
         const localCart = getLocalCart();
-        const index = localCart.findIndex(item => item.product_id === product_id);
+        const index = localCart.findIndex((entry) => (
+          entry.product_id === identity.product_id
+          && (entry.selected_color_id ?? entry.color ?? null) === (identity.selected_color_id ?? null)
+          && (entry.selected_variant_id ?? entry.variant_id ?? null) === (identity.selected_variant_id ?? null)
+          && (entry.variant ?? null) === (identity.variant ?? null)
+          && Boolean(entry.isAuctionPrice) === Boolean(identity.isAuctionPrice)
+        ));
         if (index !== -1) {
             localCart.splice(index, 1);
             setLocalCart(localCart);
@@ -115,8 +136,8 @@ export default function CartSidebar({ isOpen, onClose }) {
                 <p className="text-xs text-slate-400 dark:text-slate-500 text-center mt-2">Add items to get started</p>
               </div>
             ) : (
-              items.map((item) => (
-                <div key={item.product_id} className="group flex gap-3 p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900/60 transition-all duration-200 border border-slate-100 dark:border-slate-800">
+              items.map((item, idx) => (
+                <div key={item.id ?? `${item.product_id}-${item.selected_color_id ?? item.color ?? 'nc'}-${item.selected_variant_id ?? item.variant_id ?? item.variant ?? 'nv'}-${idx}`} className="group flex gap-3 p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900/60 transition-all duration-200 border border-slate-100 dark:border-slate-800">
                   {/* Product Image */}
                   <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-white dark:bg-slate-800">
                     <Image
@@ -133,6 +154,11 @@ export default function CartSidebar({ isOpen, onClose }) {
                   <div className="flex-1 min-w-0 flex flex-col justify-between">
                     <div>
                       <p className="font-semibold text-sm text-slate-900 dark:text-white truncate">{item.name}</p>
+                      {(item.variant || item.variant_name || item.selected_variant_name || item.color_name || item.selected_color_name) && (
+                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                          {item.variant || [item.color_name || item.selected_color_name, item.variant_name || item.selected_variant_name].filter(Boolean).join(' / ')}
+                        </p>
+                      )}
                       <p className="text-sm font-bold text-red-600 dark:text-red-500 mt-1">RS. {item.price?.toFixed(2)}</p>
                     </div>
 
@@ -140,7 +166,7 @@ export default function CartSidebar({ isOpen, onClose }) {
                     <div className="flex items-center gap-2 mt-2">
                       <div className="flex items-center gap-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1">
                         <button
-                          onClick={() => handleUpdateQuantity(item.product_id, -1)}
+                          onClick={() => handleUpdateQuantity(item, -1)}
                           className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-150 p-0.5"
                           aria-label="Decrease quantity"
                         >
@@ -148,7 +174,7 @@ export default function CartSidebar({ isOpen, onClose }) {
                         </button>
                         <span className="text-xs font-semibold text-slate-900 dark:text-white min-w-6 text-center">{item.quantity}</span>
                         <button
-                          onClick={() => handleUpdateQuantity(item.product_id, 1)}
+                          onClick={() => handleUpdateQuantity(item, 1)}
                           className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-150 p-0.5"
                           aria-label="Increase quantity"
                         >
@@ -158,7 +184,7 @@ export default function CartSidebar({ isOpen, onClose }) {
 
                       {/* Remove Button */}
                       <button
-                        onClick={() => handleRemoveItem(item.product_id)}
+                        onClick={() => handleRemoveItem(item)}
                         className="text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-500 transition-colors duration-200 p-0.5 ml-auto"
                         aria-label="Remove item"
                       >

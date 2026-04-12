@@ -2,7 +2,7 @@ import BlackNavBar from '@/components/blackNavbar';
 import BlogsView from '@/components/blog/blogView';
 import Footer from '@/components/Footer.server';
 
-export const revalidate = 120; // Cache the blog index for 2 minutes
+export const revalidate = 30; // Cache the blog index for 30 seconds
 
 export const metadata = {
   title: 'Tech Blog & News | Digitech Enterprises Nepal - Expert Reviews & Tips',
@@ -37,7 +37,7 @@ export default async function BlogPage() {
   let mblogs = [];
 
   try {
-    const res = await fetch(`${site}blog/api/`, { next: { revalidate: 120 } });
+    const res = await fetch(`${site}blog/api/`, { next: { revalidate: 30 } });
     if (res.ok) {
       blog = await res.json();
       mblogs = [...new Set(blog?.map((b) => b.category))];

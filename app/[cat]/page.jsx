@@ -5,7 +5,7 @@ import { Suspense } from "react"
 // Force dynamic rendering so query-based pagination works in production
 export const dynamic = "force-dynamic"
 
-export const revalidate = 3600 // ISR: Revalidate every 1 hour
+export const revalidate = 30 // ISR: Revalidate every 30 seconds
 
 async function getInitialProducts(cat, params) {
   try {
@@ -24,7 +24,7 @@ async function getInitialProducts(cat, params) {
     const apiUrl = `shop/api/catsearch/${cat}/?${qs.toString()}`
     console.log('Fetching category products from:', apiUrl)
     const res = await publicFetch(apiUrl, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 30 },
     })
     const data = await res.json()
 

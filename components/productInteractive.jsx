@@ -157,13 +157,21 @@ export default function ProductInteractive({ product }) {
     const colorLabel = selectedColorData ? selectedColorData.color_name : null;
     const variantStr = [colorLabel, variantLabel].filter(Boolean).join(' / ');
 
+    const colorImage = selectedColor
+      ? product.images?.find((img) => img.color === selectedColor)?.image
+      : null;
+
     const cartItem = {
       product_id: product.product_id,
       price: displayPrice,
-      image: getCDNImageUrl(product.images?.[0]?.image),
+      image: getCDNImageUrl(colorImage || product.images?.[0]?.image),
       name: product.name,
       quantity,
       variant: variantStr || undefined,
+      selected_color_id: selectedColor ?? null,
+      selected_color_name: colorLabel ?? null,
+      selected_variant_id: selectedVariant?.id ?? null,
+      selected_variant_name: variantLabel ?? null,
     };
 
     dispatch(addToCart(cartItem));
@@ -173,7 +181,13 @@ export default function ProductInteractive({ product }) {
     } else {
       const localCart = getLocalCart();
       const existingIndex = localCart.findIndex(
-        (item) => item.product_id === product.product_id
+        (item) => (
+          item.product_id === product.product_id
+          && (item.selected_color_id ?? null) === (cartItem.selected_color_id ?? null)
+          && (item.selected_variant_id ?? null) === (cartItem.selected_variant_id ?? null)
+          && (item.variant ?? null) === (cartItem.variant ?? null)
+          && Boolean(item.isAuctionPrice) === Boolean(cartItem.isAuctionPrice)
+        )
       );
       if (existingIndex !== -1) {
         // Increase quantity if already exists
@@ -184,7 +198,16 @@ export default function ProductInteractive({ product }) {
       setLocalCart(localCart);
     }
     setIsCartOpen(true);
-  }, [dispatch, isLoggedIn, product, quantity]);
+  }, [
+    dispatch,
+    isLoggedIn,
+    product,
+    quantity,
+    selectedColor,
+    selectedVariant,
+    colorOptions,
+    displayPrice,
+  ]);
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();

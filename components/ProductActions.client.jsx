@@ -93,6 +93,10 @@ export default function ProductActions({ product, selectedColorId = null, onColo
       name: product.name,
       quantity,
       variant: variantStr,
+      selected_color_id: selectedColor?.id ?? null,
+      selected_color_name: selectedColor?.name ?? null,
+      selected_variant_id: selectedVariant?.id ?? null,
+      selected_variant_name: selectedVariant?.name ?? null,
     };
 
     dispatch(addToCart(cartItem));
@@ -101,7 +105,13 @@ export default function ProductActions({ product, selectedColorId = null, onColo
       dispatch(sendCartToServer(cartItem));
     } else {
       const localCart = getLocalCart();
-      const existingIndex = localCart.findIndex((item) => item.product_id === product.product_id);
+      const existingIndex = localCart.findIndex((item) => (
+        item.product_id === product.product_id
+        && (item.selected_color_id ?? null) === (cartItem.selected_color_id ?? null)
+        && (item.selected_variant_id ?? null) === (cartItem.selected_variant_id ?? null)
+        && (item.variant ?? null) === (cartItem.variant ?? null)
+        && Boolean(item.isAuctionPrice) === Boolean(cartItem.isAuctionPrice)
+      ));
       if (existingIndex !== -1) {
         localCart[existingIndex].quantity += quantity;
       } else {
