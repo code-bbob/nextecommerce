@@ -38,6 +38,7 @@ const NAV_CATEGORIES = [
   "accessories",
   "gadgets",
   "printer",
+  "security"
 ];
 
 function useDebounce(value, delay) {
